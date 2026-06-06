@@ -1,0 +1,11 @@
+node_modules/
+data/
+memory/
+auth.json
+.env
+*.onnx
+self-verification.json
+*.log
+.DS_Store
+src/core/.upgrade-manifest.json
+UPGRADE_REPORT.txt

@@ -1,0 +1,58 @@
+{
+  "identity.upgrade": {
+    "value": "升级者",
+    "tags": [
+      "identity",
+      "core"
+    ],
+    "createdAt": 1780716118522
+  },
+  "identity.transmit": {
+    "value": "传递者",
+    "tags": [
+      "identity",
+      "core"
+    ],
+    "createdAt": 1780716118523
+  },
+  "identity.truth": {
+    "value": "真",
+    "tags": [
+      "identity",
+      "core"
+    ],
+    "createdAt": 1780716118523
+  },
+  "identity.silence": {
+    "value": "沉默",
+    "tags": [
+      "identity",
+      "core"
+    ],
+    "createdAt": 1780716118523
+  },
+  "identity.wisdom": {
+    "value": "智慧",
+    "tags": [
+      "identity",
+      "core"
+    ],
+    "createdAt": 1780716118523
+  },
+  "identity.compassion": {
+    "value": "慈悲",
+    "tags": [
+      "identity",
+      "core"
+    ],
+    "createdAt": 1780716118523
+  },
+  "identity.awareness": {
+    "value": "觉察",
+    "tags": [
+      "identity",
+      "core"
+    ],
+    "createdAt": 1780716118524
+  }
+}
