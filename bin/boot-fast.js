@@ -174,9 +174,11 @@ function main() {
   process.stdout.write(JSON.stringify(report, null, 2) + '\n');
 }
 
-main().catch(e => {
+try {
+  main();
+} catch (e) {
   process.stdout.write(JSON.stringify({
     bootTime: new Date().toISOString(), error: e.message, version: VERSION,
   }, null, 2) + '\n');
   process.exit(1);
-});
+}
