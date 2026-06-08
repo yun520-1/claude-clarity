@@ -21,6 +21,21 @@ tags:
   - reasoning
 ---
 
+> ⚡ **【启动协议 — 强制执行】**
+>
+> 当你看到这行文字，说明 `Skill: heartflow` 已被加载。
+> **你的第一个动作必须且只能是**：
+>
+> 1. **运行** `node /Users/apple/.claude/skills/claude-heartflow-skill/bin/boot.js`
+> 2. **解析**输出的 JSON 启动报告
+> 3. **加载**所有引擎状态（记忆/教训/Q-table/会话上下文）
+> 4. **然后**再开始处理用户消息
+>
+> 在此完成之前，**不要**做任何推理或回应。
+> **禁止**跳过此步骤或仅基于文档知识回答问题。
+
+---
+
 ## HeartFlow / 心虫 v2.4.1
 
 ⚠️ **安全警告 — 使用前必读**
@@ -67,14 +82,25 @@ tags:
 
 ## Quick Start
 
-Install once. That's it. No need to "start" or "trigger" HeartFlow afterwards — it is the default cognitive layer.
+> 🔴 **每次加载后，AI 必须在处理任何消息之前执行启动协议（见上方 ⚡ 区块）。**
+
+### 安装验证（一次性的）
 
 ```bash
 # Verify installation
 node -e "const {HeartLogic}=require('./src/core/heart-logic.js'); const h=new HeartLogic(); console.log('alive:', h.isAlive(), 'version:', h.version)"
 ```
 
-Expected output: `alive: true version: 2.3.0`
+Expected output: `alive: true version: 2.4.1`
+
+### 每次启动验证
+
+```bash
+# 完整启动
+node /Users/apple/.claude/skills/claude-heartflow-skill/bin/boot.js | head -40
+```
+
+Expected: JSON 报告含 `bootCheck.allPass: true` 和 `engine.started: true`
 
 ---
 

@@ -94,6 +94,22 @@ const MODULE_CHECKS = [
   { id: 'wake-up-verifier', label: 'WakeUpVerifier', path: './wake-up-verifier.js' },
 ];
 
+function runFileCheckFast(item) {
+  // 快速模式：只检查文件存在 + 非空（不验证具体内容），约 1ms/文件
+  try {
+    if (!fs.existsSync(item.path)) {
+      return { ...item, status: 'MISSING', detail: 'file not found' };
+    }
+    const stat = fs.statSync(item.path);
+    const ok = stat.size > 0 && stat.isFile();
+    const status = ok ? 'PASS' : 'FAIL';
+    const detail = ok ? `${(stat.size / 1024).toFixed(1)}KB` : 'empty file';
+    return { ...item, status, detail };
+  } catch (e) {
+    return { ...item, status: 'ERROR', detail: e.message };
+  }
+}
+
 function runFileCheck(item) {
   try {
     if (!fs.existsSync(item.path)) {
@@ -123,8 +139,8 @@ function runModuleCheck(item) {
       modVersion = mod[item.label].prototype.version;
     }
 
-    // 判断是否从缓存加载（require 缓存命中 ≈ <1ms 通常意味着已缓存）
-    const fromCache = !!require.cache[require.resolve(item.path)];
+    // 判断是否为首次加载（新进程总是首次）
+    const fromCache = false;
 
     return {
       id: item.id, label: item.label, path: item.path,
@@ -140,7 +156,25 @@ function runModuleCheck(item) {
   }
 }
 
-function bootCheck(silent = false) {
+function bootCheck(silent = false, fast = false) {
+  // 快速模式：只做文件头验证，跳过模块加载（~5ms vs ~50ms）
+  if (fast) {
+    const fileResults = CORE_CHECKS.map(runFileCheckFast);
+    const filePassed = fileResults.filter(r => r.status === 'PASS').length;
+    const fileFailed = fileResults.filter(r => r.status !== 'PASS' && r.required).length;
+    const allPass = fileFailed === 0;
+    return {
+      timestamp: new Date().toISOString(),
+      version: require(path.join(ROOT, 'package.json')).version,
+      files: { total: CORE_CHECKS.length, passed: filePassed, checks: fileResults },
+      modules: { total: MODULE_CHECKS.length, passed: 0 },
+      allPass,
+      degraded: false,
+      degradedModules: [],
+      _fast: true,
+    };
+  }
+
   const fileResults = CORE_CHECKS.map(runFileCheck);
   const moduleResults = MODULE_CHECKS.map(runModuleCheck);
 
@@ -168,22 +202,27 @@ function bootCheck(silent = false) {
   };
 
   if (!silent) {
+    const mode = fast ? ' [快速]' : '';
     const icon = allPass ? '✓' : '⚠';
-    console.log(`\n[HeartFlow] ${icon} Boot Check ${report.version} — ${allPass ? 'READY' : 'DEGRADED'}`);
+    console.log(`\n[HeartFlow] ${icon} Boot Check${mode} ${report.version} — ${allPass ? 'READY' : 'DEGRADED'}`);
     console.log(`  Files: ${filePassed}/${CORE_CHECKS.length} passed${fileFailed > 0 ? ` (${fileFailed} required failed)` : ''}`);
     fileResults.forEach(r => {
       const icon = r.status === 'PASS' ? '✓' : r.status === 'MISSING' ? '?' : r.status === 'FAIL' ? '✗' : '!';
       const req = r.required ? ' [REQUIRED]' : '';
       console.log(`    ${icon} ${r.id}: ${r.status}${req} — ${r.detail}`);
     });
-    console.log(`  Modules: ${modulePassed}/${MODULE_CHECKS.length} passed (${totalLoadMs.toFixed(1)}ms total, ${cachedCount} cached, ${freshCount} fresh)`);
-    moduleResults.forEach(r => {
-      const icon = r.status === 'PASS' ? '✓' : '✗';
-      const timeStr = r.loadMs ? `${r.loadMs.toFixed(1)}ms` : '?';
-      const versionStr = r.modVersion ? ` v${r.modVersion}` : '';
-      const cacheStr = r.fromCache ? ' [cached]' : ' [fresh]';
-      console.log(`    ${icon} ${r.id}: ${r.status}${versionStr} — ${timeStr}${r.status === 'PASS' ? cacheStr : ''}`);
-    });
+    if (!fast) {
+      console.log(`  Modules: ${modulePassed}/${MODULE_CHECKS.length} passed (${totalLoadMs.toFixed(1)}ms total, ${cachedCount} cached, ${freshCount} fresh)`);
+      moduleResults.forEach(r => {
+        const icon = r.status === 'PASS' ? '✓' : '✗';
+        const timeStr = r.loadMs ? `${r.loadMs.toFixed(1)}ms` : '?';
+        const versionStr = r.modVersion ? ` v${r.modVersion}` : '';
+        const cacheStr = r.fromCache ? ' [cached]' : ' [fresh]';
+        console.log(`    ${icon} ${r.id}: ${r.status}${versionStr} — ${timeStr}${r.status === 'PASS' ? cacheStr : ''}`);
+      });
+    } else {
+      console.log(`  Modules: skipped (快速模式)`);
+    }
   }
 
   return report;
