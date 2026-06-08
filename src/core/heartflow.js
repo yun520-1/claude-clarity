@@ -434,7 +434,7 @@ class HeartFlow {
       desireSystem: { lazy: true, path: '../emotion/desire-system.js', Ctor: 'DesireSystem', args: {} },
       emotionalGrowth: { lazy: true, path: '../emotion/emotional-growth.js', Ctor: 'EmotionalGrowth', args: {} },
       moodEvolution: { lazy: true, path: '../emotion/mood-evolution.js', Ctor: 'MoodEvolution', args: {} },
-      // Code Subsystem — 代码能力（6个 Tier 2 模块）
+      // Code Subsystem — 代码能力（7个 Tier 2 模块）
       code:            { lazy: true, path: './code/code-generator.js',  Ctor: 'CodeGenerator',  args: { hf: null } },
       codeExecutor:    { lazy: true, path: './code/code-executor.js',   Ctor: 'CodeExecutor',   args: { hf: null } },
       codeVerifier:    { lazy: true, path: './code/code-verifier.js',   Ctor: 'CodeVerifier',   args: { hf: null } },
@@ -442,6 +442,8 @@ class HeartFlow {
       codeKnowledge:   { lazy: true, path: './code/code-knowledge.js', Ctor: 'CodeKnowledge',  args: { rootPath: null } },
       // codeEngine — 代码分析审查引擎（新增 v2.1.0）
       codeEngine:      { lazy: true, path: './code/code-engine.js',    Ctor: 'CodeEngine',     args: {} },
+      // codeRefactor — 代码重构引擎（新增 v2.8.0）
+      codeRefactor:    { lazy: true, path: './code/code-refactor.js',  Ctor: 'CodeRefactor',   args: { hf: null } },
     };
 
     // ─── Search modules — BM25Engine/HybridSearchEngine 已禁用（无 BM25Engine/HybridSearchEngine 类）
@@ -808,6 +810,9 @@ class HeartFlow {
     // codeEngine.* — 代码分析审查引擎
     'codeEngine.analyzeCode', 'codeEngine.reviewCode', 'codeEngine.auditCodebase',
     'codeEngine.suggestFix', 'codeEngine.compareVersions',
+    // codeRefactor.* — 代码重构引擎（新增 v2.8.0）
+    'codeRefactor.detect', 'codeRefactor.suggest', 'codeRefactor.transform',
+    'codeRefactor.qualityScore', 'codeRefactor.getHistory', 'codeRefactor.getTransformers', 'codeRefactor.getStats',
   ]);
 
   /**
@@ -874,6 +879,8 @@ class HeartFlow {
           } else if (subsystem === 'codeVerifier') {
             mod = new Ctor({ hf: this });
           } else if (subsystem === 'codePlanner') {
+            mod = new Ctor({ hf: this });
+          } else if (subsystem === 'codeRefactor') {
             mod = new Ctor({ hf: this });
           } else {
             mod = new Ctor(entry.args);

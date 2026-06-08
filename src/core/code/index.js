@@ -1,17 +1,18 @@
 /**
  * HeartFlow Code Subsystem - 统一入口
  *
- * 合并 5 个代码能力模块，统一导出并注册到心虫 dispatch
+ * 合并 6 个代码能力模块，统一导出并注册到心虫 dispatch
  *
  * 模块：
  *   - CodeGenerator  — 代码生成引擎（模板 + LLM）
  *   - CodeExecutor   — 代码执行引擎（沙箱 + 超时）
- * * - CodeVerifier   — 代码验证引擎（语法 + 逻辑 + TDD）
+ *   - CodeVerifier   — 代码验证引擎（语法 + 逻辑 + TDD）
  *   - CodePlanner    — 任务规划引擎（分解 + 路径）
  *   - CodeKnowledge  — 代码知识库（模式库 + 搜索 + 学习）
+ *   - CodeRefactor   — 代码重构引擎（检测 + 变换 + 质量度量）[v2.8.0]
  *
  * @author HeartFlow
- * @version 1.0.0
+ * @version 2.8.0
  */
 
 const path = require('path');
@@ -22,6 +23,7 @@ const { CodeExecutor }    = require('./code-executor.js');
 const { CodeVerifier }     = require('./code-verifier.js');
 const { CodePlanner }      = require('./code-planner.js');
 const { CodeKnowledge }    = require('./code-knowledge.js');
+const { CodeRefactor }     = require('./code-refactor.js');
 
 /**
  * 加载所有 code 子系统模块
@@ -35,6 +37,7 @@ function loadAll({ hf, rootPath }) {
     codeVerifier:   new CodeVerifier({ hf }),
     codePlanner:    new CodePlanner({ hf }),
     codeKnowledge:  new CodeKnowledge({ rootPath: rootPath || (hf?.rootPath) || __dirname }),
+    codeRefactor:   new CodeRefactor({ hf }),
   };
 }
 
@@ -58,11 +61,13 @@ function registerToHeartFlow(hf, modules) {
   hf.codeVerifier  = modules.codeVerifier;
   hf.codePlanner   = modules.codePlanner;
   hf.codeKnowledge = modules.codeKnowledge;
+  hf.codeRefactor  = modules.codeRefactor;
 
   hf._modules['codeExecutor']  = modules.codeExecutor;
   hf._modules['codeVerifier']  = modules.codeVerifier;
   hf._modules['codePlanner']   = modules.codePlanner;
   hf._modules['codeKnowledge'] = modules.codeKnowledge;
+  hf._modules['codeRefactor']  = modules.codeRefactor;
 }
 
 // ─── ALLOWED_ROUTES 路由表 ────────────────────────────────
@@ -83,6 +88,9 @@ const CODE_ROUTES = [
   // ── codeKnowledge ─────────────────────────────────────
   'code.search', 'code.addSnippet', 'code.getPatterns',
   'code.learnFromSuccess', 'code.evolve', 'code.getKnowledgeStats',
+  // ── codeRefactor ──────────────────────────────────────
+  'code.detect', 'code.suggest', 'code.transform',
+  'code.qualityScore', 'code.getRefactorHistory', 'code.getTransformers', 'code.getRefactorStats',
 ];
 
 module.exports = {
@@ -91,6 +99,7 @@ module.exports = {
   CodeVerifier,
   CodePlanner,
   CodeKnowledge,
+  CodeRefactor,
   loadAll,
   registerToHeartFlow,
   CODE_ROUTES,
