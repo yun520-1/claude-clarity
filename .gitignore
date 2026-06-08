@@ -9,3 +9,9 @@ self-verification.json
 .DS_Store
 src/core/.upgrade-manifest.json
 UPGRADE_REPORT.txt
+# 本地开发遗留模块（不进入 clawhub.ai 发布）
+src/legacy/
+
+# 本地历史升级报告（与 clawhub.ai 发布无关）
+upgrades/
+downloads/
