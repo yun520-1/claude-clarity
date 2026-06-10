@@ -1,8 +1,17 @@
 #!/usr/bin/env node
 /**
- * HeartFlow 完整启动脚本 v2.6.1
+ * ⚠️ 此脚本已被 boot-fast.js（纯 JSON 加载模式）取代。
  *
- * 每次 Skill: heartflow 加载后，AI 必须执行此脚本完成完整启动。
+ * 此文件保留仅作参考。AI agent 应使用：
+ *   node bin/boot-fast.js                    # 快速 JSON 启动
+ *   node bin/boot-fast.js --refresh          # 强制刷新缓存
+ *   node bin/boot-fast.js --report-from-json # 纯文件读取（无代码执行）
+ *
+ * 而非直接调用此脚本。
+ *
+ * --- 以下是原完整启动脚本 v2.6.4，保留向下兼容 ---
+ *
+ * HeartFlow 完整启动脚本 v2.6.4
  * 启动链路:
  *   心虫感知: boot-check (文件/模块验证)
  *          ↓
@@ -211,7 +220,7 @@ function getMemoryStats() {
 async function main() {
   const report = {
     bootTime: new Date().toISOString(),
-    version: '2.6.1',
+    version: '2.6.4',
   };
 
   // ─── 第一阶段: Boot Check（快速模式）──────────────────

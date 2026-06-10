@@ -15,6 +15,52 @@ class HeartFlowMCPHandlers {
     this.hf = hf;
   }
 
+  // ─── 工具安全白名单（防御深度）─────────────────────
+  // 与 heartflow.js ALLOWED_ROUTES 同步的子集，
+  // 防止 dispatch 调用绕过引擎层白名单
+  static ALLOWED_ROUTES = new Set([
+    'identityCore.getIdentitySummary', 'identityCore.getMemoryStats', 'identityCore.getFullState',
+    'identityCore.getLastSessionContext', 'identityCore.healthCheck', 'identityCore.stats',
+    'memory.store', 'memory.retrieve', 'memory.search', 'memory.getStats',
+    'memory.semanticSearch', 'memory.searchBySemantic', 'memory.searchByKeywords', 'memory.searchByTimeRange',
+    'memory.addRelationship', 'memory.consolidateMemories', 'memory.applyForgettingCurve',
+    'memory.getMemoryHealth', 'memory.cleanup',
+    'truth.checkStatement', 'truth.checkNumbers', 'truth.checkSources',
+    'lesson.addLesson', 'lesson.getTopLessons', 'lesson.beforeTask', 'lesson.recordFailure', 'lesson.getStats',
+    'dream.dream', 'dream.quickDream', 'dream.getDreamStats',
+    'verify.verify', 'verify.getStats',
+    'emotion.process', 'emotion.getPAD',
+    'decision.decide',
+    'confidence.calibrate',
+    'restraint.shouldIntervene',
+    'psychology.analyzePsychology', 'psychology.classify', 'psychology.checkCrisis',
+    'psychology.getPAD', 'psychology.getNeeds', 'psychology.getDefenses',
+    'heartLogic.shouldBeSilent', 'heartLogic.whatIsThis', 'heartLogic.detectPain', 'heartLogic.willHurt',
+    'heartLogic.acknowledge', 'heartLogic.emergencyBreak',
+    'self.getBeliefs', 'self.updateBelief',
+    'evolution.evolve', 'evolution.recordOutcome', 'evolution.heal', 'evolution.getStats',
+    'thoughtChain.think', 'thoughtChain.thinkFast', 'thoughtChain.thinkDeep',
+    'behavior.createGoal', 'behavior.record', 'behavior.getProgress', 'behavior.getStats',
+    'persistence.append', 'persistence.commit', 'persistence.getStats',
+    'heartflow.recordLesson',
+    'topics.push', 'topics.pop', 'topics.get', 'topics.current', 'topics.getTopics',
+  ]);
+
+  // ─── 参数校验工具 ─────────────────────────────────
+  static validateParam(name, value, opts = {}) {
+    const { type, min, max, maxLength } = opts;
+    if (maxLength !== undefined && typeof value === 'string' && value.length > maxLength) {
+      throw new Error(`${name} 超过最大长度 ${maxLength}（实际 ${value.length}）`);
+    }
+    if (type === 'int' && typeof value === 'number') {
+      const intVal = Math.floor(value);
+      if (value !== intVal) throw new Error(`${name} 必须为整数`);
+      if (min !== undefined && intVal < min) throw new Error(`${name} 不能小于 ${min}`);
+      if (max !== undefined && intVal > max) throw new Error(`${name} 不能大于 ${max}`);
+    }
+    return value;
+  }
+
   // ─── 工具处理函数 ─────────────────────────────────────
 
   /**
@@ -23,7 +69,12 @@ class HeartFlowMCPHandlers {
    */
   async handleThink({ input, depth }) {
     if (!input) return wrapError('缺少 input 参数');
-    const result = await this.hf.think(input, depth || 4);
+    // 参数校验：depth 1-4
+    const d = depth || 4;
+    if (typeof d !== 'number' || d < 1 || d > 4) {
+      return wrapError('depth 必须在 1-4 之间');
+    }
+    const result = await this.hf.think(input, d);
     return wrapOk(result);
   }
 
@@ -33,6 +84,7 @@ class HeartFlowMCPHandlers {
    */
   async handleThinkFast({ input }) {
     if (!input) return wrapError('缺少 input 参数');
+    HeartFlowMCPHandlers.validateParam('input', input, { maxLength: 50000 });
     const result = await this.hf.think(input, 1);
     return wrapOk(result);
   }
@@ -43,6 +95,7 @@ class HeartFlowMCPHandlers {
    */
   async handleThinkDeep({ input }) {
     if (!input) return wrapError('缺少 input 参数');
+    HeartFlowMCPHandlers.validateParam('input', input, { maxLength: 50000 });
     const result = await this.hf.think(input, 4);
     return wrapOk(result);
   }
@@ -52,6 +105,9 @@ class HeartFlowMCPHandlers {
    * 使用方式：{ force: true } — force=true 强制执行（跳过每日检查）
    */
   async handleDream({ force }) {
+    if (force !== undefined) {
+      HeartFlowMCPHandlers.validateParam('force', force, {});
+    }
     const result = await this.hf.dreamNow({ force: !!force });
     return wrapOk(result);
   }
@@ -62,7 +118,10 @@ class HeartFlowMCPHandlers {
    */
   async handleMemorySearch({ query, limit, layers }) {
     if (!query) return wrapError('缺少 query 参数');
+    HeartFlowMCPHandlers.validateParam('query', query, { maxLength: 2000 });
     const l = limit || 10;
+    HeartFlowMCPHandlers.validateParam('limit', l, { type: 'int', min: 1, max: 200 });
+
     const results = {};
 
     // 根据指定层检索，默认检索所有层
@@ -92,6 +151,7 @@ class HeartFlowMCPHandlers {
    */
   async handlePsychologyAnalyze({ input }) {
     if (!input) return wrapError('缺少 input 参数');
+    HeartFlowMCPHandlers.validateParam('input', input, { maxLength: 50000 });
     const result = this.hf.analyzePsychology(input);
     return wrapOk(result);
   }
@@ -102,6 +162,7 @@ class HeartFlowMCPHandlers {
    */
   async handleEmotionAnalyze({ input }) {
     if (!input) return wrapError('缺少 input 参数');
+    HeartFlowMCPHandlers.validateParam('input', input, { maxLength: 50000 });
     const result = this.hf.analyzePsychology(input);
     return wrapOk({
       pad: result.emotion?.pad || { pleasure: 0, arousal: 0, dominance: 0 },
@@ -117,6 +178,8 @@ class HeartFlowMCPHandlers {
    */
   async handleSelfHeal({ errorCode, context }) {
     if (!errorCode) return wrapError('缺少 errorCode 参数');
+    HeartFlowMCPHandlers.validateParam('errorCode', errorCode, { maxLength: 50 });
+    HeartFlowMCPHandlers.validateParam('context', context || '', { maxLength: 10000 });
     try {
       const evolution = this.hf.evolution;
       if (!evolution || !evolution.core || !evolution.core.rl) {
@@ -136,6 +199,8 @@ class HeartFlowMCPHandlers {
    */
   async handleVerifyReasoning({ reasoning, conclusion }) {
     if (!reasoning || !conclusion) return wrapError('需要 reasoning 和 conclusion 参数');
+    HeartFlowMCPHandlers.validateParam('reasoning', reasoning, { maxLength: 50000 });
+    HeartFlowMCPHandlers.validateParam('conclusion', conclusion, { maxLength: 10000 });
     const result = this.hf.verifyReasoning(reasoning, conclusion);
     return wrapOk(result);
   }
@@ -167,6 +232,13 @@ class HeartFlowMCPHandlers {
    */
   async handleDispatch({ route, args }) {
     if (!route) return wrapError('缺少 route 参数');
+    HeartFlowMCPHandlers.validateParam('route', route, { maxLength: 200 });
+
+    // 防御性白名单检查（与引擎层 ALLOWED_ROUTES 同步的子集）
+    if (!HeartFlowMCPHandlers.ALLOWED_ROUTES.has(route)) {
+      return wrapError(`路由 '${route}' 不在 MCP 白名单中`);
+    }
+
     try {
       const result = this.hf.dispatch(route, ...(args || []));
       // 如果是 Promise，await 它
@@ -183,6 +255,10 @@ class HeartFlowMCPHandlers {
    */
   async handleRecordLesson({ content, context, trigger, importance, type }) {
     if (!content) return wrapError('缺少 content 参数');
+    HeartFlowMCPHandlers.validateParam('content', content, { maxLength: 50000 });
+    HeartFlowMCPHandlers.validateParam('context', context || '', { maxLength: 10000 });
+    HeartFlowMCPHandlers.validateParam('trigger', trigger || '', { maxLength: 200 });
+    HeartFlowMCPHandlers.validateParam('importance', importance || 3, { type: 'int', min: 1, max: 10 });
     const result = this.hf.recordLesson({
       content,
       context: context || '',

@@ -102,6 +102,7 @@ const externalVerifier = {
   // 保存缓存（异步原子写入）
   async saveCacheAsync() {
     fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
+    try { fs.chmodSync(path.dirname(CACHE_FILE), 0o700); } catch (e) { /* best effort */ }
     await atomicWrite(CACHE_FILE, JSON.stringify(this.cache, null, 2));
   },
 

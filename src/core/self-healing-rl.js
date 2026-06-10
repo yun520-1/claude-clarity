@@ -119,6 +119,7 @@ class HealingMemoryRL {
   _ensureMemoryDir() {
     if (!fs.existsSync(MEMORY_DIR)) {
       fs.mkdirSync(MEMORY_DIR, { recursive: true });
+      try { fs.chmodSync(MEMORY_DIR, 0o700); } catch (e) { /* best effort */ }
     }
   }
 

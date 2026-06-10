@@ -1,9 +1,17 @@
 # HeartFlow / 心虫 版本历史
 
 > 本文件记录 HeartFlow 心虫引擎的所有版本变更。
-> 当前版本：**v2.6.1**（从 `VERSION` 文件读取）
+> 当前版本：**v2.6.4**（从 `VERSION` 文件读取）
 
 ---
+
+## v2.6.4 (2026-06-10)
+
+- **SkillSpector 安全审计修复**：4 类安全发现并发修复
+- **启动协议安全**：`boot-fast.js --report-from-json` 纯 JSON 文件读取模式，不执行任何代码
+- **缓存声明透明**：boot-cache 输出 `_note`/`_fromCache` 字段声明来源；`HEARTFLOW_CACHE_DISABLED` 环境变量守卫写入
+- **心理健康免责声明**：`psychology.js`、`sage-guardian.js`、`engine.js` 统一增加临床免责声明
+- **历史文档归档**：`upgrades/` → `archive/`，附带 README 声明为历史构想记录
 
 ## v2.6.1 (2026-06-10)
 

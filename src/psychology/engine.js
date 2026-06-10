@@ -1,11 +1,16 @@
 /**
  * PsychologyEngine - 心理分析引擎入口
- * 
+ *
  * 整合自 mark-StillWater psychology.js:
  * - PAD情绪模型 (Pleasure/Arousal/Dominance三维)
  * - 危机评估系统 (critical/high/medium/low四级)
  * - 防御机制检测 (6种)
  * - Maslow需求检测 (八维)
+ *
+ * ⚠️ 临床免责声明
+ * 心虫是 AI 认知引擎，不提供医疗诊断、治疗或临床心理健康服务。
+ * 任何心理健康相关的分析和建议仅供参考，不能替代专业心理医生
+ * 或精神科医生的诊断和治疗。
  */
 
 const psychology = require('../core/psychology.js');
@@ -34,7 +39,8 @@ class PsychologyEngine {
             summary: result.summary,
             recommendations: result.recommendations,
             primaryNeed: result.primaryNeed,
-            primaryDefense: result.primaryDefense
+            primaryDefense: result.primaryDefense,
+            _clinicalDisclaimer: result._clinicalDisclaimer
         };
     }
     

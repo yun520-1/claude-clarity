@@ -368,6 +368,7 @@ class HeartFlow {
       const fs = require('fs');
       const walDir = require('path').join(this.rootPath, 'memory', 'wal');
       try { fs.mkdirSync(walDir, { recursive: true }); } catch (e) { /* wal dir already exists or fails */ }
+      try { fs.chmodSync(walDir, 0o700); } catch (e) { /* best effort */ }
       const wal = new WriteAheadLog(walDir);
       wal._loadSeq();
       this.persistence = {
@@ -1293,6 +1294,7 @@ class HeartFlow {
       const path = require('path');
       const dir = path.join(this.rootPath, 'memory');
       try { fs.mkdirSync(dir, { recursive: true }); } catch (e) { /* dir exists */ }
+      try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
       const filePath = path.join(dir, 'dialogue-history.jsonl');
       const entry = {
         id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -1307,6 +1309,7 @@ class HeartFlow {
         },
       };
       fs.appendFileSync(filePath, JSON.stringify(entry, null, 0) + '\n', 'utf8');
+      try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }
       return { success: true, id: entry.id, ts: entry.ts };
     } catch (e) {
       return { success: false, error: e.message };
@@ -1443,8 +1446,10 @@ class HeartFlow {
       const fs = require('fs');
       const dir = require('path').join(this.rootPath, 'memory');
       try { fs.mkdirSync(dir, { recursive: true }); } catch (e) { /* dir exists */ }
+      try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
       const path = require('path').join(dir, '.last-dream');
       fs.writeFileSync(path, String(Date.now()), 'utf8');
+      try { fs.chmodSync(path, 0o600); } catch (e) { /* best effort */ }
     } catch (e) { /* ignore */ }
   }
 
@@ -1525,6 +1530,7 @@ class HeartFlow {
       const path = require('path');
       const dir = path.join(this.rootPath, 'memory');
       try { fs.mkdirSync(dir, { recursive: true }); } catch (e) { /* dir exists */ }
+      try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
       const filePath = path.join(dir, 'dream-history.jsonl');
       const entry = {
         id: `dream-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -1537,6 +1543,7 @@ class HeartFlow {
         evolutionApplied: !!data.evolution,
       };
       fs.appendFileSync(filePath, JSON.stringify(entry, null, 0) + '\n', 'utf8');
+      try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }
       return { success: true, id: entry.id };
     } catch (e) {
       return { success: false, error: e.message };

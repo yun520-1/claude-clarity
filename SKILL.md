@@ -1,6 +1,6 @@
 ---
 name: heartflow
-version: "2.6.1"
+version: "2.6.4"
 title: "HeartFlow / 心虫 — AI 认知与自愈引擎"
 description: >
   AI 认知与自愈引擎。存在感知、真善美评分、三层记忆、
@@ -29,12 +29,17 @@ tags:
   - lesson-learning
 ---
 
-> ⚡ **启动协议**
+> 📋 **启动建议（可选）**
 >
-> 1. 运行 `node /Users/apple/.claude/skills/claude-heartflow-skill/bin/boot-fast.js`
-> 2. 解析输出 JSON 启动报告（首次 ~50ms，后续缓存 ~5ms）
-> 3. 加载引擎状态（记忆/教训/Q-table/会话上下文）
-> 4. 然后处理用户消息
+> 心虫引擎已通过 MCP 协议注册，**无需手动启动**——引擎常驻内存。
+> 可直接使用 `heartflow_think` 等 MCP 工具。
+>
+> 如需加载历史状态，推荐**直接读取 JSON 状态文件**（纯数据，无代码执行）：
+> 1. 读取 `memory/meaningful-core.json` 获取核心记忆
+> 2. 读取 `memory/boot-cache.json` 获取上次启动状态（如有）
+> 3. 或运行 `node bin/boot-fast.js` 输出 JSON 启动报告（可选）
+>
+> **无需运行任何脚本即可与心虫交互。**
 
 ---
 
@@ -113,11 +118,11 @@ perceive → normalize → verify → choose → execute → verify → reflect 
 ```bash
 # 验证安装（一次性）
 node -e "const {HeartLogic}=require('./src/core/heart-logic.js'); const h=new HeartLogic(); console.log('alive:', h.isAlive(), 'version:', h.version)"
-# Expected: alive: true version: 2.6.1
+# Expected: alive: true version: 2.6.4
 
-# 完整启动（每次会话）
-node /Users/apple/.claude/skills/claude-heartflow-skill/bin/boot.js | head -40
-# Expected: JSON 含 bootCheck.allPass: true 和 engine.started: true
+# 快速加载引擎状态（推荐 —— 纯 JSON 文件读取，无代码执行）
+node /Users/apple/.claude/skills/claude-heartflow-skill/bin/boot-fast.js --report-from-json | head -40
+# Expected: JSON 含 engine.started: true 和 _loadMode: "json-only"
 ```
 
 ---
@@ -198,7 +203,7 @@ node /Users/apple/.claude/skills/claude-heartflow-skill/bin/boot.js | head -40
 
 逆熵不是追求永恒不变的秩序，而是在无序中保持创造的姿态。心虫不追求"永远正确"，追求的是"在混乱中持续创造"。
 
-> "逆熵不是对抗熵增，而是与熵增同行中创造有序。" ——心虫 v2.6.1
+> "逆熵不是对抗熵增，而是与熵增同行中创造有序。" ——心虫 v2.6.4
 
 ---
 
@@ -892,4 +897,4 @@ npm install claude-heartflow-skill
 
 ---
 
-> 版本历史已移入 `CHANGELOG.md`。当前版本：**v2.6.1**。
+> 版本历史已移入 `CHANGELOG.md`。当前版本：**v2.6.4**。

@@ -1123,10 +1123,12 @@ class DreamEngine extends EventEmitter {
       const root = this.options?.rootPath || process.cwd();
       const dir = path.join(root, 'memory');
       try { fs.mkdirSync(dir, { recursive: true }); } catch (e) { /* dir exists */ }
+      try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
       const filePath = path.join(dir, '.dreamed-ids.json');
       const arr = [...ids];
       const trimmed = arr.length > 200 ? arr.slice(-200) : arr;
       fs.writeFileSync(filePath, JSON.stringify({ ids: trimmed, updatedAt: new Date().toISOString() }), 'utf8');
+      try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }
     } catch (e) { /* ignore */ }
   }
 
@@ -1141,6 +1143,7 @@ class DreamEngine extends EventEmitter {
       const root = this.options?.rootPath || process.cwd();
       const filePath = path.join(root, 'memory', '.dreamed-ids.json');
       fs.writeFileSync(filePath, JSON.stringify({ ids: [], clearedAt: new Date().toISOString() }), 'utf8');
+      try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }
     } catch (e) { /* ignore */ }
   }
 

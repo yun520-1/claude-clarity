@@ -20,6 +20,7 @@ class SelfModifier {
 
   init() {
     fs.mkdirSync(this.patchDir, { recursive: true });
+    try { fs.chmodSync(this.patchDir, 0o700); } catch (e) { /* best effort */ }
   }
 
   isEnabled() {
@@ -235,9 +236,11 @@ class SelfModifier {
   savePatch(diff, targetFile) {
     const patchFile = path.join(this.patchDir, this.getPatchFilename(targetFile));
     fs.writeFileSync(patchFile, diff.unifiedDiff);
-    
+    try { fs.chmodSync(patchFile, 0o600); } catch (e) { /* best effort */ }
+
     const metaFile = patchFile.replace('.diff', '.json');
     fs.writeFileSync(metaFile, JSON.stringify(diff, null, 2));
+    try { fs.chmodSync(metaFile, 0o600); } catch (e) { /* best effort */ }
   }
 
   getPatchFilename(targetFile) {
@@ -314,6 +317,7 @@ class SelfModifier {
     const patchPath = path.join(this.patchDir, patchFileName);
 
     fs.writeFileSync(patchPath, patch);
+    try { fs.chmodSync(patchPath, 0o600); } catch (e) { /* best effort */ }
 
     this.recordChange({
       file: parsed.file,
@@ -434,7 +438,8 @@ ${diff}
       const modifiedContent = this.applyPatchToContent(originalContent, patchContent);
 
       fs.writeFileSync(targetPath, modifiedContent);
-      
+      try { fs.chmodSync(targetPath, 0o600); } catch (e) { /* best effort */ }
+
       this.recordChange({
         file: targetFile,
         action: 'patch_applied',
@@ -524,6 +529,7 @@ ${diff}
       }
       config.selfModificationEnabled = enabled;
       fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));
+      try { fs.chmodSync(this.configFile, 0o600); } catch (e) { /* best effort */ }
     } catch (e) {
       console.error('[SelfModifier] 配置更新失败:', e.message);
     }

@@ -227,6 +227,18 @@
       "failureCount": 0,
       "createdAt": 1780968573620,
       "lastHit": 1780968573620
+    },
+    "lesson_test_lesson": {
+      "id": "lesson_test_lesson",
+      "errorPattern": "test lesson",
+      "correction": "test lesson",
+      "rootCause": "user_recorded",
+      "skill": "heartflow",
+      "confidence": 1,
+      "successCount": 0,
+      "failureCount": 0,
+      "createdAt": 1781095430221,
+      "lastHit": 1781095430221
     }
   },
   "totalHits": 1,

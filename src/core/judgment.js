@@ -453,6 +453,7 @@ class MetaJudgment {
     try {
       if (!fs.existsSync(DATA_DIR)) {
         fs.mkdirSync(DATA_DIR, { recursive: true });
+        try { fs.chmodSync(DATA_DIR, 0o700); } catch (e) { /* best effort */ }
       }
       if (fs.existsSync(JUDGMENT_HISTORY_PATH)) {
         const raw = fs.readFileSync(JUDGMENT_HISTORY_PATH, 'utf-8');

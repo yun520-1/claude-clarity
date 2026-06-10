@@ -377,7 +377,10 @@ class ConfidenceCalibrator {
     if (!this.memoryPath) return;
     try {
       const dir = path.dirname(this.memoryPath);
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+        try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
+      }
       fs.writeFileSync(this.memoryPath, JSON.stringify({
         records: this.records.slice(-50),
         weights: this.weights,

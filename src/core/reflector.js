@@ -64,6 +64,7 @@ class Reflector {
       ...(data ? { data } : {})
     }) + '\n';
     fs.appendFileSync(this.logFile, entry);
+    try { fs.chmodSync(this.logFile, 0o600); } catch (e) { /* best effort */ }
   }
 
   /**
@@ -294,6 +295,7 @@ class Reflector {
     const dir = path.dirname(this.reportFile);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
+      try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
     }
     await atomicWrite(this.reportFile, JSON.stringify(reports, null, 2));
   }

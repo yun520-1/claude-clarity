@@ -457,7 +457,9 @@ const selfCorrectionLoop = {
       const dataDir = path.join(__dirname, '../../data');
       const filePath = path.join(dataDir, 'corrections.json');
       fs.mkdirSync(dataDir, { recursive: true });
+      try { fs.chmodSync(dataDir, 0o700); } catch (e) { /* best effort */ }
       fs.writeFileSync(filePath, JSON.stringify(this.corrections, null, 2));
+      try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }
     } catch (e) {
       // 安全修复：记录错误而非静默失败
       console.error('[SelfCorrection] Persist failed:', e.message);

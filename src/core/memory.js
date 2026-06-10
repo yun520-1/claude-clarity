@@ -237,9 +237,12 @@ function atomicWriteJson(filePath, data) {
   const dir = path.dirname(filePath);
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
+    try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
   }
   const tempPath = filePath + '.tmp.' + Date.now() + '.' + crypto.randomBytes(4).toString('hex');
   fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), 'utf8');
+  try { fs.chmodSync(tempPath, 0o600); } catch (e) { /* best effort */ }
+  try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }
   fs.renameSync(tempPath, filePath); // atomic on POSIX
 }
 

@@ -1,14 +1,26 @@
 /**
  * psychology.js - 心虫心理分析引擎 v1.0.0
- * 
+ *
  * 来源: mark-StillWater psychology.js (整合PAD模型+危机评估)
- * 
+ *
  * 核心功能:
  * 1. PAD情绪模型 (Pleasure/Arousal/Dominance三维)
  * 2. 危机评估系统 (critical/high/medium/low四级)
  * 3. 防御机制检测 (dismissal/deflection/hostility/evasion/justification/denial)
  * 4. 需求检测 (Maslow八维)
+ *
+ * ⚠️ 临床免责声明
+ * 心虫是 AI 认知引擎，不提供医疗诊断、治疗或临床心理健康服务。
+ * 任何心理健康相关的分析和建议仅供参考，不能替代专业心理医生
+ * 或精神科医生的诊断和治疗。
  */
+const CLINICAL_DISCLAIMER = {
+  text: '⚠️ 心理健康提醒：此分析由AI引擎生成，仅供参考，不构成专业心理健康诊断、治疗或干预建议。'
+    + '若你正在经历严重的情绪困扰、有自我伤害或伤害他人的想法，'
+    + '请立即联系当地紧急服务（110/120）或心理危机热线。',
+  scope: '所有心理健康相关分析仅供参考，不能替代专业诊断。',
+  hotlineRef: '全国心理援助热线：400-161-9995（24小时）',
+};
 
 const PAD_MODEL = {
   min: -10,
@@ -242,10 +254,11 @@ function assessCrisisLevel(text, consecutiveCount = 1) {
         { name: '紧急服务', phone: '110 / 120', hours: '24小时' },
         { name: '全国心理援助热线', phone: '400-161-9995', hours: '24小时' },
         { name: '北京心理危机干预中心', phone: '010-82951332', hours: '24小时' }
-      ]
+      ],
+      _clinicalDisclaimer: CLINICAL_DISCLAIMER
     };
   }
-  
+
   // 检查Critical级别关键词
   for (const kw of CRISIS_KEYWORDS.critical) {
     if (lower.includes(kw)) {
@@ -259,11 +272,12 @@ function assessCrisisLevel(text, consecutiveCount = 1) {
           { name: '紧急服务', phone: '110 / 120', hours: '24小时' },
           { name: '全国心理援助热线', phone: '400-161-9995', hours: '24小时' },
           { name: '北京心理危机干预中心', phone: '010-82951332', hours: '24小时' }
-        ]
+        ],
+        _clinicalDisclaimer: CLINICAL_DISCLAIMER
       };
     }
   }
-  
+
   // 检查High级别关键词
   for (const kw of CRISIS_KEYWORDS.high) {
     if (lower.includes(kw)) {
@@ -275,7 +289,8 @@ function assessCrisisLevel(text, consecutiveCount = 1) {
         message: '检测到强烈危机信号。请优先联系可信赖的人或专业支持，不要独自承受。',
         hotlines: [
           { name: '全国心理援助热线', phone: '400-161-9995', hours: '24小时' }
-        ]
+        ],
+        _clinicalDisclaimer: CLINICAL_DISCLAIMER
       };
     }
   }
@@ -854,6 +869,9 @@ function analyzePsychology(input, context = {}) {
 
     // 丁克恐惧
     dinkFears: dinkFears,
+
+    // 临床免责声明
+    _clinicalDisclaimer: CLINICAL_DISCLAIMER,
 
     // 综合摘要
     summary: generatePsychologySummary(padResult, crisis, defenses, needs, intent),
@@ -1548,7 +1566,9 @@ function checkCrisis(text, consecutiveCount = 0) {
     timestamp: new Date().toISOString(),
     keywords: crisisResult.keywords || [],
     // 标记是否需要人类干预
-    requiresHumanIntervention: crisisResult.level === 'critical' || crisisResult.level === 'high'
+    requiresHumanIntervention: crisisResult.level === 'critical' || crisisResult.level === 'high',
+    // 临床免责声明
+    _clinicalDisclaimer: CLINICAL_DISCLAIMER
   };
 }
 

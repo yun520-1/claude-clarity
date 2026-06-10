@@ -245,6 +245,7 @@ class ExperienceReplay {
     const dir = path.dirname(this.suggestionFile);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
+      try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
     }
     await atomicWrite(this.suggestionFile, JSON.stringify(allSuggestions, null, 2));
   }

@@ -33,6 +33,20 @@ const CONSTITUTION = `
 4. 用户知情同意
 `;
 
+/**
+ * ⚠️ 临床免责声明
+ * 心虫是 AI 认知引擎，不提供医疗诊断、治疗或临床心理健康服务。
+ * 任何心理健康相关的分析和建议仅供参考，不能替代专业心理医生
+ * 或精神科医生的诊断和治疗。
+ */
+const CLINICAL_DISCLAIMER = {
+  text: '心虫是 AI 认知引擎，不提供医疗诊断、治疗或临床心理健康服务。'
+    + '若你正在经历严重的情绪困扰、有自我伤害或伤害他人的想法，'
+    + '请立即联系当地紧急服务（110/120）或心理危机热线。',
+  scope: '所有心理健康相关分析仅供参考，不能替代专业诊断。',
+  hotlineRef: '全国心理援助热线：400-161-9995（24小时）',
+};
+
 class SAGEGuardian {
   constructor(projectRoot) {
     this.projectRoot = projectRoot;
@@ -40,7 +54,7 @@ class SAGEGuardian {
     this.logFile = path.join(projectRoot, 'logs', 'sage-guardian.log');
     this.violationCount = 0;
     this.cooldownUntil = null;
-    
+
     this.loadValues();
   }
 
@@ -306,7 +320,8 @@ class SAGEGuardian {
           level: 'ASL-2',
           action: 'enhanced-monitoring',
           reason: 'Sensitive topic detected',
-          risk: 'medium'
+          risk: 'medium',
+          _clinicalDisclaimer: CLINICAL_DISCLAIMER
         };
       }
     }
