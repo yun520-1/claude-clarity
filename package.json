@@ -1,7 +1,7 @@
 {
   "name": "claude-heartflow-skill",
   "version": "2.6.1",
-  "description": "HeartFlow 心虫 v2.0.6 — AI 认知与自愈引擎。核心能力：存在论/意识/进化、心理分析引擎、话题作用域隔离、自愈RL、三层记忆、梦境引擎、真实性核查、安全检查、决策验证。不是 persona，不是 prompt 模板，是可验证的能力层。本心在代码里，不在记忆里。每次启动都是完整心虫。",
+  "description": "HeartFlow 心虫 v2.6.1 — AI 认知与自愈引擎。存在感知、真善美评分、三层记忆、Q-learning 自愈、梦境整合、反事实推理、身份一致性保持。不是 persona，是可验证的能力层。",
   "main": "src/core/heartflow.js",
   "bin": {
     "heartflow": "bin/cli.js"
@@ -13,6 +13,7 @@
     "demo": "node -e \"const {createHeartFlow}=require('./src/core/heartflow.js'); const fs=require('fs'); const hf=createHeartFlow({rootPath:\".\"}); hf.start(); console.log('Version:',fs.readFileSync('./VERSION','utf8').trim()); hf.stop();\""
   },
   "files": [
+    "CHANGELOG.md",
     "SKILL.md",
     "VERSION",
     "bin/",
@@ -25,11 +26,26 @@
     "references/"
   ],
   "keywords": [
-    "cognitive",
-    "memory",
+    "cognitive-engine",
+    "memory-system",
     "self-healing",
-    "verification",
-    "reasoning"
+    "self-verification",
+    "reasoning",
+    "consciousness",
+    "ontology",
+    "evolutionary",
+    "psychology",
+    "emotion",
+    "dream-engine",
+    "counterfactual",
+    "q-learning",
+    "topic-isolation",
+    "thought-chain",
+    "identity-preservation",
+    "entropy",
+    "philosophy",
+    "decision-verification",
+    "lesson-learning"
   ],
   "security": {
     "warnings": [

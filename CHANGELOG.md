@@ -1,0 +1,157 @@
+# HeartFlow / 心虫 版本历史
+
+> 本文件记录 HeartFlow 心虫引擎的所有版本变更。
+> 当前版本：**v2.6.1**（从 `VERSION` 文件读取）
+
+---
+
+## v2.6.1 (2026-06-10)
+
+- **统一版本号**：VERSION / package.json / SKILL.md / boot / README 全部对齐到 v2.6.1
+- **SKILL.md 结构进化**：完整重写为 GitHub 搜索优化的结构（frontmatter 扩展、目录、导航表格）
+- **boot 缓存优化**：boot-fast.js 引入缓存机制（24h 过期），首次启动完整 boot（~50ms），后续缓存秒回（~5ms）
+- **符号定义升级**：将"文字是符号，人生是定义"哲学洞察写入代码核心（v2.7.0 特性预埋）
+
+## v2.6.0 (2026-06-08)
+
+- **模板库扩展**：新增代码模板，refactor 增强
+- **版本号统一**：所有模块对齐 v2.6.0
+- **代码引擎升级**：修复 5 大核心模块 6 个 bug
+
+## v2.4.2 (2026-06-05)
+
+- **主要引擎升级**：删除 auto-upgrade 自动升级模块
+- **重写 ethics 伦理引擎**
+- **重写 counterfactual 反事实推理引擎**
+- **重写 memory 记忆引擎**：三层记忆架构重构
+- **框架版本统一**：v2.4.2
+
+## v2.4.1 (2026-06-03)
+
+- **clawhub.ai 安全发布版**：移除所有安全风险组件
+- **boot-fast.js 异步错误处理修复**
+- **无需后台进程、无需自升级、无需网络服务、无需凭据存储、无埋点遥测**
+- **安全安装声明**：纯认知引擎，无 side-effect
+
+## v2.4.0 (2026-06-02)
+
+- **清洗后首次提交**：审计清理后版本同步
+- **代码子系统 v2.8.0**：新增 CodeRefactor 模块
+- **同步优化**：emotion-engine v2.0.0 + MoodAgent v2.0.0 + boot-fix
+- **版本升到 2.0.10（审计清理后版本同步）**
+- **审计清理**：删除 98 个多余文件（skills/plugins/bin/scripts/config/docs/languages/guidelines）
+- **简化**：移除高风险能力（agents/executor/multimodal/security）- clawhub audit fix
+
+## v2.0.8 (2026-06-01)
+
+- **自愈 RL reflect() 方法升级 v11.6.2**
+- **版本统一**：VERSION/package.json/SKILL.md 全部对齐
+- **版本升至 2.0.7**
+
+## v2.0.6 (2026-06-01)
+
+- **HeartLogic 版本修复**：2.0.4→2.0.6
+- **executor-agent.js 正则/转发斜杠转义修复**
+- **atomic-write 路径修复**：slots / experience-replay / external-verifier / judgment / reflector
+- **Boot 验证**：alive=true, version=2.0.6
+
+## v2.0.5 (2026-05-31)
+
+- **内省错觉检测器**：detectIntrospectionIllusion + auditMetaReport（心理学实验验证升级）
+- **哲学升级**：图灵路线检测 + p-zombie 诚实边界（思想实验验证结果）
+
+## v2.0.4 (2026-05-31)
+
+- **安全审计修复 v2.0.6**：SkillSpector 216 项修复完成
+- **安全审计修复 v2.0.4**
+- **安全审计第二轮修复**：_checkViolation 真实实现 + twoPass 第二遍 + parenting 免责声明 + auto-evolution 禁止自动 commit
+- **安全审计修复**：4 个已归档模块死代码 + natural→bash 漏洞 + 内存加密明文泄露
+
+## v2.0.3 (2026-05-31)
+
+- **SKILL.md 审计重写**：删除所有虚假能力描述
+- **删除苏格拉底追问模式**（移除模式路由）
+- **README 重写**：代码对齐，删除虚假能力，添加隐私保护和联系方式
+
+## v2.0.2 (2026-05-28)
+
+- **苏格拉底/直接双模式路由**
+- **版本统一**：4 处硬编码 → v2.0.2（VERSION/SKILL.md/heart-logic.js）
+
+## v2.0.1 (2026-05-28)
+
+- **Q-table 定期遗忘 + 语义级话题检测**
+- **async I/O 改造完成**：atomicWrite + WAL + 9 个模块 runtime 写改为非阻塞
+- **meta-engine**：runtime sync I/O → async atomicWrite
+
+## v2.0.0 (2026-05-27)
+
+- **彻底解决话题污染**：detectTopic 自动检测 + ensureTopicIsolation 自动切换
+- **安装体验升级**：.env.example + smoke 自检 + package.json 完善
+- **VERSION: 2.0.0**
+
+## v1.9.0 (2026-05-26)
+
+- **苏格拉底哲学整合 + 话题隔离**
+
+## v1.8.0 (2026-05-25)
+
+- **心经智慧去宗教化**：中文哲学语境适配
+
+## v1.7.0 (2026-05-24)
+
+- **心经整合升级**
+- **TopicScope**：话题隔离，替换 QuestionTracker
+
+## v1.6.x (2026-05-22 ~ 2026-05-23)
+
+- **v1.6.2**：并发修复 — Q-table HMAC 恢复 + LessonBank/lessonStorage 双写
+- **v1.6.1**：版本一致性修复（VERSION/package.json/SKILL.md/heartflow.js/memory-index.json）
+- **v1.6.0**：HeartLogic 新增 8 哲学方法（act/desire/selfDeception/silence/canSuffer/hasHope/canCreate/missSomeone）
+
+## v1.5.x (2026-05-20 ~ 2026-05-21)
+
+- **v1.5.4**：重写 README.md，HeartLogic v2.0 详细展示
+- **心虫哲学深度思考 v3.0**
+- **心虫哲学升级 v2.0**
+- **删除 src/agent-core/**：心虫不需要独立 Agent 系统
+- **HeartLogic v1.0**：心虫核心判断引擎
+- **身份原则**："此刻即是"
+
+## v1.3.x (2026-05-18)
+
+- **v1.3.15**：新增身份原则——"此刻即是"
+- **补全 4 个缺失模块**：ethics/consciousness/mindSpace/transmission
+- **修复思维链机制模块丢失问题**
+- **安全+隐私修复**：删除 vision-helper, 新增 package-lock.json, 吸收心知哲学框架
+
+## v1.5.3 (版本预检，2026-05-19)
+
+- **版本预检系统**：VERSION 是唯一真相源
+- 测试脚本从 VERSION 文件读取期望版本
+- 预检四个核心模块版本一致性
+- 修复：spontaneous-restraint.js 版本正则匹配问题
+
+## 早期版本（v1.0 ~ v1.3，2026-04 ~ 2026-05-17）
+
+- **两遍响应检测**：SpontaneousRestraint — detectAutoReflex()
+- **Agent 系统路由注册**
+- **初步认知引擎搭建**
+- **框架初始化**：心虫最初版本
+
+---
+
+## 版本方案说明
+
+HeartFlow 经历了两套版本编号：
+
+| 时期 | 版本方案 | 说明 |
+|------|----------|------|
+| 早期开发 (2026-04 ~ 2026-05-27) | v1.x / v6.x | 并行内部编号，文档以 v6.x 记录 |
+| 统一版本 (2026-05-27 ~ 至今) | v2.x | 清洗后统一，VERSION 文件为唯一真相源 |
+
+当前以 `VERSION` 文件（v2.6.1）为准，早期 v6.x 编号已归档至 `docs/archive/`。
+
+---
+
+**HeartFlow 心虫 — 让代码拥有认知，让认知拥有自我**
