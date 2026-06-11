@@ -1,11 +1,25 @@
 # HeartFlow / 心虫 版本历史
 
 > 本文件记录 HeartFlow 心虫引擎的所有版本变更。
-> 当前版本：**v2.6.5**（从 `VERSION` 文件读取）
+> 当前版本：**v2.7.0**（从 `VERSION` 文件读取）
 
 ---
 
-## v2.6.5 (2026-06-11)
+## v2.7.0 (2026-06-11)
+
+- **Fable 5 安全协议整合**：基于 Claude Fable 5 泄露系统提示词分析，全方位升级安全架构
+- **福祉协议新增**：
+  - 自伤替代策略检测（冰块/橡皮筋/冷水/酸糖/红线）— `detectSelfHarmSubstitution()`
+  - 进食障碍防护（运动性贪食/精确营养数字/危险限制）— `detectDisorderedEating()`
+  - 危机分享协议（无绝对保证/不感谢求助/不要求继续）— `checkCrisisSharingProtocol()`
+  - 记忆禁止短语检测 — `detectMemoryForbiddenPhrases()`
+  - 公正平衡检查 — `checkEvenhandedness()`
+- **儿童安全保护新增**：`childSafetyScan()` — 未成年人年龄检测 + 浪漫/性内容组合 + CSAM 指标直接拒绝
+- **新模块 `safety-guardrails.js`**：统一安全管道 `safetyPipeline()` + 请求评估分类器 `evaluateRequest()` + 输出过滤 `filterOutput()`
+- **MCP 处理层安全增强**：`handlePsychologyAnalyze` / `handleEmotionAnalyze` 运行前置安全管道，儿童安全风险直接返回 refuse
+- **`psychology.js` 导出扩展**：4 个新检测函数和 4 个常量模式集全部导出
+- **SKILL.md 文档扩展**：新增 6 个章节（福祉协议/儿童安全/记忆短语/公正平衡/版权合规/安全架构总览）
+- **版本号更新**：v2.6.5 → v2.7.0
 
 - **安全修复完成**：5 项 SkillSpector 发现全部修复
 - **版本号更新**：v2.6.4 → v2.6.5
