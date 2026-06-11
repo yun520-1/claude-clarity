@@ -6,14 +6,14 @@ const { assert } = require('./assertions');
 
 // 已知的 valid skill names (用于交叉引用检查)
 const knownSkills = new Set([
-  'heartflow', 'heartflow-engine', 'verification-engine',
+  'heartflow', 'verification-engine',
   'stability-guard', 'state-snapshot', 'execution-verifier', 'claim-extractor',
   'hypothesis-tester', 'lesson-retrieval', 'skill-verifier', 'lesson-bank',
   'reflector', 'meta-engine', 'being-logic', 'heart-logic', 'memory',
   'meaningful-memory', 'dream', 'boot-check', 'self-healing-rl',
   'self-correction-loop', 'fact-checker', 'decision-verifier',
   'cognitive-appraisal', 'cognitive-protocol', 'narrative-generator',
-  'emotional-memory-bridge', 'embodied-core', 'spontaneous-restraint',
+  'embodied-core', 'spontaneous-restraint',
   'self-diagnostic', 'auto-compaction-engine', 'error-handler',
   'constitutional-ai', 'psychology', 'openalex-client', 'skill-generator',
   'philosophy-engine', 'experience-replay', 'reflection-loop',

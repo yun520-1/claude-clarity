@@ -248,8 +248,13 @@ class DAGNode {
     if (/\b(圣人|慈悲|利益|众生|sage|compassion|all.?beings)\b/i.test(lower)) scores.L6 += 1;
     
     // Normalize with level weights
+    // v2.6.4: 修复 LEVELS 键查找 bug — 之前 lvl 是 'L1'~'L6' 但比较的是 lvl === '1' 永远为 false，
+    // 导致所有 level 都走 SAGE 分支。改用 levelNum（去除 'L' 前缀）比较。
+    const LEVEL_KEY_SUFFIX = { '1': 'AWARENESS', '2': 'REFLECTION', '3': 'NO_SELF', '4': 'OTHER_SHORE', '5': 'PRAJNA', '6': 'SAGE' };
     for (const lvl of Object.keys(scores)) {
-      scores[lvl] *= LEVELS[`L${lvl.replace('L', '')}_${lvl === '1' ? 'AWARENESS' : lvl === '2' ? 'REFLECTION' : lvl === '3' ? 'NO_SELF' : lvl === '4' ? 'OTHER_SHORE' : lvl === '5' ? 'PRAJNA' : 'SAGE'}`]?.weight || 1;
+      const levelNum = lvl.replace('L', '');
+      const suffix = LEVEL_KEY_SUFFIX[levelNum] || 'SAGE';
+      scores[lvl] *= LEVELS[`L${levelNum}_${suffix}`]?.weight || 1;
     }
     
     return scores;

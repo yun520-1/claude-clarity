@@ -51,13 +51,6 @@ const CORE_CHECKS = [
     required: true,
   },
   {
-    id: 'heartflow-engine',
-    label: 'heartflow-engine.js',
-    path: path.join(ROOT, 'src/core/heartflow-engine.js'),
-    verify: (c) => c.length > 1000,
-    required: true,
-  },
-  {
     id: 'meaningful-memory',
     label: 'meaningful-memory.js',
     path: path.join(ROOT, 'src/core/meaningful-memory.js'),

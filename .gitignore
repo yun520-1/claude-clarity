@@ -15,3 +15,6 @@ src/legacy/
 # 本地历史升级报告（与 clawhub.ai 发布无关）
 upgrades/
 downloads/
+
+# 安全：HMAC 密钥 — 不应提交到仓库
+memory/.hmac-key

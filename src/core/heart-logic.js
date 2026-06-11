@@ -65,10 +65,11 @@ class HeartLogic {
   updateLocation(context = {}) {
     const { environment, platform, chatId, sessionId, senderId, botOpenId } = context;
 
+    // v2.6.4: 显式括号避免 && 优先级混淆
     const changed = (
-      environment !== undefined && environment !== this._location.environment ||
-      platform !== undefined && platform !== this._location.platform ||
-      chatId !== undefined && chatId !== this._location.chatId
+      (environment !== undefined && environment !== this._location.environment) ||
+      (platform !== undefined && platform !== this._location.platform) ||
+      (chatId !== undefined && chatId !== this._location.chatId)
     );
 
     if (environment !== undefined) this._location.environment = environment;

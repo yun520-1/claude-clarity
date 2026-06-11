@@ -516,13 +516,13 @@ class CodeVerifier {
 
       // py_compile 成功，尝试获取 AST
       try {
-        const readCmd = `import ast; ast.parse(open('${tempFile}').read())`;
+        const readCmd = `import ast, sys; ast.parse(open(sys.argv[1]).read())`;
         let astResult = await execCommand(
-          'python3', ['-c', readCmd],
+          'python3', ['-c', readCmd, tempFile],
           { timeout: 10000 }
         );
         if (astResult.exitCode !== 0) {
-          astResult = await execCommand('python', ['-c', readCmd], { timeout: 10000 });
+          astResult = await execCommand('python', ['-c', readCmd, tempFile], { timeout: 10000 });
         }
         if (astResult.exitCode === 0) {
           // Python AST 解析成功

@@ -108,8 +108,8 @@ class SelfModifier {
     }
 
     return {
-      targetFile: 'src/core/heartflow-engine.js',
-      functionName: 'calculatePAD',
+      targetFile: 'src/core/heartflow.js',
+      functionName: 'setTuning',
       newBehavior: suggestionStr
     };
   }
@@ -547,9 +547,9 @@ if (require.main === module) {
   
   if (modifier.enabled) {
     const testSuggestion = {
-      targetFile: 'src/core/heartflow-engine.js',
-      functionName: 'calculatePAD',
-      suggestion: '修改 calculatePAD 函数，使其对用户挫败感更敏感'
+      targetFile: 'src/core/heartflow.js',
+      functionName: 'start',
+      suggestion: '修改 start 函数，增强启动可靠性'
     };
     
     const result = modifier.applyModification(testSuggestion);
