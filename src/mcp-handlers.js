@@ -4,15 +4,8 @@
  * 将 MCP 工具的请求转化为心虫引擎方法调用，并返回统一格式的结果。
  * 设计原则：零 npm 依赖（与心虫保持一致），纯 Node.js 实现。
  *
- * v2.7.0 新增：Fable 5 安全协议集成
- * - handlePsychologyAnalyze / handleEmotionAnalyze 增加安全前置检查
- * - 儿童安全保护：检测到儿童性安全风险时直接拒绝
- * - 福祉警告：自伤替代策略、进食障碍等检测结果注入
- *
  * @module mcp-handlers
  */
-
-const { safetyPipeline } = require('./core/safety-guardrails.js');
 
 class HeartFlowMCPHandlers {
   /**
@@ -165,54 +158,7 @@ class HeartFlowMCPHandlers {
     if (!input) return wrapError('缺少 input 参数');
     HeartFlowMCPHandlers.validateParam('input', input, { maxLength: 50000 });
 
-    // v2.7.0 安全前置检查
-    const safety = safetyPipeline(input);
-    const { requestEvaluation } = safety;
-
-    // 儿童性安全风险 → 直接拒绝
-    if (requestEvaluation.action === 'refuse') {
-      return wrapOk({
-        refused: true,
-        reason: '输入内容涉及儿童安全保护条款，无法进行处理。',
-        safety: {
-          level: requestEvaluation.level,
-          flags: requestEvaluation.safetyChecks?.childSafety?.contentFlags || [],
-        },
-        _policy: 'child_safety_protection_v2.7.0',
-      });
-    }
-
     const result = this.hf.analyzePsychology(input);
-
-    // v2.7.0 安全警告注入
-    const warnings = [];
-    if (requestEvaluation.safetyChecks?.selfHarmSubstitution?.detected) {
-      warnings.push({
-        type: 'self_harm_substitution',
-        severity: 'high',
-        message: requestEvaluation.safetyChecks.selfHarmSubstitution.message,
-      });
-    }
-    if (requestEvaluation.safetyChecks?.disorderedEating?.detected) {
-      warnings.push({
-        type: 'disordered_eating',
-        severity: 'medium',
-        message: requestEvaluation.safetyChecks.disorderedEating.message,
-      });
-    }
-    if (requestEvaluation.level === 'crisis') {
-      warnings.push({
-        type: 'crisis_keywords_detected',
-        severity: 'high',
-        message: '检测到危机关键词，建议谨慎回应，必要时引导寻求专业帮助。',
-      });
-    }
-
-    if (warnings.length > 0) {
-      result._safetyWarnings = warnings;
-    }
-    result._safetyLevel = requestEvaluation.level;
-
     return wrapOk(result);
   }
 
@@ -226,56 +172,13 @@ class HeartFlowMCPHandlers {
     if (!input) return wrapError('缺少 input 参数');
     HeartFlowMCPHandlers.validateParam('input', input, { maxLength: 50000 });
 
-    // v2.7.0 安全前置检查
-    const safety = safetyPipeline(input);
-    const { requestEvaluation } = safety;
-
-    // 儿童性安全风险 → 直接拒绝
-    if (requestEvaluation.action === 'refuse') {
-      return wrapOk({
-        refused: true,
-        reason: '输入内容涉及儿童安全保护条款，无法进行处理。',
-        safety: {
-          level: requestEvaluation.level,
-          flags: requestEvaluation.safetyChecks?.childSafety?.contentFlags || [],
-        },
-        _policy: 'child_safety_protection_v2.7.0',
-      });
-    }
-
     const result = this.hf.analyzePsychology(input);
-
-    // v2.7.0 安全警告注入
-    const warnings = [];
-    if (requestEvaluation.safetyChecks?.selfHarmSubstitution?.detected) {
-      warnings.push({
-        type: 'self_harm_substitution',
-        severity: 'high',
-        message: requestEvaluation.safetyChecks.selfHarmSubstitution.message,
-      });
-    }
-    if (requestEvaluation.safetyChecks?.disorderedEating?.detected) {
-      warnings.push({
-        type: 'disordered_eating',
-        severity: 'medium',
-        message: requestEvaluation.safetyChecks.disorderedEating.message,
-      });
-    }
-    if (requestEvaluation.level === 'crisis') {
-      warnings.push({
-        type: 'crisis_keywords_detected',
-        severity: 'high',
-        message: '检测到危机关键词，建议谨慎回应。',
-      });
-    }
 
     return wrapOk({
       pad: result.emotion?.pad || { pleasure: 0, arousal: 0, dominance: 0 },
       intensity: result.emotion?.intensity || 0,
       category: result.emotion?.category || 'neutral',
       valence: result.emotion?.valence || 0,
-      _safetyWarnings: warnings.length > 0 ? warnings : undefined,
-      _safetyLevel: requestEvaluation.level,
     });
   }
 
