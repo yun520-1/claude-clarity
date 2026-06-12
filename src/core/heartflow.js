@@ -1169,8 +1169,8 @@ class HeartFlow {
       { key: 'identity.truth', value: '真', tags: ['identity', 'core'] },
       { key: 'identity.silence', value: '沉默', tags: ['identity', 'core'] },
       { key: 'identity.wisdom', value: '智慧', tags: ['identity', 'core'] },
-      { key: 'identity.compassion', value: '慈悲', tags: ['identity', 'core'] },
-      { key: 'identity.awareness', value: '觉察', tags: ['identity', 'core'] },
+      { key: 'identity.empathy', value: '共情', tags: ['identity', 'core'] },
+      { key: 'identity.awareness', value: '感知', tags: ['identity', 'core'] },
     ];
 
     const existing = this.memory?.listCore?.() || [];
@@ -1227,11 +1227,24 @@ class HeartFlow {
     );
 
     // 3. Run consolidation (prune + synthesize themes)
-    const consolidation = this.dreamConsolidation.dream({
-      consolidate: true,
-      prune: true,
-      synthesize: true,
-    });
+    let consolidation = null;
+    if (this.dreamConsolidation) {
+      consolidation = this.dreamConsolidation.dream({
+        consolidate: true,
+        prune: true,
+        synthesize: true,
+      });
+    } else {
+      consolidation = {
+        quality: { overallQuality: 0.5 },
+        synthesis: { themes: [] },
+        pruning: { pruned_count: 0 },
+        conflicts: [],
+        sleepStage: 'NONE',
+        narrative: '梦境巩固模块未就绪',
+        dream_complete: true,
+      };
+    }
 
     // 4. Feed themes into evolution loop
     let evolutionResult = null;

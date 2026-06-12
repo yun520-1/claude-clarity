@@ -226,7 +226,7 @@ const LAZY_NAMES = [
   'ethics', 'transmission', 'philosophy',
   'aiPsychology', 'aiPhilosophy',
   // 以下从旧 EAGER_NAMES 移入（按需加载，非 think() 必需）
-  'evolution', 'dream',
+  'evolution', 'dreamConsolidation',
   'lesson', 'meta',
   'self', 'psychology', 'emotion',
   'stability', 'confidence', 'restraint',

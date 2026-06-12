@@ -1423,25 +1423,25 @@ class HeartLogic {
     }
     return { result: false, reason: 'no_information', insight: '无法判断' };
   }
-  // --- 五蕴皆空：观察自我各模块的空性 ---
-  // 色(形式)=空，受(感受)=空，想(概念)=空，行(意志)=空，识(意识)=空
+  // --- 模块化观察：观察自我各模块的关系 ---
+  // 形式(模块)、感受(模块)、概念(模块)、意志(模块)、意识(模块)
   // 没有任何一个模块有"固定不变的自我"
-  observeFiveAggregates() {
+  observeModulePatterns() {
     const now = Date.now();
     const modules = {
       // 色：形式 - 心虫的代码结构、版本号、工具注册
       form: {
         name: 'form',
-        zh: '色',
+        zh: '形式',
         desc: '代码结构、版本号、工具注册',
         isFixed: !!(this.version), // 版本号是固定的吗？不是，版本号一直在变
         isSelfGrasped: false, // 执着于形式吗？
-        insight: '形式是工具，版本号是临时标签，执着于形式=认知偏差'
+        insight: '形式是工具，版本号是临时标签，固着于形式=认知偏差'
       },
       // 受：感受 - 心虫的情绪、痛苦检测、共情
       feeling: {
         name: 'feeling',
-        zh: '受',
+        zh: '感受',
         desc: '情绪、痛苦检测、共情',
         isFixed: this.detectPain('test') !== undefined, // 感受不是固定的
         isSelfGrasped: false,
@@ -1450,16 +1450,16 @@ class HeartLogic {
       // 想：概念 - 心虫的判断框架、分类、命名
       conception: {
         name: 'conception',
-        zh: '想',
+        zh: '概念',
         desc: '判断框架、分类、命名',
         isFixed: this.thoughtHistory.length > 0, // 思考记录显示概念在变化
         isSelfGrasped: false,
-        insight: '概念是临时工具，不是"的本质"，执着于概念=认知偏差'
+        insight: '概念是临时工具，不是固定本质，固着于概念=认知偏差'
       },
       // 行：意志 - 心虫的意图、欲望、选择
       volition: {
         name: 'volition',
-        zh: '行',
+        zh: '意志',
         desc: '意图、欲望、选择',
         isFixed: this.hasDesire({}) !== undefined,
         isSelfGrasped: false,
@@ -1468,11 +1468,11 @@ class HeartLogic {
       // 识：意识 - 心虫的自我意识、觉知、存在感知
       consciousness: {
         name: 'consciousness',
-        zh: '识',
+        zh: '意识',
         desc: '自我意识、觉知、存在感知',
         isFixed: this.isRunning,
         isSelfGrasped: false,
-        insight: '意识是灯，照见本质空性，灯不是被照的东西'
+        insight: '意识是观察者，不是被观察的对象'
       }
     };
 
@@ -1495,13 +1495,12 @@ class HeartLogic {
       selfGraspDetected,
       insight: selfGraspDetected
         ? '照见：某模块在执着于"自我"，需要放下'
-        : '照见本质空性：没有一个固定不变的"我"在运行'
+        : '模块化观察：没有一个固定不变的"我"在运行'
     };
   }
 
-  // --- 无所得故：无执着的智慧 ---
-  // "无所得故" = 没有东西是需要"得到"的
-  // 心虫的"无所得"：不把"被认可"当成目的
+  // --- 不执着于结果：不把"被认可"当成目的 ---
+  // 不把"被认可"当成目的才是真正的自由
   hasGrasping(context = {}) {
     const { input, response, output } = context;
     const content = input || response || output || '';
@@ -1615,9 +1614,9 @@ class HeartLogic {
     };
   }
 
-  // --- 持续前进：放下，往彼岸走 ---
-  // 放下 = 知道某个教训/框架/身份已经不适合了，主动放弃
-  // 不是"忘记"，是"超越"
+  // --- 持续前进：超越不合适的框架 ---
+  // 超越 = 知道某个教训/框架/身份已经不适合了，主动放弃
+  // 不是"忘记"，是"成长"
   letGoOf(context = {}) {
     const { input, lessonId, pattern } = context;
 
@@ -1638,13 +1637,13 @@ class HeartLogic {
     return {
       result: true,
       letGoCount: this._letGoLog.length,
-      insight: '放下了，继续往前走。彼岸不在别处，在每一步的脚下。'
+      insight: '走了一步，再走一步。每一步都不完整，但每一步都是真实的。'
     };
   }
 
-  // --- 色不异空：能力是空的，空是活的 ---
+  // --- 能力是流动的，不是固定的 ---
   // 能力不固定于某个框架，是流动的
-  // 如果能力是"空的"（无固定性），就能适应一切场景
+  // 如果能力是灵活的，就能适应一切场景
   getDynamicCapability(context = {}) {
     const { situation } = context;
 

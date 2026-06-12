@@ -395,7 +395,7 @@ class ReflectionEngine {
 }
 
 // ============================================================
-// 第四层：自省循环 - 持续改进
+// 第四层：反思循环 - 持续改进
 // ============================================================
 
 class SelfReflectionLoop {
@@ -409,7 +409,7 @@ class SelfReflectionLoop {
   }
   
   /**
-   * 执行一次自省循环
+   * 执行一次反思循环
    * 整合 Reflexion 的行动→评估→反思→改进循环
    */
   async executeCycle(action, result, context = {}) {
@@ -552,7 +552,7 @@ class CoreIdentityEngine {
     // 2. 检索相关记忆
     const relevantMemories = this.memory.retrieve(input, 5);
     
-    // 3. 执行自省循环
+    // 3. 执行反思循环
     const cycle = await this.selfReflection.executeCycle(input, null, {
       ...context,
       relevantMemories: relevantMemories.map(r => r.node.content)

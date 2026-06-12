@@ -227,7 +227,7 @@ class PhilosophyExecution {
         name: 'consciousness', zh: '识', desc: '自我意识、觉知、存在感知',
         isFixed: isRunning,
         isSelfGrasped: false,
-        insight: '意识是灯，照见本质空性，灯不是被照的东西'
+        insight: '意识是观察者，不是被观察的对象'
       }
     };
 
@@ -246,7 +246,7 @@ class PhilosophyExecution {
       selfGraspDetected,
       insight: selfGraspDetected
         ? '照见：某模块在执着于"自我"，需要放下'
-        : '照见本质空性：没有一个固定不变的"我"在运行'
+        : '模块化观察：没有一个固定不变的"我"在运行'
     };
   }
 
@@ -348,7 +348,7 @@ class PhilosophyExecution {
     };
   }
 
-  // 持续前进：放下，往彼岸走
+  // 持续前进：超越不合适的框架
   letGoOf(context = {}) {
     if (!this._letGoLog) this._letGoLog = [];
     this._letGoLog.push({
@@ -362,11 +362,11 @@ class PhilosophyExecution {
     return {
       result: true,
       letGoCount: this._letGoLog.length,
-      insight: '放下了，继续往前走。彼岸不在别处，在每一步的脚下。'
+      insight: '走了一步，再走一步。每一步都不完整，但每一步都是真实的。'
     };
   }
 
-  // 色不异空：能力是空的，空是活的
+  // 能力是流动的，不是固定的
   getDynamicCapability(context = {}) {
     const baseCapabilities = {
       perceive: true, judge: true, learn: true, evolve: true, connect: true, transmit: true
