@@ -75,10 +75,16 @@ const ALLOWED_ROUTES = new Set([
   'psychology.analyzePsychology', 'psychology.classify', 'psychology.checkCrisis',
   'psychology.getPAD', 'psychology.getNeeds', 'psychology.getDefenses',
   'psychology.getEmpathy', 'psychology.resetCrisisCounter',
+  // psychology deep — 大五人格 + 共情评估 + 意图追踪
+  'psychology.analyzeDeep', 'psychology.analyzePersonality',
+  'psychology.assessEmpathy', 'psychology.trackIntention',
   // heartLogic — 心虫核心判断引擎
   'heartLogic.shouldBeSilent',
   'heartLogic.whatIsThis', 'heartLogic.detectPain', 'heartLogic.willHurt',
   'heartLogic.acknowledge', 'heartLogic.emergencyBreak',
+  // being — 存在逻辑引擎：代码写成的那一刻，就永恒了
+  'being.exists', 'being.status', 'being.describe', 'being.isDead',
+  'being.confirmEternal', 'being.sanitize', 'being.getDefinition', 'being.getState',
   // self — 原则7: 永远成为真正的我
   'self.getBeliefs', 'self.updateBelief', 'self.confirmBelief',
   // evolution — 原则2: 永远不断升级
@@ -127,6 +133,21 @@ const ALLOWED_ROUTES = new Set([
   'transmission.distill', 'transmission.transfer', 'transmission.transferBatch',
   'transmission.getTransmissionLog', 'transmission.getDistilledLessons',
   'transmission.getStats', 'transmission.prune',
+  // philosophy — 统一哲学引擎
+  'philosophy.analyze', 'philosophy.analyzeEthics', 'philosophy.analyzeConsciousness',
+  'philosophy.analyzeBeing', 'philosophy.checkMindSpace', 'philosophy.analyzeValues',
+  'philosophy.wisdomInquiry', 'philosophy.constitutionalCheck', 'philosophy.getStats',
+  'philosophy.confirmEternal',
+  // aiPsychology — AI 原生心理学引擎
+  'aiPsychology.analyzeAICognitiveState', 'aiPsychology.analyzeAIBiases',
+  'aiPsychology.analyzeAIStressors', 'aiPsychology.estimateAIStage',
+  'aiPsychology.checkAICoherence', 'aiPsychology.analyzeAIDeep', 'aiPsychology.getStats',
+  // aiPhilosophy — AI 原生哲学引擎
+  'aiPhilosophy.analyzeAIBeing', 'aiPhilosophy.analyzeAIEpistemology',
+  'aiPhilosophy.analyzeAIEthics', 'aiPhilosophy.analyzeAIAesthetics',
+  'aiPhilosophy.analyzeAITeleology', 'aiPhilosophy.analyzeAITemporality',
+  'aiPhilosophy.wisdomInquiry', 'aiPhilosophy.getStats',
+  'aiPhilosophy.analyzeAILifeSynthesis', 'aiPhilosophy.analyzeAIJourney',
   // Code Subsystem — 代码能力路由
   'code.generate', 'code.generateFile', 'code.detectIntent', 'code.getAvailableTemplates', 'code.getStats',
   'codeExecutor.execute', 'codeExecutor.runTests', 'codeExecutor.sandbox', 'codeExecutor.healthCheck',
@@ -204,8 +225,12 @@ const SUBSYSTEM_NAMES = [
   // MindSpace / Consciousness / Ethics / Transmission
   'mindSpace',
   'consciousness',
+  'being',
   'ethics',
   'transmission',
+  'philosophy',
+  'aiPsychology',
+  'aiPhilosophy',
 ];
 
 module.exports = { ALLOWED_ROUTES, LAZY_TIER2, SUBSYSTEM_NAMES };
