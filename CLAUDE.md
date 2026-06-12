@@ -14,9 +14,10 @@ AI 认知与自愈引擎。一个会思考自己怎么活的 AI。
 
 **直接使用即可**，无需执行任何启动脚本：
 - `clarity_status` — 健康检查
-- `clarity_think` / `clarity_think_fast` / `clarity_think_deep` — 推理
-- `clarity_dream` — 梦境生成
-- 等等（共 18 个工具）
+- `clarity_think`（depth 1-4）— 统一推理
+- `clarity_psychology`（mode: basic|deep|ai|emotion）— 统一心理学分析
+- `clarity_philosophy`（mode: general|ai）— 统一哲学分析
+- 等等（共 13 个工具）
 
 ### 优先级 2：hf CLI（直接 Socket 通信，备选）
 
@@ -48,13 +49,13 @@ node <技能目录>/bin/ensure-mcp.js            # 自动启动
 
 当前状态：
 - 守护进程：运行中
-- MCP 工具：18 个原生可用
+- MCP 工具：13 个原生可用（合并后）
 - 记忆层：CORE + LEARNED + Q-Table
 
 直接使用以下工具：
 • 推理：clarity_think
 • 梦境：clarity_dream  
-• 分析：clarity_psychology_analyze
+• 分析：clarity_psychology（mode: basic|deep|ai|emotion）
 • 更多：hf --list
 ```
 
@@ -99,7 +100,7 @@ Claude Code
     ↓ MCP stdio
 mcp-wrapper.js (stdio ↔ Unix socket 双向代理，带自动重连)
     ↓ Unix socket (/tmp/claude-clarity-mcp.sock)
-mcp-daemon.js (JSON-RPC 2.0 服务器，18 个工具)
+mcp-daemon.js (JSON-RPC 2.0 服务器，13 个合并工具)
     ↓ 进程内调用
 Clarity 引擎 (记忆/推理/情感/梦境)
 ```

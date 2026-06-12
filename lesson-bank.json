@@ -239,6 +239,18 @@
       "failureCount": 0,
       "createdAt": 1781095430221,
       "lastHit": 1781095430221
+    },
+    "lesson_test_error": {
+      "id": "lesson_test_error",
+      "errorPattern": "test_error",
+      "correction": "这是一个测试教训的修正方案",
+      "rootCause": "测试场景",
+      "skill": "clarity",
+      "confidence": 0.8,
+      "successCount": 0,
+      "failureCount": 0,
+      "createdAt": 1781278529479,
+      "lastHit": 1781278529479
     }
   },
   "totalHits": 1,

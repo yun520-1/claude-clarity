@@ -23,6 +23,7 @@ const { spawn } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
 const SOCKET_PATH = '/tmp/claude-clarity.sock';
 const DAEMON_JS = path.join(ROOT, 'daemon', 'mcp-daemon.js');
+const WRAPPER_JS = path.join(ROOT, 'daemon', 'mcp-wrapper.js');
 const PID_FILE = '/tmp/claude-clarity.pid';
 
 const args = process.argv.slice(2);
@@ -77,6 +78,17 @@ function printStatus(report) {
   console.log(lines.join('\n'));
 }
 
+// 启动 MCP 包装器
+function startWrapper() {
+  console.error('[ensure-mcp] MCP 包装器未运行，正在启动...');
+  const wrapper = spawn(process.execPath, [WRAPPER_JS], {
+    detached: true,
+    stdio: 'ignore',
+  });
+  wrapper.unref();
+  console.error(`[ensure-mcp] MCP 包装器已启动 (PID ${wrapper.pid})`);
+}
+
 // ─── 主逻辑 ───────────────────────────────────────────
 function main() {
   const daemonOk = daemonExists();
@@ -87,9 +99,9 @@ function main() {
   let wrapperOk = false;
   if (needWrapper) {
     try {
-      const { execSync } = require('child_process');
-      const result = execSync('ps aux | grep "mcp-wrapper" | grep -v grep', { encoding: 'utf8', timeout: 2000 });
-      wrapperOk = result.includes('mcp-wrapper.js');
+      const { spawnSync } = require('child_process');
+      const result = spawnSync('ps', ['aux'], { encoding: 'utf8', timeout: 2000 });
+      wrapperOk = result.stdout.includes('mcp-wrapper.js');
     } catch { wrapperOk = false; }
   }
 
@@ -118,9 +130,16 @@ function main() {
       if (daemonExists()) {
         clearInterval(interval);
         const newPid = readPid();
-        const report = statusReport(true, false);
-        printStatus(report);
         console.error(`[ensure-mcp] 守护进程已启动 (PID ${newPid})`);
+
+        // 启动包装器（如需要）
+        if (needWrapper && !wrapperOk) {
+          startWrapper();
+          wrapperOk = true;
+        }
+
+        const report = statusReport(true, wrapperOk);
+        printStatus(report);
         process.exit(0);
       }
       if (waited > 8000) {
@@ -132,9 +151,16 @@ function main() {
       }
     }, 200);
   } else {
+    console.error(`[ensure-mcp] 守护进程已在运行 (PID ${pid})`);
+
+    // 启动包装器（如需要）
+    if (needWrapper && !wrapperOk) {
+      startWrapper();
+      wrapperOk = true;
+    }
+
     const report = statusReport(true, wrapperOk);
     printStatus(report);
-    console.error(`[ensure-mcp] 守护进程已在运行 (PID ${pid})`);
     process.exit(0);
   }
 }

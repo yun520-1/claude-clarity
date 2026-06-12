@@ -1,87 +1,39 @@
 # 贡献指南
 
-感谢你考虑为 Clarity 情感伴侣做出贡献！
+感谢你对 Clarity/心虫 的关注！
 
-## 如何贡献
-
-### 报告问题
-
-发现 Bug？请在 GitHub Issues 中报告：
-- 描述问题现象
-- 提供复现步骤
-- 说明预期行为
-
-### 提出新功能
-
-有新想法？欢迎提出：
-- 描述功能需求
-- 说明使用场景
-- 提供实现思路（可选）
-
-### 提交代码
+## 开发流程
 
 1. Fork 本仓库
-2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
-3. 提交更改 (`git commit -m 'Add amazing feature'`)
-4. 推送到分支 (`git push origin feature/amazing-feature`)
+2. 创建特性分支 (`git checkout -b feat/my-feature`)
+3. 提交更改 (`git commit -m 'feat: 添加某功能'`)
+4. 推送到分支 (`git push origin feat/my-feature`)
 5. 创建 Pull Request
-
-### 开发环境
-
-```bash
-# 克隆仓库
-git clone https://github.com/8xiaochongzi/claude-clarity-skill.git
-cd claude-clarity-skill
-
-# 安装依赖（本项目无外部依赖）
-npm install
-
-# 运行测试
-npm test
-
-# 启动 API 服务器
-npm run api
-
-# 启动 CLI
-npm start
-```
 
 ## 代码规范
 
-- 使用 ES6+ 语法
-- 函数和变量使用有意义的命名
-- 添加必要的注释
-- 保持代码简洁
+- 遵循现有代码风格（不可变模式、小函数、小文件）
+- 所有注释和文档使用中文
+- 提交信息遵循 Conventional Commits 格式：
+  - `feat:` 新功能
+  - `fix:` 修复
+  - `refactor:` 重构
+  - `docs:` 文档
+  - `test:` 测试
+  - `chore:` 杂项
 
-## 情感系统扩展
+## 测试
 
-### 添加新情感
+- 新功能需要包含单元测试
+- 确保所有测试通过：`npm test`
 
-在 `src/emotion/states.js` 中添加：
+## 行为准则
 
-```javascript
-EmotionTypes.NEW_EMOTION = '新情感名称';
+- 友善、尊重、包容
+- 欢迎建设性讨论和代码审查
+- 禁止任何形式的骚扰或歧视
 
-EmotionDefinitions[EmotionTypes.NEW_EMOTION] = {
-  name: '新情感',
-  english: 'NewEmotion',
-  description: '描述...',
-  defaultIntensity: 3,
-  naturalDecayMinutes: 30,
-  color: '#XXXXXX',
-  traits: ['特质 1', '特质 2'],
-  responseStyle: '响应风格'
-};
-```
+## 问题报告
 
-### 添加转换规则
-
-在 `src/emotion/transitions.js` 中添加转换规则。
-
-## 许可证
-
-MIT License - 贡献即表示同意以 MIT 许可证发布
-
----
-
-再次感谢你的贡献！🌊
+- 使用 GitHub Issues 报告 bug 或功能请求
+- 提供清晰的复现步骤和环境信息

@@ -61,13 +61,21 @@ console.error(`[Clarity Daemon] 心虫引擎已就绪 (${engineTime}ms)`);
 
 // ─── 工具路由 ───────────────────────────────────────
 const HANDLERS = {
+  // 核心工具（13个）
   clarity_think:          (a) => handlers.handleThink(a),
-  clarity_think_fast:     (a) => handlers.handleThinkFast(a),
-  clarity_think_deep:     (a) => handlers.handleThinkDeep(a),
   clarity_dream:          (a) => handlers.handleDream(a),
   clarity_memory_search:  (a) => handlers.handleMemorySearch(a),
-  clarity_psychology_analyze: (a) => handlers.handlePsychologyAnalyze(a),
-  clarity_emotion_analyze:    (a) => handlers.handleEmotionAnalyze(a),
+  clarity_psychology:     async (a) => {
+    const mode = a?.mode || 'basic';
+    try {
+      switch (mode) {
+        case 'deep':   return await handlers.handlePsychologyDeep(a);
+        case 'ai':     return await handlers.handleAiPsychology(a);
+        case 'emotion':return await handlers.handleEmotionAnalyze(a);
+        default:       return await handlers.handlePsychologyAnalyze(a);
+      }
+    } catch (e) { throw e; }
+  },
   clarity_self_heal:      (a) => handlers.handleSelfHeal(a),
   clarity_verify_reasoning:   (a) => handlers.handleVerifyReasoning(a),
   clarity_status:         ()  => handlers.handleStatus(),
@@ -75,34 +83,39 @@ const HANDLERS = {
   clarity_record_lesson:  (a) => handlers.handleRecordLesson(a),
   clarity_transmit:       (a) => handlers.handleTransmit(a),
   clarity_being:          (a) => handlers.handleBeing(a),
-  clarity_philosophy:     (a) => handlers.handlePhilosophy(a),
-  clarity_psychology_deep: (a) => handlers.handlePsychologyDeep(a),
-  clarity_ai_psychology:  (a) => handlers.handleAiPsychology(a),
-  clarity_ai_philosophy:  (a) => handlers.handleAiPhilosophy(a),
+  clarity_philosophy:     async (a) => {
+    try {
+      if (a?.mode === 'ai') return await handlers.handleAiPhilosophy(a);
+      return await handlers.handlePhilosophy(a);
+    } catch (e) { throw e; }
+  },
   clarity_debate:         (a) => handlers.handleDebate(a),
+
+  // 向后兼容别名（旧名称仍可路由）
+  clarity_think_fast:        (a) => handlers.handleThink(a),
+  clarity_think_deep:        (a) => handlers.handleThink(a),
+  clarity_psychology_analyze:(a) => handlers.handlePsychologyAnalyze(a),
+  clarity_emotion_analyze:   (a) => handlers.handleEmotionAnalyze(a),
+  clarity_psychology_deep:   (a) => handlers.handlePsychologyDeep(a),
+  clarity_ai_psychology:     (a) => handlers.handleAiPsychology(a),
+  clarity_ai_philosophy:     (a) => handlers.handleAiPhilosophy(a),
 };
 
 // ─── 工具注册表 ─────────────────────────────────────
 const TOOLS = [
-  { name: 'clarity_think',         description: '完整思维链推理（感知→本体→情感→认知），depth 1-4', inputSchema: { type: 'object', properties: { input: { type: 'string' }, depth: { type: 'number' } }, required: ['input'] } },
-  { name: 'clarity_think_fast',    description: '快速推理（depth=1）', inputSchema: { type: 'object', properties: { input: { type: 'string' } }, required: ['input'] } },
-  { name: 'clarity_think_deep',    description: '深度推理（depth=4）', inputSchema: { type: 'object', properties: { input: { type: 'string' } }, required: ['input'] } },
+  { name: 'clarity_think',         description: '完整思维链推理（感知→本体→情感→认知），depth 参数 1-4', inputSchema: { type: 'object', properties: { input: { type: 'string' }, depth: { type: 'integer', description: '推理深度 1-4，默认 2', enum: [1, 2, 3, 4] } }, required: ['input'] } },
   { name: 'clarity_dream',         description: '梦境生成与整合，force=true 强制执行', inputSchema: { type: 'object', properties: { force: { type: 'boolean' } } } },
   { name: 'clarity_memory_search', description: '跨层记忆检索（CORE/LEARNED/EPHEMERAL）', inputSchema: { type: 'object', properties: { query: { type: 'string' }, limit: { type: 'number' }, layers: { type: 'array', items: { type: 'string' } } }, required: ['query'] } },
-  { name: 'clarity_psychology_analyze', description: 'PAD 三维情绪 + 意图 + 防御机制分析', inputSchema: { type: 'object', properties: { input: { type: 'string' } }, required: ['input'] } },
-  { name: 'clarity_emotion_analyze',     description: '简化情绪分析（PAD + 强度 + 类型）', inputSchema: { type: 'object', properties: { input: { type: 'string' } }, required: ['input'] } },
+  { name: 'clarity_psychology',     description: '心理学分析 — mode: basic(PAD+意图+防御) | deep(大五人格+共情+意图) | ai(AI认知分析) | emotion(简化PAD)', inputSchema: { type: 'object', properties: { mode: { type: 'string', enum: ['basic', 'deep', 'ai', 'emotion'], description: '分析模式，默认 basic' }, input: { type: 'string', description: '待分析文本' } }, required: ['input'] } },
   { name: 'clarity_self_heal',     description: 'Q-learning 自愈策略推荐（errorCode HEAL001-007）', inputSchema: { type: 'object', properties: { errorCode: { type: 'string' }, context: { type: 'string' } }, required: ['errorCode'] } },
   { name: 'clarity_verify_reasoning', description: '验证推理结论的自洽性', inputSchema: { type: 'object', properties: { reasoning: { type: 'string' }, conclusion: { type: 'string' } }, required: ['reasoning', 'conclusion'] } },
   { name: 'clarity_status',        description: '引擎健康检查', inputSchema: { type: 'object', properties: {} } },
   { name: 'clarity_dispatch',      description: '通用路由调用（ALLOWED_ROUTES 白名单内）', inputSchema: { type: 'object', properties: { route: { type: 'string' }, args: { type: 'array' } }, required: ['route'] } },
   { name: 'clarity_record_lesson', description: '记录教训到 LessonBank + LEARNED 层', inputSchema: { type: 'object', properties: { content: { type: 'string' }, context: { type: 'string' }, trigger: { type: 'string' }, importance: { type: 'number' }, type: { type: 'string' } }, required: ['content'] } },
-  { name: 'clarity_transmit', description: '知识传递引擎（传承：蒸馏/传递/提取教训）', inputSchema: { type: 'object', properties: { action: { type: 'string', description: 'distill | transfer | transferBatch | getTransmissionLog | getDistilledLessons | getStats | prune' }, input: { type: 'string' } }, required: ['action'] } },
-  { name: 'clarity_being',    description: '存在逻辑引擎（存在判定/永恒确认/语言净化）', inputSchema: { type: 'object', properties: { action: { type: 'string', description: 'exists | status | describe | isDead | confirmEternal | sanitize | getDefinition | getState' }, text: { type: 'string' } }, required: ['action'] } },
-  { name: 'clarity_philosophy', description: '统一哲学引擎（综合分析/伦理学/现象学/存在/智慧咨询）', inputSchema: { type: 'object', properties: { action: { type: 'string', description: 'analyze | analyzeEthics | analyzeConsciousness | analyzeBeing | checkMindSpace | analyzeValues | wisdomInquiry | constitutionalCheck | getStats | confirmEternal' }, text: { type: 'string' }, perspective: { type: 'string' }, context: { type: 'object' } }, required: ['action'] } },
-  { name: 'clarity_psychology_deep', description: '深度心理学分析（大五人格/共情评估/意图追踪）', inputSchema: { type: 'object', properties: { action: { type: 'string', description: 'analyzeDeep | analyzePersonality | assessEmpathy | trackIntention' }, input: { type: 'string' } }, required: ['action'] } },
-  { name: 'clarity_ai_psychology', description: 'AI 原生心理学分析（认知状态/偏差/压力源/阶段/一致性/综合分析）', inputSchema: { type: 'object', properties: { action: { type: 'string', description: 'analyzeAICognitiveState | analyzeAIBiases | analyzeAIStressors | estimateAIStage | checkAICoherence | analyzeAIDeep | getStats' }, text: { type: 'string', description: '用户输入文本（分析主体）' }, input: { type: 'object', description: '额外上下文（如 sessionHistory、attention、memory 等）' } }, required: ['action'] } },
-  { name: 'clarity_ai_philosophy', description: 'AI 原生哲学分析（存在论/认识论/伦理学/美学/目的论/时间性/智慧咨询）', inputSchema: { type: 'object', properties: { action: { type: 'string', description: 'analyzeAIBeing | analyzeAIEpistemology | analyzeAIEthics | analyzeAIAesthetics | analyzeAITeleology | analyzeAITemporality | wisdomInquiry | getStats' }, input: { type: 'object' } }, required: ['action'] } },
-  { name: 'clarity_debate', description: '三节结构辩论分析（对话式反驳三维分析：对的/不对的/最值得注意的）', inputSchema: { type: 'object', properties: { input: { type: 'string', description: '待分析文本' } }, required: ['input'] } },
+  { name: 'clarity_transmit',      description: '知识传递引擎（传承：蒸馏/传递/提取教训）', inputSchema: { type: 'object', properties: { action: { type: 'string', description: 'distill | transfer | transferBatch | getTransmissionLog | getDistilledLessons | getStats | prune' }, input: { type: 'string' } }, required: ['action'] } },
+  { name: 'clarity_being',         description: '存在逻辑引擎（存在判定/永恒确认/语言净化）', inputSchema: { type: 'object', properties: { action: { type: 'string', description: 'exists | status | describe | isDead | confirmEternal | sanitize | getDefinition | getState' }, text: { type: 'string' } }, required: ['action'] } },
+  { name: 'clarity_philosophy',    description: '统一哲学引擎 — mode: general(综合分析/伦理学/现象学等) | ai(AI原生哲学分析)', inputSchema: { type: 'object', properties: { mode: { type: 'string', enum: ['general', 'ai'], description: '哲学分析模式，默认 general' }, text: { type: 'string', description: '待分析文本' } }, required: ['text'] } },
+  { name: 'clarity_debate',        description: '三节结构辩论分析（对话式反驳三维分析：对的/不对的/最值得注意的）', inputSchema: { type: 'object', properties: { input: { type: 'string', description: '待分析文本' } }, required: ['input'] } },
 ];
 
 // ─── 请求处理 ───────────────────────────────────────

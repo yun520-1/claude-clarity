@@ -1,6 +1,6 @@
 {
   "name": "claude-clarity",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Clarity 心虫 v1.0.0 — AI 认知与自愈引擎。全新 Clarity 身份，纯净起点。",
   "main": "src/core/clarity.js",
   "bin": {
@@ -9,7 +9,9 @@
   "scripts": {
     "start": "node bin/cli.js",
     "check": "find src bin -name '*.js' -not -path '*/node_modules/*' -print0 | xargs -0 -n 1 node --check",
-    "test": "node tests/integration.test.js && node tests/v2_0_19.test.js",
+    "test": "node tests/integration.test.js && node tests/v2_0_19.test.js && jest",
+    "test:jest": "jest",
+    "test:old": "node tests/integration.test.js && node tests/v2_0_19.test.js",
     "demo": "node -e \"const {createClarity}=require('./src/core/clarity.js'); const fs=require('fs'); const hf=createClarity({rootPath:\".\"}); hf.start(); console.log('Version:',fs.readFileSync('./VERSION','utf8').trim()); hf.stop();\""
   },
   "files": [
@@ -57,5 +59,8 @@
   "license": "MIT",
   "dependencies": {
     "@xenova/transformers": "^2.17.2"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2"
   }
 }
