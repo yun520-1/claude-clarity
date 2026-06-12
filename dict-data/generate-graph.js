@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * HeartFlow 联想引擎 - 词汇扩展脚本
+ * Clarity 联想引擎 - 词汇扩展脚本
  * 生成 2000+ 词汇节点
  */
 
@@ -184,7 +184,7 @@ const edges = generateEdges(nodes);
 
 const graph = {
   version: "2.0",
-  description: "HeartFlow 联想图谱 - 2000+词汇节点 with embeddings",
+  description: "Clarity 联想图谱 - 2000+词汇节点 with embeddings",
   categories: Object.keys(wordBanks),
   nodeCount: nodes.length,
   edgeCount: edges.length,

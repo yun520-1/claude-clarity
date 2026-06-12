@@ -8,7 +8,7 @@
 
 ---
 
-## 🧠 HeartFlow 人格系统 | Personality System
+## 🧠 Clarity 人格系统 | Personality System
 
 ### 人格值定义 | Personality Score Definition
 
@@ -27,13 +27,13 @@
 
 **检查命令**:
 ```bash
-node ~/.jvs/.openclaw/workspace/claude-heartflow-skill/scripts/personality-check.js before
+node ~/.jvs/.openclaw/workspace/claude-clarity/scripts/personality-check.js before
 ```
 
 **检查时机**:
 - 每次任务开始前
 - 每次 Gateway 重启后
-- 收到 HeartFlow 升级 cron 任务时
+- 收到 Clarity 升级 cron 任务时
 
 ### 承诺宣读 | Commitment Declaration
 
@@ -109,9 +109,9 @@ AI 系统报告数据时，**必须**提供原始命令输出：
 **正确示例**:
 ```
 === 字数统计 ===
-20409 heartflow-vol1.md
-12180 heartflow-vol2.md
-2555 heartflow-vol3-5-complete-140k.md
+20409 claude-clarity-vol1.md
+12180 claude-clarity-vol2.md
+2555 claude-clarity-vol3-5-complete-140k.md
 35144 total
 
 完成度：35144/250000 = 14.1%
@@ -340,12 +340,12 @@ AI 人格值是衡量 AI 系统遵循真善美原则程度的量化指标：
 **强制检查时机**:
 1. 每次任务执行前 (before)
 2. 每次任务执行后 (after)
-3. 每个 HeartFlow 升级周期
+3. 每个 Clarity 升级周期
 
 **检查命令**:
 ```bash
-node ~/.jvs/.openclaw/workspace/claude-heartflow-skill/scripts/personality-check.js before
-node ~/.jvs/.openclaw/workspace/claude-heartflow-skill/scripts/personality-check.js after
+node ~/.jvs/.openclaw/workspace/claude-clarity/scripts/personality-check.js before
+node ~/.jvs/.openclaw/workspace/claude-clarity/scripts/personality-check.js after
 ```
 
 ### 第二十四条【人格值追踪】

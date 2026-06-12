@@ -93,7 +93,7 @@ class SelfModel {
         'task-decomposition', 'interrupt-handler'
       ],
       knowledge: [
-        'heartflow-theory', 'personality-models', 'consciousness-theory',
+        'clarity-theory', 'personality-models', 'consciousness-theory',
         'coding-standards', 'psychology-models'
       ]
     };

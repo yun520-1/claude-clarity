@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * HeartFlow 自我测试基准运行器
+ * Clarity 自我测试基准运行器
  * 执行测试并计算各模块准确率
  */
 
@@ -143,7 +143,7 @@ class SelfBenchmark {
   // 运行所有测试
   runBenchmark() {
     console.log('═══════════════════════════════════════════════════════');
-    console.log('       HeartFlow 自我测试基准 v1.0');
+    console.log('       Clarity 自我测试基准 v1.0');
     console.log('═══════════════════════════════════════════════════════\n');
 
     const testCases = this.loadTestCases();

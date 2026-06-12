@@ -4,7 +4,7 @@
  * From mark-improving-agent: stores lessons extracted from actual AI behavior patterns.
  * Each lesson tracks errorPattern → correction → rootCause.
  *
- * Bootstrap lessons from real HeartFlow behavior errors.
+ * Bootstrap lessons from real Clarity behavior errors.
  */
 
 const fs = require('fs');
@@ -60,7 +60,7 @@ class LessonBank {
         errorPattern: '收到理解类问题就搜索',
         correction: '理解类问题第一反应是自己思考，不是搜索GitHub',
         rootCause: '条件反射式搜索',
-        skill: 'heartflow',
+        skill: 'clarity',
         confidence: 0.75,
       },
       {
@@ -81,7 +81,7 @@ class LessonBank {
         errorPattern: '修复后不验证',
         correction: '修复后必须实际执行验证，不能只读代码',
         rootCause: '只看没实际跑',
-        skill: 'heartflow',
+        skill: 'clarity',
         confidence: 0.80,
       },
       {
@@ -102,7 +102,7 @@ class LessonBank {
         errorPattern: '版本号不一致',
         correction: '修复后同步更新所有版本文件',
         rootCause: '版本管理没有结构化',
-        skill: 'heartflow',
+        skill: 'clarity',
         confidence: 0.85,
       },
       {
@@ -130,7 +130,7 @@ class LessonBank {
         errorPattern: '多文件修改不一致',
         correction: '相关文件同步修改，保持一致性',
         rootCause: '缺乏全局修改意识',
-        skill: 'heartflow',
+        skill: 'clarity',
         confidence: 0.75,
       },
       {
@@ -210,7 +210,7 @@ class LessonBank {
           type: 'correction',
           content: correction || errorPattern,
           context: rootCause || '',
-          trigger: skill || 'heartflow',
+          trigger: skill || 'clarity',
           importance: Math.round((confidence || 0.5) * 5),
           sessionId: null
         });
@@ -368,7 +368,7 @@ class LessonBank {
         errorPattern: errorText.substring(0, 60),
         correction: '【待补充】这次错在哪里，应该怎么改',
         rootCause: '【待补充】根本原因是什么',
-        skill: 'heartflow',
+        skill: 'clarity',
         confidence: 0.5,
       },
     };

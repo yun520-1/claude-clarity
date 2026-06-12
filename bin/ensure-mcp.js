@@ -21,9 +21,9 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
-const SOCKET_PATH = '/tmp/heartflow-mcp.sock';
+const SOCKET_PATH = '/tmp/claude-clarity.sock';
 const DAEMON_JS = path.join(ROOT, 'daemon', 'mcp-daemon.js');
-const PID_FILE = '/tmp/heartflow-mcp.pid';
+const PID_FILE = '/tmp/claude-clarity.pid';
 
 const args = process.argv.slice(2);
 const onlyCheck = args.includes('--check');

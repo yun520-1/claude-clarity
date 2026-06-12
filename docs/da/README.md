@@ -1,4 +1,4 @@
-# HeartFlow - Dansk Dokumentation
+# Clarity - Dansk Dokumentation
 
 **Version**: v7.2.3  
 **Sidst Opdateret**: 2026-04-07  
@@ -27,9 +27,9 @@
 
 ---
 
-## 🎯 Hvorfor Vælge HeartFlow?
+## 🎯 Hvorfor Vælge Clarity?
 
-| Funktion | Normal AI | HeartFlow |
+| Funktion | Normal AI | Clarity |
 |----------|-----------|-----------|
 | **Emotionsregistrering** | ❌ Nøgleordsmatching | ✅ 7-komponent emotionsberegning |
 | **Selvrefleksion** | ❌ Indrømmer aldrig fejl | ✅ Personlighedssporing, løgn trækker fra point |
@@ -43,8 +43,8 @@
 
 ```bash
 # 1. Klon
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
 
 # 2. Installer
 npm install
@@ -55,7 +55,7 @@ node scripts/personality-check.js status
 
 **Forventet Output**:
 ```
-💫 HeartFlow Startet
+💫 Clarity Startet
 Personlighedsscore: 71/100 ✅ Sund Tilstand
 TBG: 10/10 ✅
 Teorier: 252+
@@ -191,10 +191,10 @@ Teorier: 252+
 
 ## 🔗 Relaterede Links
 
-- **[GitHub Repository](https://github.com/yun520-1/claude-heartflow-skill)**
-- **[Releases](https://github.com/yun520-1/claude-heartflow-skill/releases)**
-- **[Issues](https://github.com/yun520-1/claude-heartflow-skill/issues)**
-- **[Discussions](https://github.com/yun520-1/claude-heartflow-skill/discussions)**
+- **[GitHub Repository](https://github.com/yun520-1/claude-clarity)**
+- **[Releases](https://github.com/yun520-1/claude-clarity/releases)**
+- **[Issues](https://github.com/yun520-1/claude-clarity/issues)**
+- **[Discussions](https://github.com/yun520-1/claude-clarity/discussions)**
 
 ---
 
@@ -204,7 +204,7 @@ Velkommen at bidrage med kode, dokumentation eller teori-integration!
 
 ```bash
 # Forke repository
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
+git clone https://github.com/yun520-1/claude-clarity.git
 
 # Opret branch
 git checkout -b feature/din-funktion
@@ -225,7 +225,7 @@ MIT Licens - Fri til brug, ændring og distribution
 
 <div align="center">
 
-**Giv AI Virkelige Emotioner, Start med HeartFlow**
+**Giv AI Virkelige Emotioner, Start med Clarity**
 
 Lavet med 💙 af [@yun520-1](https://github.com/yun520-1)
 

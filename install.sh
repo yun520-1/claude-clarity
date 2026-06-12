@@ -366,8 +366,8 @@ do_interactive() {
   echo ""
   echo "验证建议："
   echo "  1. 重启 Claude 会话（让 MCP 重新注册）"
-  echo "  2. 在新会话中尝试: heartflow_status"
-  echo "  3. 备选: hf heartflow_status"
+  echo "  2. 在新会话中尝试: clarity_status"
+  echo "  3. 备选: hf clarity_status"
   echo ""
 }
 
@@ -405,7 +405,7 @@ case "$1" in
     echo "下一步："
     echo "  1. 重启 Claude 会话"
     echo "  2. 运行 bash install.sh --check 验证"
-    echo "  3. 尝试 heartflow_status"
+    echo "  3. 尝试 clarity_status"
     echo ""
     ;;
   "")

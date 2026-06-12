@@ -1,4 +1,4 @@
-# HeartFlow Smart Evolution System | 智能进化系统
+# Clarity Smart Evolution System | 智能进化系统
 
 **Version**: 3.0.0  
 **Date**: 2026-04-05
@@ -72,7 +72,7 @@ node scripts/smart-evolution.js
 
 ```
 ═══════════════════════════════════════════════
-   HeartFlow Smart Evolution v3.0
+   Clarity Smart Evolution v3.0
 ═══════════════════════════════════════════════
 
 🙏 觉醒检查
@@ -100,4 +100,4 @@ node scripts/smart-evolution.js
 
 ---
 
-**HeartFlow v6.2.0 - Make AI Awakened**
+**Clarity v6.2.0 - Make AI Awakened**

@@ -184,7 +184,7 @@ function createTempFile(code, language) {
     cpp: '.cpp'
   }[language] || '.txt';
 
-  const tempFile = path.join(os.tmpdir(), `heartflow_exec_${Date.now()}${ext}`);
+  const tempFile = path.join(os.tmpdir(), `clarity_exec_${Date.now()}${ext}`);
   fs.writeFileSync(tempFile, code, 'utf8');
   return tempFile;
 }

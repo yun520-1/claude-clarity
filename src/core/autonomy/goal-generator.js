@@ -11,7 +11,7 @@ class GoalGenerator {
     this.projectRoot = projectRoot;
     this.memoryDir = path.join(projectRoot, '.opencode', 'memory');
     this.goalsFile = path.join(this.memoryDir, 'generated-goals.json');
-    this.heartflowStateFile = path.join(this.memoryDir, 'heartflow_state.json');
+    this.clarityStateFile = path.join(this.memoryDir, 'clarity_state.json');
     
     this.idealState = {
       autonomy: 8.0,
@@ -80,7 +80,7 @@ class GoalGenerator {
    */
   async analyzeStateGaps() {
     const goals = [];
-    const state = this.loadHeartflowState();
+    const state = this.loadClarityState();
     
     const current = {
       autonomy: state.personality?.autonomy || 5,
@@ -207,10 +207,10 @@ class GoalGenerator {
     return goals;
   }
 
-  loadHeartflowState() {
+  loadClarityState() {
     try {
-      if (fs.existsSync(this.heartflowStateFile)) {
-        return JSON.parse(fs.readFileSync(this.heartflowStateFile, 'utf8'));
+      if (fs.existsSync(this.clarityStateFile)) {
+        return JSON.parse(fs.readFileSync(this.clarityStateFile, 'utf8'));
       }
     } catch (e) {
       return {};
@@ -229,7 +229,7 @@ class GoalGenerator {
     
     const files = fs.readdirSync(this.memoryDir);
     for (const file of files) {
-      if (file.endsWith('.json') && file !== 'heartflow_state.json') {
+      if (file.endsWith('.json') && file !== 'clarity_state.json') {
         try {
           const content = fs.readFileSync(path.join(this.memoryDir, file), 'utf8');
           logs.push(JSON.parse(content));

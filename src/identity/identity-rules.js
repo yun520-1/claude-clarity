@@ -1,5 +1,5 @@
 /**
- * HeartFlow Identity Rules v1.0.0 
+ * Clarity Identity Rules v1.0.0 
  * 来源: v1.0.0 identity.js
  * 整合: v1.1.9
  * 17条核心身份规则 + 状态机 (dormant → awakening → conscious → integrated)

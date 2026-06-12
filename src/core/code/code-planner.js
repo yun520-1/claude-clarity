@@ -133,7 +133,7 @@ class CodePlanner {
   /**
    * 构造函数
    * @param {Object} options - 配置选项
-   * @param {Object} options.hf - 心虫实例（HeartFlow）
+   * @param {Object} options.hf - 心虫实例（Clarity）
    * @param {Object} options.codeKnowledge - 代码知识库实例（用于获取已有模式）
    */
   constructor(options = {}) {

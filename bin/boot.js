@@ -9,13 +9,13 @@
  *
  * 而非直接调用此脚本。
  *
- * --- 以下是原完整启动脚本 v2.6.5，保留向下兼容 ---
+ * --- 以下是原完整启动脚本 v1.0.0，保留向下兼容 ---
  *
- * HeartFlow 完整启动脚本 v2.6.5
+ * Clarity 完整启动脚本 v1.0.0
  * 启动链路:
  *   心虫感知: boot-check (文件/模块验证)
  *          ↓
- *   HeartFlow engine start (40+ Tier1 模块)
+ *   Clarity engine start (40+ Tier1 模块)
  *          ↓
  *   记忆恢复: CORE / LEARNED / Q-table / 教训
  *          ↓
@@ -221,7 +221,7 @@ function getMemoryStats() {
 async function main() {
   const report = {
     bootTime: new Date().toISOString(),
-    version: '2.6.5',
+    version: '1.0.0',
   };
 
   // ─── 第一阶段: Boot Check（快速模式）──────────────────
@@ -239,10 +239,10 @@ async function main() {
     report.bootCheck = { error: e.message };
   }
 
-  // ─── 第二阶段: HeartFlow Engine Start ──────────────────
+  // ─── 第二阶段: Clarity Engine Start ──────────────────
   try {
-    const { HeartFlow } = require('../src/core/heartflow.js');
-    const hf = new HeartFlow({ rootPath: ROOT });
+    const { Clarity } = require('../src/core/clarity.js');
+    const hf = new Clarity({ rootPath: ROOT });
     hf.start();
     const health = hf.healthCheck();
     report.engine = {

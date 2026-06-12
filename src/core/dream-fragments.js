@@ -2,7 +2,7 @@
  * Dream Fragments — 梦境原材料收集器
  *
  * 从多个数据源提取并组装梦境原材料，供 dreamNow() 使用。
- * 提取自 heartflow.js _getDreamFragments()，v2.6.4+ 独立模块。
+ * 提取自 clarity.js _getDreamFragments()，v2.6.4+ 独立模块。
  *
  * 数据源：
  *   - 身份核心(identityCore)

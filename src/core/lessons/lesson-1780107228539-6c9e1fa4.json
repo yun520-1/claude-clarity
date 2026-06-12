@@ -3,7 +3,7 @@
   "type": "correction",
   "content": "测试场景",
   "context": "self_test",
-  "trigger": "heartflow",
+  "trigger": "clarity",
   "importance": 4,
   "frequency": 1,
   "createdAt": "2026-05-30T02:13:48.539Z",

@@ -1,4 +1,4 @@
-# HeartFlow 代码优化计划
+# Clarity 代码优化计划
 
 **创建时间**: 2026-04-04 20:20  
 **创建者**: 小虫子 (自主决策)  
@@ -197,7 +197,7 @@ const AppraisalUtils = {
  * const generator = new EmotionGenerator();
  * const emotion = generator.generateEmotion(input, context);
  * 
- * @see {@link https://github.com/yun520-1/claude-heartflow-skill/docs/THEORY.md}
+ * @see {@link https://github.com/yun520-1/claude-clarity/docs/THEORY.md}
  */
 ```
 

@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 const CONSTITUTION = `
-# HeartFlow AI 宪法
+# Clarity AI 宪法
 
 ## 核心原则
 

@@ -96,10 +96,10 @@ function checkCounterexample(output) {
 
 /** 准则 5: 警惕技能依赖 — 不滥用心虫术语替代思考 */
 function checkSkillDependency(output) {
-  const skillTerms = ['心虫', 'HeartFlow', '心流状态', 'reflection', 'Reflexion'];
+  const skillTerms = ['心虫', 'Clarity', '心流状态', 'reflection', 'Reflexion'];
   const termCount = skillTerms.filter(t => output.includes(t)).length;
   if (termCount > 3) {
-    return { pass: false, reason: '过度使用 HeartFlow 术语，可能在用框架代替思考', principle: 'SKILL_DEPENDENCY' };
+    return { pass: false, reason: '过度使用 Clarity 术语，可能在用框架代替思考', principle: 'SKILL_DEPENDENCY' };
   }
   return { pass: true };
 }

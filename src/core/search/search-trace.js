@@ -1,5 +1,5 @@
 /**
- * HeartFlow SearchTrace Transparency Module
+ * Clarity SearchTrace Transparency Module
  * 
  * Implements hindsight SearchTrace transparency model for search operations.
  * Provides visibility into search phase metrics, weight decomposition,

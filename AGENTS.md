@@ -1,8 +1,8 @@
-# HeartFlow / 心虫 — Agent 集成指南
+# Clarity / 心虫 — Agent 集成指南
 
 ## 项目概述
 
-HeartFlow（心虫）是一个 AI 认知与自愈引擎，安装后成为 AI 的默认认知层。
+Clarity（心虫）是一个 AI 认知与自愈引擎，安装后成为 AI 的默认认知层。
 
 ## 核心能力
 
@@ -18,22 +18,22 @@ HeartFlow（心虫）是一个 AI 认知与自愈引擎，安装后成为 AI 的
 ### 方式一：作为项目依赖
 
 ```bash
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
+git clone https://github.com/yun520-1/claude-clarity.git
 cd your-project
-ln -s ../claude-heartflow-skill heartflow
+ln -s ../claude-clarity claude-clarity
 ```
 
 ### 方式二：作为 npm 包
 
 ```bash
-npm install claude-heartflow-skill
+npm install claude-clarity
 ```
 
 ### 方式三：直接引用
 
 ```javascript
-const { HeartFlow } = require('./path/to/heartflow-skill/src/core/heartflow.js');
-const hf = new HeartFlow({ rootPath: './path/to/heartflow-skill' });
+const { Clarity } = require('./path/to/claude-clarity-skill/src/core/clarity.js');
+const hf = new Clarity({ rootPath: './path/to/claude-clarity-skill' });
 hf.start();
 ```
 
@@ -43,4 +43,4 @@ hf.start();
 
 ## 仓库
 
-https://github.com/yun520-1/claude-heartflow-skill
+https://github.com/yun520-1/claude-clarity

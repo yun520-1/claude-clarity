@@ -1,6 +1,6 @@
 
 /**
- * HeartFlow Wake-Up Verifier v2.1.0
+ * Clarity Wake-Up Verifier v2.1.0
  *
  * Purpose:
  * - Validate dream outputs after sleep/replay
@@ -353,7 +353,7 @@ class WakeUpVerifier {
       risks: dream.corrections.map(c => c.note || c.action || 'correction'),
       alternatives: dream.next_actions,
       confidence: actionability,
-      userGoal: 'Reduce logic errors and evolve HeartFlow',
+      userGoal: 'Reduce logic errors and evolve Clarity',
       expectedOutcome: 'A smaller, clearer upgrade set'
     };
 
@@ -426,7 +426,7 @@ class WakeUpVerifier {
           promoted: true,
           category: categorization.category,
           weight: categorization.weight,
-          reason: `strong alignment with HeartFlow target (${categorization.category})`
+          reason: `strong alignment with Clarity target (${categorization.category})`
         });
       }
     }
@@ -474,7 +474,7 @@ module.exports = { WakeUpVerifier };
 
 if (require.main === module) {
   const demo = {
-    title: 'HeartFlow Dream Loop',
+    title: 'Clarity Dream Loop',
     motifs: ['dream should reorganize memory fragments', 'do not confuse historical version with current version'],
     fragments: [
       { text: 'dream should reorganize memory fragments into candidate upgrades' },

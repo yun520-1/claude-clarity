@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * HeartFlow 统一快速启动入口
+ * Clarity 统一快速启动入口
  *
  * 单步完成心虫引擎启动。优先读缓存（~5ms），缓存失效时自动
  * 执行完整 boot.js 并写缓存（~50ms）。
  *
- * 设计目标：替代 CLAUDE.md 中"Skill: heartflow → boot.js → 解析 → 处理"
+ * 设计目标：替代 CLAUDE.md 中"Skill: clarity → boot.js → 解析 → 处理"
  * 的四步启动协议——从此只需一步。
  *
  * 用法:
@@ -53,7 +53,7 @@ function tryReadCache() {
 
     // 核心文件存在性检查（快速验证安装完整性）
     const coreCheck = [
-      path.join(ROOT, 'src/core/heartflow.js'),
+      path.join(ROOT, 'src/core/clarity.js'),
       path.join(ROOT, 'memory/meaningful-core.json'),
     ].every(p => { try { return fs.statSync(p).isFile(); } catch { return false; } });
     if (!coreCheck) {
@@ -199,7 +199,7 @@ function main() {
 
   // 执行完整启动
   const { bootCheck } = require(path.join(ROOT, 'src/core', 'boot-check.js'));
-  const { HeartFlow } = require(path.join(ROOT, 'src/core', 'heartflow.js'));
+  const { Clarity } = require(path.join(ROOT, 'src/core', 'clarity.js'));
 
   const report = { bootTime: new Date().toISOString(), version: VERSION };
 
@@ -216,9 +216,9 @@ function main() {
     report.bootCheck = { error: e.message };
   }
 
-  // Phase 2: HeartFlow Engine Start
+  // Phase 2: Clarity Engine Start
   try {
-    const hf = new HeartFlow({ rootPath: ROOT });
+    const hf = new Clarity({ rootPath: ROOT });
     hf.start();
     const health = hf.healthCheck();
     report.engine = {

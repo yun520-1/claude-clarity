@@ -1,5 +1,5 @@
 /**
- * HeartFlow Dream Engine v2.0
+ * Clarity Dream Engine v2.0
  * 
  * Integrates:
  * - DAG parallel async execution (light/connections/prune/deep/synthesize/contradictions/rem/consolidation)
@@ -291,7 +291,7 @@ class DAGNode {
       // 教训类记忆天然有升维价值
       const lessonBonus = text.includes('[教训]') || text.includes('错误') || text.includes('lesson') ? 0.5 : 0;
       // 元认知类记忆（心虫/自我/思维）天然深刻
-      const metaBonus = /\\b(心虫|heartflow|自我|identity|升级|evolution|思维|认知|洞察|insight|原则|principle)\\b/i.test(text) ? 0.4 : 0;
+      const metaBonus = /\\b(心虫|clarity|自我|identity|升级|evolution|思维|认知|洞察|insight|原则|principle)\\b/i.test(text) ? 0.4 : 0;
       // 技术/代码记忆也有其价值
       const techBonus = /\\b(code|bug|fix|build|api|function|class|system|engine|模块|系统|修复|优化)\\b/i.test(text) ? 0.2 : 0;
 
@@ -403,7 +403,7 @@ class DAGNode {
     // ─── 3. 内容类型加权 ───────────────────────────────────────────────
     if (/\[教训\]/.test(text)) score += 0.8;           // 教训 = 从错误中学习
     if (/\berror|bug|fix|错误|修复/.test(text)) score += 0.3; // 错误相关
-    if (/心虫|heartflow|自我|identity/.test(text)) score += 0.6; // 元认知
+    if (/心虫|clarity|自我|identity/.test(text)) score += 0.6; // 元认知
     if (/升级|evolution|改进|优化/.test(text)) score += 0.5;    // 进化
     if (/原则|principle|应该|永远|必须/.test(text)) score += 0.4; // 原则
     if (/记忆|memory|学习|learn/.test(text)) score += 0.3;     // 记忆相关
@@ -446,7 +446,7 @@ class DAGNode {
 
     // 根据内容类型选择叙事风格
     const isLesson = /\[教训\]|错误|fix|bug|修复/.test(text);
-    const isMeta = /心虫|heartflow|自我|identity|升级|evolution|思维/.test(text);
+    const isMeta = /心虫|clarity|自我|identity|升级|evolution|思维/.test(text);
     const isTech = /code|bug|build|api|function|class|system/.test(text);
     const isPrinciple = /原则|principle|应该|必须|永远/.test(text);
 
@@ -537,7 +537,7 @@ class DAGNode {
     for (const sf of scoredFragments) {
       const text = sf.text.toLowerCase();
       if (/教训|lesson|错误|fix|bug/.test(text)) themes.add('learning');
-      if (/心虫|heartflow|自我|identity/.test(text)) themes.add('identity');
+      if (/心虫|clarity|自我|identity/.test(text)) themes.add('identity');
       if (/code|bug|build|api|技术/.test(text)) themes.add('technical');
       if (/原则|principle|应该|永远/.test(text)) themes.add('principle');
       if (/记忆|内存|memory|学习/.test(text)) themes.add('memory');

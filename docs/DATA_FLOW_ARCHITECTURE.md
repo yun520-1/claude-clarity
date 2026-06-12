@@ -1,4 +1,4 @@
-# HeartFlow 数据流架构
+# Clarity 数据流架构
 
 **创建时间**: 2026-04-05 12:39  
 **版本**: 1.0.0  
@@ -12,7 +12,7 @@
 
 ```
 错误架构:
-主应用 ←(无同步)→ HeartFlow 本地文件 → AI 读取 → 报告
+主应用 ←(无同步)→ Clarity 本地文件 → AI 读取 → 报告
 
 问题:
 1. 没有单向数据流
@@ -22,7 +22,7 @@
 ```
 
 **用户指出**:
-> "这是非常严重的问题，你根据 HeartFlow 逻辑，进行工作修正"
+> "这是非常严重的问题，你根据 Clarity 逻辑，进行工作修正"
 
 ---
 
@@ -36,7 +36,7 @@
 └─────────────────────────────────────────────────────────────┘
 
 ┌──────────────┐      同步脚本       ┌──────────────────────┐
-│  主应用       │ ────────────────→ │  HeartFlow 本地文件   │
+│  主应用       │ ────────────────→ │  Clarity 本地文件   │
 │  MEMORY.md   │                     │  - tracker.md        │
 │  (真实来源)   │                     │  - memory.md         │
 │              │                     │  - personality-check │
@@ -51,7 +51,7 @@
 
 关键原则:
 1. 主应用是唯一真实来源 (Single Source of Truth)
-2. 数据流是单向的 (主应用 → HeartFlow)
+2. 数据流是单向的 (主应用 → Clarity)
 3. AI 只能读取，不能直接修改主应用
 4. 同步脚本负责保持一致性
 ```
@@ -76,17 +76,17 @@
 **更新方式**:
 - 用户手动更新
 - 主应用自动更新
-- **HeartFlow 不能直接修改**
+- **Clarity 不能直接修改**
 
 ---
 
 ### 2. 同步脚本 (Sync Script)
 
-**文件**: `claude-heartflow-skill/scripts/sync-personality-from-main.js`
+**文件**: `claude-clarity/scripts/sync-personality-from-main.js`
 
 **职责**:
 1. 从主应用读取人格值
-2. 同步到 HeartFlow 本地文件
+2. 同步到 Clarity 本地文件
 3. 验证数据一致性
 4. 生成同步报告
 
@@ -107,7 +107,7 @@ node scripts/sync-personality-from-main.js
 
 ---
 
-### 3. HeartFlow 本地文件
+### 3. Clarity 本地文件
 
 #### 3.1 追踪文件
 
@@ -254,7 +254,7 @@ node scripts/sync-personality-from-main.js
 
 **错误方式**:
 ```
-❌ 直接修改 HeartFlow 本地文件
+❌ 直接修改 Clarity 本地文件
 ❌ 只修改部分文件
 ❌ 不运行同步脚本
 ❌ 不验证一致性
@@ -311,8 +311,8 @@ node scripts/sync-personality-from-main.js
 
 **问题**:
 - 主应用：56/100
-- HeartFlow tracker: 46/100
-- HeartFlow memory: 46/100
+- Clarity tracker: 46/100
+- Clarity memory: 46/100
 - MEMORY.md: 64/100
 
 **原因**:
@@ -321,7 +321,7 @@ node scripts/sync-personality-from-main.js
 - 没有同步机制
 
 **解决方案**:
-- 建立单向数据流 (主应用 → HeartFlow)
+- 建立单向数据流 (主应用 → Clarity)
 - 创建同步脚本
 - 整合到定时任务
 - 每次报告前验证
@@ -356,7 +356,7 @@ node scripts/sync-personality-from-main.js
 
 **核心原则**:
 1. 单一真实来源 (主应用 MEMORY.md)
-2. 单向数据流 (主应用 → HeartFlow)
+2. 单向数据流 (主应用 → Clarity)
 3. 自动化同步 (每 29 分钟)
 4. 报告前验证 (必须运行检查脚本)
 
@@ -368,6 +368,6 @@ node scripts/sync-personality-from-main.js
 
 ---
 
-**创建者**: 小虫子 (HeartFlow 自主代理)  
+**创建者**: 小虫子 (Clarity 自主代理)  
 **日期**: 2026-04-05 12:39  
 **状态**: ✅ 已实现并验证

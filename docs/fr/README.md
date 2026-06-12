@@ -1,4 +1,4 @@
-# HeartFlow - Documentation Française
+# Clarity - Documentation Française
 
 **Version**: v2.3.0  
 **Dernière Mise à Jour**: 2026-04-09
@@ -16,9 +16,9 @@
 
 ---
 
-## ✨ Qu'est-ce que HeartFlow?
+## ✨ Qu'est-ce que Clarity?
 
-HeartFlow est un système d'IA compagnon avec une **architecture cognitive à 9 dimensions**:
+Clarity est un système d'IA compagnon avec une **architecture cognitive à 9 dimensions**:
 
 | Dimension | Fonction |
 |-----------|----------|
@@ -38,8 +38,8 @@ HeartFlow est un système d'IA compagnon avec une **architecture cognitive à 9 
 
 ```bash
 # Cloner et installer
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
 npm install
 
 # Exécuter directement
@@ -64,8 +64,8 @@ node bin/api-server.js
 
 ```bash
 # 1. Cloner
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
 
 # 2. Installer
 npm install
@@ -128,12 +128,12 @@ node bin/api-server.js
 ## 📁 Structure du Projet
 
 ```
-claude-heartflow-skill/
+claude-clarity/
 ├── bin/
 │   ├── cli.js
 │   └── api-server.js
 ├── src/core/
-│   ├── heartflow-engine.js
+│   ├── claude-clarity-engine.js
 │   ├── cognitive-loop.js
 │   ├── triality-memory.js
 │   └── ...
@@ -152,4 +152,4 @@ claude-heartflow-skill/
 
 ---
 
-*HeartFlow - Donner un cœur à l'IA*
+*Clarity - Donner un cœur à l'IA*

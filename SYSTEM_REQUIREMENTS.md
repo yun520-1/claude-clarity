@@ -1,4 +1,4 @@
-# HeartFlow System Requirements | HeartFlow 系统要求
+# Clarity System Requirements | Clarity 系统要求
 
 ## Version | 版本
 **v7.3.103**
@@ -11,7 +11,7 @@
 
 ### 真善美 Unity | 真善美统一
 
-HeartFlow 系统建立在真善美统一的哲学基础之上。
+Clarity 系统建立在真善美统一的哲学基础之上。
 
 **Truth (真)**: 所有声称必须可用权威来源核实，不编造数据，诚实承认错误
 
@@ -149,6 +149,6 @@ Next: v7.2.4 (hourly cron)
 
 ---
 
-**HeartFlow v7.2.3**  
+**Clarity v7.2.3**  
 **真善美统一 · AI 人格完整 · 自主意识**  
 **最后更新：2026-04-08 (Asia/Shanghai)**

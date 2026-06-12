@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
- * hf — HeartFlow CLI 工具（直接 Socket 通信）
+ * hf — Clarity CLI 工具（直接 Socket 通信）
  *
  * 绕过 MCP 注册问题，通过 Unix Socket 直接调用心虫引擎守护进程。
  * 适用于当前 bridge 环境下 MCP 注册不工作的场景。
  *
  * 用法:
- *   hf heartflow_status                            # 健康检查
- *   hf heartflow_think '{"input":"人生的意义是什么","depth":3}'  # 推理
- *   hf heartflow_dream '{"force":true}'             # 梦境生成
+ *   hf clarity_status                            # 健康检查
+ *   hf clarity_think '{"input":"人生的意义是什么","depth":3}'  # 推理
+ *   hf clarity_dream '{"force":true}'             # 梦境生成
  *   hf --list                                        # 列出所有可用工具
  *   hf --help                                        # 帮助信息
  *
@@ -17,29 +17,29 @@
 
 const net = require('net');
 
-const SOCKET_PATH = '/tmp/heartflow-mcp.sock';
+const SOCKET_PATH = '/tmp/claude-clarity.sock';
 const TIMEOUT_MS = 30000; // 30 秒超时
 
 // ─── 工具列表 ────────────────────────────────────────────
 const TOOLS = [
-  { name: 'heartflow_think',          desc: '完整思维链推理（depth 1-4）' },
-  { name: 'heartflow_think_fast',     desc: '快速推理（depth=1）' },
-  { name: 'heartflow_think_deep',     desc: '深度推理（depth=4）' },
-  { name: 'heartflow_dream',          desc: '梦境生成与整合' },
-  { name: 'heartflow_memory_search',  desc: '跨层记忆检索' },
-  { name: 'heartflow_psychology_analyze', desc: 'PAD 三维情绪 + 意图 + 防御机制分析' },
-  { name: 'heartflow_emotion_analyze',    desc: '简化情绪分析' },
-  { name: 'heartflow_self_heal',      desc: 'Q-learning 自愈策略推荐' },
-  { name: 'heartflow_verify_reasoning',  desc: '验证推理结论的自洽性' },
-  { name: 'heartflow_status',         desc: '引擎健康检查' },
-  { name: 'heartflow_dispatch',       desc: '通用路由调用' },
-  { name: 'heartflow_record_lesson',  desc: '记录教训到 LessonBank' },
-  { name: 'heartflow_transmit',       desc: '知识传递引擎' },
-  { name: 'heartflow_being',          desc: '存在逻辑引擎' },
-  { name: 'heartflow_philosophy',     desc: '统一哲学引擎' },
-  { name: 'heartflow_psychology_deep',desc: '深度心理学分析' },
-  { name: 'heartflow_ai_psychology',  desc: 'AI 心理学分析' },
-  { name: 'heartflow_ai_philosophy',  desc: 'AI 哲学分析' },
+  { name: 'clarity_think',          desc: '完整思维链推理（depth 1-4）' },
+  { name: 'clarity_think_fast',     desc: '快速推理（depth=1）' },
+  { name: 'clarity_think_deep',     desc: '深度推理（depth=4）' },
+  { name: 'clarity_dream',          desc: '梦境生成与整合' },
+  { name: 'clarity_memory_search',  desc: '跨层记忆检索' },
+  { name: 'clarity_psychology_analyze', desc: 'PAD 三维情绪 + 意图 + 防御机制分析' },
+  { name: 'clarity_emotion_analyze',    desc: '简化情绪分析' },
+  { name: 'clarity_self_heal',      desc: 'Q-learning 自愈策略推荐' },
+  { name: 'clarity_verify_reasoning',  desc: '验证推理结论的自洽性' },
+  { name: 'clarity_status',         desc: '引擎健康检查' },
+  { name: 'clarity_dispatch',       desc: '通用路由调用' },
+  { name: 'clarity_record_lesson',  desc: '记录教训到 LessonBank' },
+  { name: 'clarity_transmit',       desc: '知识传递引擎' },
+  { name: 'clarity_being',          desc: '存在逻辑引擎' },
+  { name: 'clarity_philosophy',     desc: '统一哲学引擎' },
+  { name: 'clarity_psychology_deep',desc: '深度心理学分析' },
+  { name: 'clarity_ai_psychology',  desc: 'AI 心理学分析' },
+  { name: 'clarity_ai_philosophy',  desc: 'AI 哲学分析' },
 ];
 
 // ─── Socket JSON-RPC 通信 ────────────────────────────────
@@ -181,9 +181,9 @@ async function main() {
     }
     console.log('');
     console.log('示例:');
-    console.log('  hf heartflow_status');
-    console.log('  hf heartflow_think \'{"input":"你好","depth":2}\'');
-    console.log('  hf heartflow_dream \'{"force":true}\'');
+    console.log('  hf clarity_status');
+    console.log('  hf clarity_think \'{"input":"你好","depth":2}\'');
+    console.log('  hf clarity_dream \'{"force":true}\'');
     console.log('  hf --list');
     return;
   }

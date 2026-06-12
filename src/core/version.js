@@ -1,5 +1,5 @@
 /**
- * version.js — HeartFlow 整体版本号单一来源 (Single Source of Truth)
+ * version.js — Clarity 整体版本号单一来源 (Single Source of Truth)
  *
  * 设计原则:
  *   - VERSION 文件是版本号单一真实来源；运行时从 VERSION 文件读取
@@ -14,7 +14,7 @@
  *   const v = getVersion();            // { version, major, minor, patch, raw }
  *   bumpVersion('patch');              // 2.0.16 → 2.0.17，同步所有位置
  *
- * 注意: 此模块不应再 require heartflow.js 内部任何东西（避免循环依赖）
+ * 注意: 此模块不应再 require clarity.js 内部任何东西（避免循环依赖）
  */
 
 const fs = require('fs');
@@ -144,10 +144,10 @@ function bumpVersion(type = 'patch', opts = {}) {
       (_, pre, post) => `${pre}${to}${post}`
     );
     if (content !== beforeFm) synced.push('SKILL.md frontmatter');
-    // title: # HeartFlow / 心虫 vX.Y.Z  (或 # HeartFlow vX.Y.Z)
+    // title: # Clarity / 心虫 vX.Y.Z  (或 # Clarity vX.Y.Z)
     const beforeTitle = content;
     content = content.replace(
-      /(# HeartFlow(?:\s*\/\s*心虫)?\s+v)\d+\.\d+\.\d+/,
+      /(# Clarity(?:\s*\/\s*心虫)?\s+v)\d+\.\d+\.\d+/,
       (_, pre) => `${pre}${to}`
     );
     if (content !== beforeTitle && !synced.includes('SKILL.md title')) synced.push('SKILL.md title');

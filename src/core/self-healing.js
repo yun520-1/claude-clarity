@@ -1,5 +1,5 @@
 /**
- * HeartFlow Self-Healing v11.5.6
+ * Clarity Self-Healing v11.5.6
  * 
  * Recovery loop with RL-based repair strategy learning.
  * - detect repeated failures

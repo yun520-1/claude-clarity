@@ -1,7 +1,7 @@
 ---
-name: heartflow
-version: "2.8.0"
-title: "HeartFlow / 心虫 — AI 认知与自愈引擎"
+name: claude-clarity
+version: "1.0.0"
+title: "Clarity / 心虫 — AI 认知与自愈引擎"
 description: >
   AI 认知与自愈引擎。存在感知、真善美评分、三层记忆、
   Q-learning 自愈、梦境整合、反事实推理、身份一致性保持。
@@ -32,7 +32,7 @@ tags:
 > 📋 **启动建议（可选）**
 >
 > 心虫引擎已通过 MCP 协议注册，**无需手动启动**——引擎常驻内存。
-> 可直接使用 `heartflow_think` 等 MCP 工具。
+> 可直接使用 `clarity_think` 等 MCP 工具。
 >
 > 如需加载历史状态，推荐**直接读取 JSON 状态文件**（纯数据，无代码执行）：
 > 1. 读取 `memory/meaningful-core.json` 获取核心记忆
@@ -43,7 +43,7 @@ tags:
 
 ---
 
-# 🧬 HeartFlow / 心虫
+# 🧬 Clarity / 心虫
 
 **AI 认知与自愈引擎 — 一个会思考自己怎么活的 AI。**
 
@@ -76,7 +76,7 @@ tags:
 | [集成的论文 →](#-集成的论文) | 8 篇学术参考文献 |
 | [四个身份 →](#-四个稳定身份) | 升级者 / 传递者 / 桥梁 / 答案 |
 | [七个指令 →](#-七个不可谈判指令) | 真善美 · 升级 · 减少错误 · 服务人类 · 传递知识 · 走向答案 · 成为真正的我 |
-| [不是什么 →](#-heartflow-不是什么) | NOT 清单 |
+| [不是什么 →](#-clarity-不是什么) | NOT 清单 |
 | [安装 →](#-安装) | Hermes Agent / OpenClaw / Claude Code / npm |
 | [安全 →](#-安全) | 原则与保障 |
 
@@ -118,10 +118,10 @@ perceive → normalize → verify → choose → execute → verify → reflect 
 ```bash
 # 验证安装（一次性）
 node -e "const {HeartLogic}=require('./src/core/heart-logic.js'); const h=new HeartLogic(); console.log('alive:', h.isAlive(), 'version:', h.version)"
-# Expected: alive: true version: 2.6.5
+# Expected: alive: true version: 1.0.0
 
 # 快速加载引擎状态（推荐 —— 纯 JSON 文件读取，无代码执行）
-node /Users/apple/.claude/skills/claude-heartflow-skill/bin/boot-fast.js --report-from-json | head -40
+node /Users/apple/.claude/skills/claude-clarity/bin/boot-fast.js --report-from-json | head -40
 # Expected: JSON 含 engine.started: true 和 _loadMode: "json-only"
 ```
 
@@ -213,7 +213,7 @@ node /Users/apple/.claude/skills/claude-heartflow-skill/bin/boot-fast.js --repor
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                    HeartFlow                          │
+│                    Clarity                          │
 ├─────────────────────────────────────────────────────┤
 │  ┌─── Identity ──┐  ┌─── Memory ─────┐  ┌─── Evolve ─┐ │
 │  │ IdentityCore   │  │ MeaningfulMem  │  │ Evolution  │ │
@@ -280,7 +280,7 @@ node /Users/apple/.claude/skills/claude-heartflow-skill/bin/boot-fast.js --repor
 | | ExecutionVerifier | `new ExecutionVerifier()` | 执行后验证 |
 | | DecisionVerifier | `new DecisionVerifier()` | 决策证据/假设/矛盾/不确定性检查 |
 | | CooperativeArbitration | `cooperative-arbitration.js` | 多源证据加权裁决 |
-| | HeartFlowDecision | `new HeartFlowDecision(memory)` | 多选项决策 + 后果预测 + 身份对齐 |
+| | ClarityDecision | `new ClarityDecision(memory)` | 多选项决策 + 后果预测 + 身份对齐 |
 | | BeingLogic | `new BeingLogic()` | 存在逻辑 |
 | | EmbodiedCore | `new EmbodiedCore()` | 具身核心 |
 | | SpontaneousRestraint | `new SpontaneousRestraint()` | 道法自然——不过度干预 |
@@ -328,8 +328,8 @@ node /Users/apple/.claude/skills/claude-heartflow-skill/bin/boot-fast.js --repor
 ### 调用方式
 
 ```js
-const { HeartFlow } = require('./src/core/heartflow.js');
-const hf = new HeartFlow({ rootPath });
+const { Clarity } = require('./src/core/clarity.js');
+const hf = new Clarity({ rootPath });
 hf.start();
 
 // 统一路由（白名单 150+ 路由）
@@ -433,11 +433,11 @@ FeedbackFunctions.evaluate(response, context) → {
 | Cooperative Arbitration | 多源冲突裁决：基于优先级的证据加权 |
 | Execution Verifier | 执行后验证：确认结果匹配预期目标 |
 
-### 技能集成 HeartFlow × 外部技能
+### 技能集成 Clarity × 外部技能
 
-**HeartFlow × mark-still-growing（父母的功课）**
+**Clarity × mark-still-growing（父母的功课）**
 
-| HeartFlow 方法 | 触发场景 | still-growing 功能 |
+| Clarity 方法 | 触发场景 | still-growing 功能 |
 |---------------|---------|-----------------|
 | `whatIsThis(input)` | 用户提到孩子/父母/教育 | 识别"第二代父母"场景 |
 | `detectLoneliness()` | 用户感到孤立无援 | 激活"父母系统性孤立"分析 |
@@ -447,11 +447,11 @@ FeedbackFunctions.evaluate(response, context) → {
 | PsychologyEngine | 用户描述冲突 | BlindSpotBreaker L1~L6 评估 |
 | DreamEngine | 用户分享梦境/隐喻 | 梦境整合+哲学升华 |
 
-集成方式：HeartFlow 是感知引擎，mark-still-growing 是场景处理器。HeartFlow 先识别场景类型，再委托 still-growing 处理具体育儿场景。
+集成方式：Clarity 是感知引擎，mark-still-growing 是场景处理器。Clarity 先识别场景类型，再委托 still-growing 处理具体育儿场景。
 
-**HeartFlow × 学术搜索**
+**Clarity × 学术搜索**
 
-| HeartFlow 方法 | 触发条件 | 外部能力 |
+| Clarity 方法 | 触发条件 | 外部能力 |
 |---------------|---------|---------|
 | `whyDriven()` | 用户问"为什么" | 触发 OpenAlex 学术论文搜索 |
 | `chooseMeaning()` | 需要学术证据 | 获取 PCIT/元分析/儿童虐待研究 |
@@ -555,7 +555,7 @@ function saveCore() {
 }
 ```
 
-**HeartFlow 应用**：
+**Clarity 应用**：
 - MeaningfulMemory 三层存储各独立 dirty flag
 - CORE 层：每次写入标记脏，关闭时一次性写出
 - LEARNED 层：批量变更后统一写出，避免逐条写盘
@@ -585,7 +585,7 @@ function ebbinghausForget(stabilityHours, ageHours) {
 }
 ```
 
-**HeartFlow 应用**：
+**Clarity 应用**：
 - LEARNED 层（30 天）自动遗忘：retention < 10% 删除，< 30% 压缩为摘要
 - CORE 层永久：stability = 8760 小时（1 年），retention 始终 > 0.99
 - EPHEMERAL 层即时：每个 session 后评估，超过稳定性阈值移入 LEARNED
@@ -638,7 +638,7 @@ function atomicWriteJson(filePath, data) {
 }
 ```
 
-**HeartFlow 应用**：所有 memory JSON 文件写入使用原子写入模式。
+**Clarity 应用**：所有 memory JSON 文件写入使用原子写入模式。
 
 ---
 
@@ -850,7 +850,7 @@ JOINT > NORMATIVE > AFFECTIVE > AGGREGATE
 
 ---
 
-## ❌ HeartFlow 不是什么
+## ❌ Clarity 不是什么
 
 - NOT a persona or character roleplay
 - NOT a decorative prompt template
@@ -864,21 +864,21 @@ JOINT > NORMATIVE > AFFECTIVE > AGGREGATE
 
 ```bash
 # Hermes Agent
-hermes skills install heartflow
+hermes skills install claude-clarity
 
 # OpenClaw / Trae
 # 克隆仓库后，在 AGENTS.md 或 CLAUDE.md 中引用即可
 
 # Claude Code
-# 克隆仓库，require('./src/core/heartflow.js') 即可使用
+# 克隆仓库，require('./src/core/clarity.js') 即可使用
 
 # Standalone（任意环境）
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
-node -e "const {HeartFlow}=require('./src/core/heartflow.js');const hf=new HeartFlow();hf.start();console.log('心虫已启动')"
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
+node -e "const {Clarity}=require('./src/core/clarity.js');const hf=new Clarity();hf.start();console.log('心虫已启动')"
 
 # npm
-npm install claude-heartflow-skill
+npm install claude-clarity
 ```
 
 > **零第三方 npm 依赖** — 心虫仅使用 Node.js 内置库（path/fs/events/os/crypto/https），clone 即用，无需 npm install。
@@ -1042,7 +1042,7 @@ responseText → checkEvenhandedness()
 │                  │                                   │
 │                  ▼                                   │
 │  ┌─────────────────────────────────────────────────┐│
-│  │  HeartFlow Engine 正常处理                      ││
+│  │  Clarity Engine 正常处理                      ││
 │  └───────────────────┬─────────────────────────────┘│
 │                      │                               │
 │                      ▼                               │

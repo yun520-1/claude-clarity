@@ -1,5 +1,5 @@
 /**
- * HeartFlow Memory Slots Module
+ * Clarity Memory Slots Module
  * 
  * 记忆槽(Slot)系统
  * 

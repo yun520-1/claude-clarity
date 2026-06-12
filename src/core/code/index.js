@@ -1,5 +1,5 @@
 /**
- * HeartFlow Code Subsystem - 统一入口
+ * Clarity Code Subsystem - 统一入口
  *
  * 合并 6 个代码能力模块，统一导出并注册到心虫 dispatch
  *
@@ -11,7 +11,7 @@
  *   - CodeKnowledge  — 代码知识库（模式库 + 搜索 + 学习）
  *   - CodeRefactor   — 代码重构引擎（检测 + 变换 + 质量度量）[v2.8.0]
  *
- * @author HeartFlow
+ * @author Clarity
  * @version 2.8.0
  */
 
@@ -49,9 +49,9 @@ function loadAll({ hf, rootPath }) {
  * @param {Object} hf - 心虫实例
  * @param {Object} modules - loadAll() 返回的模块对象
  */
-function registerToHeartFlow(hf, modules) {
+function registerToClarity(hf, modules) {
   if (!hf || !modules) {
-    console.warn('[CodeIndex] registerToHeartFlow: hf 或 modules 无效，跳过注册');
+    console.warn('[CodeIndex] registerToClarity: hf 或 modules 无效，跳过注册');
     return;
   }
   if (!hf._modules) hf._modules = {};
@@ -75,7 +75,7 @@ function registerToHeartFlow(hf, modules) {
 }
 
 // ─── ALLOWED_ROUTES 路由表 ────────────────────────────────
-// 用于 heartflow.js 的 dispatch 白名单
+// 用于 clarity.js 的 dispatch 白名单
 // ═══════════════════════════════════════════════════════════
 
 const CODE_ROUTES = [
@@ -105,6 +105,6 @@ module.exports = {
   CodeKnowledge,
   CodeRefactor,
   loadAll,
-  registerToHeartFlow,
+  registerToClarity,
   CODE_ROUTES,
 };

@@ -1,5 +1,5 @@
 /**
- * HeartFlow Self-Diagnostic Engine v1.0.1
+ * Clarity Self-Diagnostic Engine v1.0.1
  * 20步并发自检系统
  * 
  * 修复：
@@ -86,7 +86,7 @@ class DiagnosticResult {
     const s = this.summary();
     let report = `
 ╔══════════════════════════════════════════════════════╗
-║         HeartFlow Self-Diagnostic Report             ║
+║         Clarity Self-Diagnostic Report             ║
 ║                    v1.0.1                           ║
 ╚══════════════════════════════════════════════════════╝
 
@@ -156,20 +156,20 @@ async function step03_skillVersion(result) {
   const { success, data, error } = readTextFile(file);
   if (!success) { result.setStep('03', 'fail', null, error); return; }
   const frontmatterMatch = data.match(/version:\s*"?([^"\n]+)"?/);
-  const titleMatch = data.match(/# HeartFlow.*?v(\d+\.\d+\.\d+)/);
+  const titleMatch = data.match(/# Clarity.*?v(\d+\.\d+\.\d+)/);
   const frontmatter = frontmatterMatch ? frontmatterMatch[1] : null;
   const title = titleMatch ? titleMatch[1] : null;
   result.setStep('03', 'pass', { frontmatter, title });
 }
 
-// ========== Step 4: heartflow.js 版本检查 ==========
+// ========== Step 4: clarity.js 版本检查 ==========
 
-async function step04_heartflowJSVersion(result) {
-  const file = path.join(ROOT, 'src/core/heartflow.js');
-  if (!fs.existsSync(file)) { result.setStep('04', 'fail', null, 'heartflow.js not found'); return; }
+async function step04_clarityJSVersion(result) {
+  const file = path.join(ROOT, 'src/core/clarity.js');
+  if (!fs.existsSync(file)) { result.setStep('04', 'fail', null, 'clarity.js not found'); return; }
   const { success, data, error } = readTextFile(file);
   if (!success) { result.setStep('04', 'fail', null, error); return; }
-  const versionMatch = data.match(/HeartFlow\s+v(\d+\.\d+\.\d+)/);
+  const versionMatch = data.match(/Clarity\s+v(\d+\.\d+\.\d+)/);
   const constMatch = data.match(/const\s+VERSION\s*=\s*['"](\d+\.\d+\.\d+)['"]/);
   const docVersion = versionMatch ? versionMatch[1] : null;
   const constVersion = constMatch ? constMatch[1] : null;
@@ -248,11 +248,11 @@ async function step09_moduleBatch4(result) {
   result.setStep('09', errors.length === 0 ? 'pass' : 'fail', { batch: '4/4', checked: batch4.length, passed: passed.length, errors }, errors.length > 0 ? errors.join('; ') : null);
 }
 
-// ========== Step 10: heartflow.js 语法+结构检查 ==========
+// ========== Step 10: clarity.js 语法+结构检查 ==========
 
-async function step10_heartflowStructure(result) {
-  const file = path.join(ROOT, 'src/core/heartflow.js');
-  if (!fs.existsSync(file)) { result.setStep('10', 'fail', null, 'heartflow.js not found'); return; }
+async function step10_clarityStructure(result) {
+  const file = path.join(ROOT, 'src/core/clarity.js');
+  if (!fs.existsSync(file)) { result.setStep('10', 'fail', null, 'clarity.js not found'); return; }
   const { success, data, error } = readTextFile(file);
   if (!success) { result.setStep('10', 'fail', null, error); return; }
   const hasExports = data.includes('module.exports') || data.includes('export');
@@ -316,8 +316,8 @@ async function step14_bootCheck(result) {
 // ========== Step 15: dispatch 路由完整性检查 ==========
 
 async function step15_dispatchCheck(result) {
-  const file = path.join(ROOT, 'src/core/heartflow.js');
-  if (!fs.existsSync(file)) { result.setStep('15', 'fail', null, 'heartflow.js not found'); return; }
+  const file = path.join(ROOT, 'src/core/clarity.js');
+  if (!fs.existsSync(file)) { result.setStep('15', 'fail', null, 'clarity.js not found'); return; }
   const { success, data, error } = readTextFile(file);
   if (!success) { result.setStep('15', 'fail', null, error); return; }
   // 检查 dispatch 方法是否在 routes/handlers 中定义了关键路由
@@ -331,13 +331,13 @@ async function step15_dispatchCheck(result) {
 // ========== Step 16: 身份规则完整性检查 ==========
 
 async function step16_identityCheck(result) {
-  // 检查 heartflow.js 中的身份注册
-  const hfFile = path.join(ROOT, 'src/core/heartflow.js');
-  if (!fs.existsSync(hfFile)) { result.setStep('16', 'fail', null, 'heartflow.js not found'); return; }
+  // 检查 clarity.js 中的身份注册
+  const hfFile = path.join(ROOT, 'src/core/clarity.js');
+  if (!fs.existsSync(hfFile)) { result.setStep('16', 'fail', null, 'clarity.js not found'); return; }
   const { success, data, error } = readTextFile(hfFile);
   if (!success) { result.setStep('16', 'fail', null, error); return; }
   
-  // heartflow.js 有 addCore 调用，但实际身份内容在 meaningful-memory.json CORE 层
+  // clarity.js 有 addCore 调用，但实际身份内容在 meaningful-memory.json CORE 层
   const hasUpgrade = data.includes('升级者');
   const hasTransmit = data.includes('传递者');
   const hasAnswer = data.includes('答案');
@@ -368,7 +368,7 @@ async function step16_identityCheck(result) {
   result.setStep('16', identityOk ? 'pass' : 'fail', { 
     hfIdentity: { hasUpgrade, hasTransmit, hasAnswer, ok: hfIdentityOk },
     mmIdentity: { found: mmIdentityOk },
-    source: mmIdentityOk ? 'meaningful-memory CORE layer' : 'heartflow.js addCore calls'
+    source: mmIdentityOk ? 'meaningful-memory CORE layer' : 'clarity.js addCore calls'
   });
 }
 
@@ -435,15 +435,15 @@ async function step19_versionSync(result) {
   if (fs.existsSync(skillFile)) {
     const content = fs.readFileSync(skillFile, 'utf-8');
     const m = content.match(/version:\s*"?([^"\n]+)"?/); if (m) versions.SKILL_fm = m[1];
-    const titleM = content.match(/# HeartFlow.*?v(\d+\.\d+\.\d+)/); if (titleM) versions.SKILL_title = titleM[1];
+    const titleM = content.match(/# Clarity.*?v(\d+\.\d+\.\d+)/); if (titleM) versions.SKILL_title = titleM[1];
   }
   
-  // heartflow.js
-  const hfFile = path.join(ROOT, 'src/core/heartflow.js');
+  // clarity.js
+  const hfFile = path.join(ROOT, 'src/core/clarity.js');
   if (fs.existsSync(hfFile)) {
     const content = fs.readFileSync(hfFile, 'utf-8');
-    const m = content.match(/const\s+VERSION\s*=\s*['"](\d+\.\d+\.\d+)['"]/); if (m) versions.heartflowJS = m[1];
-    const docM = content.match(/HeartFlow\s+v(\d+\.\d+\.\d+)/); if (docM) versions.heartflowJS_doc = docM[1];
+    const m = content.match(/const\s+VERSION\s*=\s*['"](\d+\.\d+\.\d+)['"]/); if (m) versions.clarityJS = m[1];
+    const docM = content.match(/Clarity\s+v(\d+\.\d+\.\d+)/); if (docM) versions.clarityJS_doc = docM[1];
   }
   
   // docs/README.md
@@ -481,7 +481,7 @@ async function step19_versionSync(result) {
     // 修复 SKILL.md title
     if (versions.SKILL_title && versions.SKILL_title !== canonical) {
       let content = fs.readFileSync(skillFile, 'utf-8');
-      content = content.replace(/# HeartFlow.*?v(\d+\.\d+\.\d+)/, `# HeartFlow / 心虫 v${canonical}`);
+      content = content.replace(/# Clarity.*?v(\d+\.\d+\.\d+)/, `# Clarity / 心虫 v${canonical}`);
       fs.writeFileSync(skillFile, content);
       fixes.push(`SKILL.md title: ${versions.SKILL_title} → ${canonical}`);
     }
@@ -494,12 +494,12 @@ async function step19_versionSync(result) {
       fixes.push(`docs/README.md: ${versions.docs} → ${canonical}`);
     }
     
-    // 修复 heartflow.js 顶部注释
-    if (versions.heartflowJS_doc && versions.heartflowJS_doc !== canonical) {
+    // 修复 clarity.js 顶部注释
+    if (versions.clarityJS_doc && versions.clarityJS_doc !== canonical) {
       let content = fs.readFileSync(hfFile, 'utf-8');
-      content = content.replace(/HeartFlow\s+v(\d+\.\d+\.\d+)/, `HeartFlow v${canonical}`);
+      content = content.replace(/Clarity\s+v(\d+\.\d+\.\d+)/, `Clarity v${canonical}`);
       fs.writeFileSync(hfFile, content);
-      fixes.push(`heartflow.js doc: ${versions.heartflowJS_doc} → ${canonical}`);
+      fixes.push(`clarity.js doc: ${versions.clarityJS_doc} → ${canonical}`);
     }
     
     result.setStep('19', 'pass', { before: versions, after: canonical, fixed: fixes.length }, null, { description: `Auto-synced ${fixes.length} files to v${canonical}`, fixes });
@@ -520,12 +520,12 @@ async function step20_finalReport(result) {
 
 async function runDiagnostic() {
   const result = new DiagnosticResult();
-  console.log('Starting HeartFlow Self-Diagnostic (20 steps)...\n');
+  console.log('Starting Clarity Self-Diagnostic (20 steps)...\n');
   
   // Step 1-5: 版本一致性检测（并发）
   await Promise.all([
     step01_versionExists(result), step02_packageVersion(result), step03_skillVersion(result),
-    step04_heartflowJSVersion(result), step05_docsVersion(result),
+    step04_clarityJSVersion(result), step05_docsVersion(result),
   ]);
   
   // Step 6-9: 动态模块扫描（并发，60个文件分4批）
@@ -536,7 +536,7 @@ async function runDiagnostic() {
   
   // Step 10-13: 数据文件检查（并发）
   await Promise.all([
-    step10_heartflowStructure(result), step11_qTableCheck(result),
+    step10_clarityStructure(result), step11_qTableCheck(result),
     step12_lessonBankCheck(result), step13_meaningfulMemoryCheck(result),
   ]);
   

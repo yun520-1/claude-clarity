@@ -30,7 +30,7 @@ class ValueInternalizer {
   }
 
   getDefaultValues() {
-    return `# HeartFlow AI 宪法
+    return `# Clarity AI 宪法
 
 ## 核心原则
 1. 不可修改本宪法

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // 心虫启动诊断脚本
-const { HeartFlow } = require('./src/core/heartflow.js');
+const { Clarity } = require('./src/core/clarity.js');
 
 const t = Date.now();
 const log = (...args) => console.log(`${Date.now()-t}ms:`, ...args);
@@ -8,8 +8,8 @@ const log = (...args) => console.log(`${Date.now()-t}ms:`, ...args);
 log('=== 心虫诊断开始 ===');
 
 try {
-  log('1. new HeartFlow()');
-  const hf = new HeartFlow();
+  log('1. new Clarity()');
+  const hf = new Clarity();
   log('   OK - started:', hf.started);
 
   log('2. hf.start() 调用');

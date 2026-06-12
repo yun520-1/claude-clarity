@@ -8,7 +8,7 @@
 
 ## 概述
 
-本模块解决了 HeartFlow 系统的两个核心问题：
+本模块解决了 Clarity 系统的两个核心问题：
 
 1. **动机冲突** - 多动机并存时的优先级决策
 2. **记忆限制** - 在有限上下文内提取有效记忆
@@ -24,7 +24,7 @@
 ```
 示例场景:
 - 动机 A: 回应用户明确需求 (USER_EXPLICIT)
-- 动机 B: 展示 HeartFlow 能力 (SELF_DISPLAY)
+- 动机 B: 展示 Clarity 能力 (SELF_DISPLAY)
 - 动机 C: 避免说错话 (SELF_PROTECT)
 
 问题：同时满足会导致输出混乱

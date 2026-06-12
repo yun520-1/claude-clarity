@@ -1,5 +1,5 @@
 /**
- * HeartFlow Decision Engine v2.0.3 — Decision with consequence prediction
+ * Clarity Decision Engine v2.0.3 — Decision with consequence prediction
  * 
  * Features:
  *   - Multi-option evaluation with identity alignment
@@ -162,10 +162,10 @@ class ContextPassport {
 }
 
 // ============================================================================
-// HeartFlowDecision — Main Decision Engine
+// ClarityDecision — Main Decision Engine
 // ============================================================================
 
-class HeartFlowDecision {
+class ClarityDecision {
   constructor(memory) {
     this.memory = memory;
     this._history = [];
@@ -431,4 +431,4 @@ class HeartFlowDecision {
   }
 }
 
-module.exports = { HeartFlowDecision, ContextPassport };
+module.exports = { ClarityDecision, ContextPassport };

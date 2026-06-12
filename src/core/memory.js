@@ -1,7 +1,7 @@
 /**
  * @deprecated — REMOVED in v12.0.0. Use src/core/meaningful-memory.js instead.
  * 
- * This file is kept for reference only. It is NOT loaded by heartflow.js
+ * This file is kept for reference only. It is NOT loaded by clarity.js
  * or any other module. All functionality has been superseded by
  * meaningful-memory.js (CORE/LEARNED/EPHEMERAL three-layer system with
  * multi-channel search, Ebbinghaus forgetting curve, and topic isolation).
@@ -9,7 +9,7 @@
  * Legacy references (SKILL.md, CHANGELOG.md) are informational only.
  * 
  * Original description:
- * HeartFlow Memory — Ebbinghaus + AES-256-GCM 三层记忆系统
+ * Clarity Memory — Ebbinghaus + AES-256-GCM 三层记忆系统
  * 整合来源（SKILL.md lines 348-540）：
  *   mark-StillWater/src/core/memory.js — Dirty Flag + Ebbinghaus + Atomic Write
  * 

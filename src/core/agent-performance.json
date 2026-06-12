@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "description": "HeartFlow 多智能体表现追踪 - 专家权重系统",
+  "description": "Clarity 多智能体表现追踪 - 专家权重系统",
   "lastUpdate": "2026-04-09T00:09:00Z",
   "agents": {
     "FocusAgent": {

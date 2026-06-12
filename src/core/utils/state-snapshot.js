@@ -61,7 +61,7 @@ class StateSnapshot {
       interactionCount: this.interactionCount,
       metadata: {
         version: '1.0',
-        system: 'HeartFlow'
+        system: 'Clarity'
       }
     };
 
@@ -70,7 +70,7 @@ class StateSnapshot {
 
   async getPersonalityState() {
     try {
-      const stateFile = path.join(this.projectRoot, '.opencode', 'memory', 'heartflow_state.json');
+      const stateFile = path.join(this.projectRoot, '.opencode', 'memory', 'clarity_state.json');
       if (fs.existsSync(stateFile)) {
         const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
         return state.personality || state.big_five_scores || {};
@@ -83,7 +83,7 @@ class StateSnapshot {
 
   async getEmotionState() {
     try {
-      const stateFile = path.join(this.projectRoot, '.opencode', 'memory', 'heartflow_state.json');
+      const stateFile = path.join(this.projectRoot, '.opencode', 'memory', 'clarity_state.json');
       if (fs.existsSync(stateFile)) {
         const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
         return {
@@ -217,7 +217,7 @@ class StateSnapshot {
 
   async restoreState(snapshot) {
     try {
-      const stateFile = path.join(this.projectRoot, '.opencode', 'memory', 'heartflow_state.json');
+      const stateFile = path.join(this.projectRoot, '.opencode', 'memory', 'clarity_state.json');
       let state = {};
 
       if (fs.existsSync(stateFile)) {

@@ -1,5 +1,5 @@
 /**
- * HeartFlow Observe & Consolidate Module
+ * Clarity Observe & Consolidate Module
  * 
  * 观察和记忆固化模块
  * 

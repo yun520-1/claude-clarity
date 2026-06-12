@@ -1,5 +1,5 @@
 /**
- * HeartFlow MetaMemory v1.0.0
+ * Clarity MetaMemory v1.0.0
  * 
  * Memory that reasons about its own memory.
  * Analyzes memory health, suggests pruning, provides memory statistics,
@@ -8,7 +8,7 @@
  * Reads from MeaningfulMemory storage to analyze memory distribution,
  * access patterns, age distribution, and fragmentation.
  * 
- * Storage: ~/.hermes/skills/ai/claude-heartflow-skill/data/meta-memory.json
+ * Storage: claude-clarity/data/meta-memory.json
  */
 
 const fs = require('fs');

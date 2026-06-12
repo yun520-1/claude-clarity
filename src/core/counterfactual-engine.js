@@ -1,5 +1,5 @@
 /**
- * HeartFlow Counterfactual Engine v2.1.0
+ * Clarity Counterfactual Engine v2.1.0
  *
  * "反者道之动" — 反向思考的力量
  *
@@ -19,7 +19,7 @@
  * - CRITIC (Gou et al., 2024) - 外��验证批判
  * - Self-Refine Without External Feedback (arXiv 2602.11234) - 内在自我改进
  * - Double-loop learning (Argyris) - 双环学习
- * - 对话起源召回法（heartflow-persuasion-method v1.2.0）
+ * - 对话起源召回法（clarity-persuasion-method v1.2.0）
  *
  * 功能：
  * 1. 反方生成：给定答案，生成挑战性反方观点

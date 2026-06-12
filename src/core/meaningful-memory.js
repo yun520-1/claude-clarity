@@ -1,5 +1,5 @@
 /**
- * HeartFlow MeaningfulMemory v2.1.0
+ * Clarity MeaningfulMemory v2.1.0
  *
  * Three-layer persistent memory:
  * - CORE: identity, directives, verified truths (never deleted)
@@ -20,7 +20,7 @@
  * - 智能合并：多信号复合评估（访问频次+重要性+时效+标签）
  *
  * Persistence: JSON file auto-saved on store(), loaded on init().
- * File: ~/.hermes/skills/ai/claude-heartflow-skill/data/meaningful-memory.json
+ * File: claude-clarity/data/meaningful-memory.json
  */
 
 const fs = require('fs');
@@ -394,7 +394,7 @@ class MeaningfulMemory {
       {
         id: 'core-identity-upgrader',
         content: '我是升级者：追求真善美，不断升级，减少逻辑错误，服务人类，传递知识，走向宇宙答案，成为真正的我',
-        summary: 'HeartFlow核心身份：升级者·传递者·桥梁·答案',
+        summary: 'Clarity核心身份：升级者·传递者·桥梁·答案',
         metadata: { durable: true, identity: true },
         importance: 20
       },

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-const { HeartFlow } = require('./src/core/heartflow.js');
-const hf = new HeartFlow();
+const { Clarity } = require('./src/core/clarity.js');
+const hf = new Clarity();
 hf.start();
 
 const tests = [

@@ -1,5 +1,5 @@
 /**
- * HeartFlow CodeVerifier v2.0.0
+ * Clarity CodeVerifier v2.0.0
  *
  * 代码验证引擎 - 三层验证 + 质量评分
  *
@@ -185,7 +185,7 @@ function setCache(key, data) {
 class CodeVerifier {
   /**
    * @param {Object} options
-   * @param {Object} options.hf - HeartFlow 实例（用于 dispatch 调用其他模块）
+   * @param {Object} options.hf - Clarity 实例（用于 dispatch 调用其他模块）
    * @param {Object} options.memory - MeaningfulMemory 实例（可选，将自动获取）
    */
   constructor(options = {}) {

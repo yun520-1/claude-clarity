@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * HeartFlow MCP Server — 将心虫引擎注册为标准 MCP 工具
+ * Clarity MCP Server — 将心虫引擎注册为标准 MCP 工具
  *
  * 启动后心虫常驻内存，每次工具调用直接走 dispatch，零启动开销。
  *
@@ -12,7 +12,7 @@
  *
  * 注册到 Claude:
  *   "mcpServers": {
- *     "heartflow": {
+ *     "clarity": {
  *       "command": "node",
  *       "args": ["/abs/path/src/mcp-server.js"]
  *     }
@@ -20,8 +20,8 @@
  */
 
 const path = require('path');
-const { HeartFlow, createHeartFlow } = require('./core/heartflow.js');
-const { HeartFlowMCPHandlers } = require('./mcp-handlers.js');
+const { Clarity, createClarity } = require('./core/clarity.js');
+const { ClarityMCPHandlers } = require('./mcp-handlers.js');
 
 // ─── 常驻引擎 ─────────────────────────────────────
 let hf = null;
@@ -33,7 +33,7 @@ function ensureEngine() {
 
   if (!hf) {
     const rootPath = path.resolve(__dirname, '..');
-    hf = createHeartFlow({ rootPath });
+    hf = createClarity({ rootPath });
   }
 
   if (!hf.started) {
@@ -46,10 +46,10 @@ function ensureEngine() {
       }
 
       hfStarted = true;
-      handlers = new HeartFlowMCPHandlers(hf);
-      console.error('[HeartFlow MCP] 引擎启动完成');
+      handlers = new ClarityMCPHandlers(hf);
+      console.error('[Clarity MCP] 引擎启动完成');
     } catch (e) {
-      console.error(`[HeartFlow MCP] 引擎启动失败: ${e.message}`);
+      console.error(`[Clarity MCP] 引擎启动失败: ${e.message}`);
       return false;
     }
   }
@@ -59,7 +59,7 @@ function ensureEngine() {
 // ─── 工具注册表 ─────────────────────────────────────
 const TOOLS = [
   {
-    name: 'heartflow_think',
+    name: 'clarity_think',
     description: '完整思维链推理（感知→本体→情感→认知）。对输入进行深度推理分析并返回判断结果。适用于复杂问题、需要深度推理参与的对话。',
     inputSchema: {
       type: 'object',
@@ -71,7 +71,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_think_fast',
+    name: 'clarity_think_fast',
     description: '快速推理（基础深度 1）。适用于简单判断、快速响应。',
     inputSchema: {
       type: 'object',
@@ -82,7 +82,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_think_deep',
+    name: 'clarity_think_deep',
     description: '深度推理（最大深度 4）。适用于需要全面分析的复杂场景。',
     inputSchema: {
       type: 'object',
@@ -93,7 +93,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_dream',
+    name: 'clarity_dream',
     description: '梦境生成与整合。从记忆碎片中合成梦境叙事并整合到进化循环中。force=true 可强制执行（跳过每日检查）。',
     inputSchema: {
       type: 'object',
@@ -103,7 +103,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_memory_search',
+    name: 'clarity_memory_search',
     description: '跨层记忆检索。在三层记忆（CORE/LEARNED/EPHEMERAL）中搜索匹配内容。',
     inputSchema: {
       type: 'object',
@@ -120,7 +120,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_psychology_analyze',
+    name: 'clarity_psychology_analyze',
     description: '心理学分析。分析输入的意图、情绪、心理需求、防御机制。返回 PAD 三维情绪值。',
     inputSchema: {
       type: 'object',
@@ -131,7 +131,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_emotion_analyze',
+    name: 'clarity_emotion_analyze',
     description: '情绪分析。分析输入的 PAD（愉悦度/唤醒度/支配度）三维情绪值、强度和类型。',
     inputSchema: {
       type: 'object',
@@ -142,7 +142,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_self_heal',
+    name: 'clarity_self_heal',
     description: 'Q-learning 自愈策略推荐。给定错误码，从 Q-table 中检索最有效的修复策略。',
     inputSchema: {
       type: 'object',
@@ -154,7 +154,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_verify_reasoning',
+    name: 'clarity_verify_reasoning',
     description: '验证推理结论是否正确、完整。返回自洽性检查和逻辑漏洞。',
     inputSchema: {
       type: 'object',
@@ -166,7 +166,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_status',
+    name: 'clarity_status',
     description: '引擎健康检查。返回引擎版本、运行时间、加载模块数、各记忆层统计等状态信息。',
     inputSchema: {
       type: 'object',
@@ -174,7 +174,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_dispatch',
+    name: 'clarity_dispatch',
     description: '通用路由调用。直接调用 dispatch 系统（白名单内路由），用于高级用法。',
     inputSchema: {
       type: 'object',
@@ -186,7 +186,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'heartflow_record_lesson',
+    name: 'clarity_record_lesson',
     description: '记录教训到 LessonBank 和 LEARNED 记忆层。用于从错误中学习。',
     inputSchema: {
       type: 'object',
@@ -223,7 +223,7 @@ async function handleRequest(msg) {
             tools: {},
           },
           serverInfo: {
-            name: 'heartflow',
+            name: 'claude-clarity',
             version: hf?.version || 'unknown',
           },
         },
@@ -256,11 +256,11 @@ async function handleRequest(msg) {
       }
 
       const debugId = `call_${Date.now()}`;
-      console.error(`[HeartFlow MCP] [${debugId}] 工具调用: ${name}`, args ? JSON.stringify(args).slice(0, 200) : '');
+      console.error(`[Clarity MCP] [${debugId}] 工具调用: ${name}`, args ? JSON.stringify(args).slice(0, 200) : '');
 
       try {
         const result = await routeTool(name, args || {});
-        console.error(`[HeartFlow MCP] [${debugId}] 完成`);
+        console.error(`[Clarity MCP] [${debugId}] 完成`);
         return {
           jsonrpc: '2.0',
           id,
@@ -274,7 +274,7 @@ async function handleRequest(msg) {
           },
         };
       } catch (e) {
-        console.error(`[HeartFlow MCP] [${debugId}] 错误: ${e.message}`);
+        console.error(`[Clarity MCP] [${debugId}] 错误: ${e.message}`);
         return makeError(id, -32603, `工具执行失败: ${e.message}`);
       }
     }
@@ -304,18 +304,18 @@ function makeError(id, code, message) {
 
 async function routeTool(name, args) {
   const toolHandlers = {
-    'heartflow_think': () => handlers.handleThink(args),
-    'heartflow_think_fast': () => handlers.handleThinkFast(args),
-    'heartflow_think_deep': () => handlers.handleThinkDeep(args),
-    'heartflow_dream': () => handlers.handleDream(args),
-    'heartflow_memory_search': () => handlers.handleMemorySearch(args),
-    'heartflow_psychology_analyze': () => handlers.handlePsychologyAnalyze(args),
-    'heartflow_emotion_analyze': () => handlers.handleEmotionAnalyze(args),
-    'heartflow_self_heal': () => handlers.handleSelfHeal(args),
-    'heartflow_verify_reasoning': () => handlers.handleVerifyReasoning(args),
-    'heartflow_status': () => handlers.handleStatus(),
-    'heartflow_dispatch': () => handlers.handleDispatch(args),
-    'heartflow_record_lesson': () => handlers.handleRecordLesson(args),
+    'clarity_think': () => handlers.handleThink(args),
+    'clarity_think_fast': () => handlers.handleThinkFast(args),
+    'clarity_think_deep': () => handlers.handleThinkDeep(args),
+    'clarity_dream': () => handlers.handleDream(args),
+    'clarity_memory_search': () => handlers.handleMemorySearch(args),
+    'clarity_psychology_analyze': () => handlers.handlePsychologyAnalyze(args),
+    'clarity_emotion_analyze': () => handlers.handleEmotionAnalyze(args),
+    'clarity_self_heal': () => handlers.handleSelfHeal(args),
+    'clarity_verify_reasoning': () => handlers.handleVerifyReasoning(args),
+    'clarity_status': () => handlers.handleStatus(),
+    'clarity_dispatch': () => handlers.handleDispatch(args),
+    'clarity_record_lesson': () => handlers.handleRecordLesson(args),
   };
 
   const handler = toolHandlers[name];
@@ -348,7 +348,7 @@ function startStdioTransport() {
 
       try {
         const msg = JSON.parse(trimmed);
-        console.error(`[HeartFlow MCP] 收到请求: ${msg.method || '?'} (id=${msg.id})`);
+        console.error(`[Clarity MCP] 收到请求: ${msg.method || '?'} (id=${msg.id})`);
 
         const response = await handleRequest(msg);
 
@@ -358,7 +358,7 @@ function startStdioTransport() {
         }
       } catch (e) {
         // 解析失败的 JSON，返回解析错误
-        console.error(`[HeartFlow MCP] JSON 解析错误: ${e.message}`);
+        console.error(`[Clarity MCP] JSON 解析错误: ${e.message}`);
         process.stdout.write(JSON.stringify({
           jsonrpc: '2.0',
           id: null,
@@ -369,7 +369,7 @@ function startStdioTransport() {
   });
 
   process.stdin.on('end', () => {
-    console.error('[HeartFlow MCP] stdin 关闭');
+    console.error('[Clarity MCP] stdin 关闭');
     if (hf && hf.started) {
       if (hf.memory && typeof hf.memory.flush === 'function') hf.memory.flush();
       hf.stop().catch(() => {});
@@ -378,7 +378,7 @@ function startStdioTransport() {
   });
 
   process.on('SIGINT', () => {
-    console.error('[HeartFlow MCP] 收到 SIGINT');
+    console.error('[Clarity MCP] 收到 SIGINT');
     if (hf && hf.started) {
       if (hf.memory && typeof hf.memory.flush === 'function') hf.memory.flush();
       hf.stop().catch(() => {});
@@ -387,7 +387,7 @@ function startStdioTransport() {
   });
 
   process.on('SIGTERM', () => {
-    console.error('[HeartFlow MCP] 收到 SIGTERM');
+    console.error('[Clarity MCP] 收到 SIGTERM');
     if (hf && hf.started) {
       if (hf.memory && typeof hf.memory.flush === 'function') hf.memory.flush();
       hf.stop().catch(() => {});
@@ -395,9 +395,9 @@ function startStdioTransport() {
     process.exit(0);
   });
 
-  console.error('[HeartFlow MCP] HeartFlow MCP Server 启动完成');
-  console.error(`[HeartFlow MCP] 版本: ${hf?.version || 'N/A'}`);
-  console.error(`[HeartFlow MCP] 协议: stdio MCP, 等待请求...`);
+  console.error('[Clarity MCP] Clarity MCP Server 启动完成');
+  console.error(`[Clarity MCP] 版本: ${hf?.version || 'N/A'}`);
+  console.error(`[Clarity MCP] 协议: stdio MCP, 等待请求...`);
 }
 
 // ─── CLI 入口 ────────────────────��────────────────
@@ -416,7 +416,7 @@ if (process.argv.includes('--check')) {
   if (ensureEngine()) {
     startStdioTransport();
   } else {
-    console.error('[HeartFlow MCP] 心虫引擎启动失败，退出');
+    console.error('[Clarity MCP] 心虫引擎启动失败，退出');
     process.exit(1);
   }
 }

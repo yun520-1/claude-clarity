@@ -1,5 +1,5 @@
 const path = require('path');
-const rootPath = path.join(require('os').homedir(), '.hermes/skills/ai/claude-heartflow-skill');
+const rootPath = path.join(require('os').homedir(), '.claude/skills/claude-clarity');
 
 try {
     const { HeartLogic } = require(path.join(rootPath, 'src/core/heart-logic.js'));

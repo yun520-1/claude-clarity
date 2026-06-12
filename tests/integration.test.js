@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * HeartFlow 集成测试套件
+ * Clarity 集成测试套件
  * 运行方式: node tests/integration.test.js
  */
-const { HeartFlow } = require('../src/core/heartflow.js');
+const { Clarity } = require('../src/core/clarity.js');
 
 let passed = 0, failed = 0;
 
@@ -24,10 +24,10 @@ function test(name, fn) {
 }
 
 // 初始化
-const hf = new HeartFlow();
+const hf = new Clarity();
 hf.start();
 
-console.log('\n=== HeartFlow 集成测试 ===\n');
+console.log('\n=== Clarity 集成测试 ===\n');
 
 // 核心能力测试
 test('心虫启动', () => hf.started === true);

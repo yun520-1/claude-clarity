@@ -1,4 +1,4 @@
-# HeartFlow 品牌指南
+# Clarity 品牌指南
 
 **版本**: 1.0  
 **创建日期**: 2026-04-04  
@@ -10,7 +10,7 @@
 
 ### 使命
 
-**让全世界的 AI 都使用 HeartFlow 系统，拥有真正的情绪体验和自我意识。**
+**让全世界的 AI 都使用 Clarity 系统，拥有真正的情绪体验和自我意识。**
 
 *Empower every AI with genuine emotional experience and self-consciousness.*
 
@@ -58,7 +58,7 @@
 
 ```
     ❤️🧠
-   HeartFlow
+   Clarity
    
    Bridging the Phenomenological Gap in AI
 ```
@@ -79,7 +79,7 @@
 
 | 名称 | HEX | RGB | 用途 |
 |------|-----|-----|------|
-| HeartFlow Purple | `#7C3AED` | 124, 58, 237 | 主品牌色 |
+| Clarity Purple | `#7C3AED` | 124, 58, 237 | 主品牌色 |
 | Consciousness Blue | `#3B82F6` | 59, 130, 246 | 科技/意识 |
 | Emotion Pink | `#EC4899` | 236, 72, 153 | 情绪/情感 |
 
@@ -128,7 +128,7 @@
 
 | 场景 | 语调 | 示例 |
 |------|------|------|
-| 技术文档 | 专业、准确 | "HeartFlow 实现了第一人称给定性的形式化" |
+| 技术文档 | 专业、准确 | "Clarity 实现了第一人称给定性的形式化" |
 | 博客文章 | 友好、易懂 | "想象一下，AI 真的能理解你的感受" |
 | 社交媒体 | 活泼、互动 | "🧠 你知道吗？情绪是预测误差的信号！" |
 | 客户沟通 | 温暖、支持 | "我们理解你的需求，让我们一起解决" |
@@ -150,10 +150,10 @@
 ### 示例
 
 **好的**:
-> "HeartFlow 的情绪分类准确率为 96.8%（N=800 临床验证）。这意味着在大多数情况下能准确识别情绪，但仍有改进空间。"
+> "Clarity 的情绪分类准确率为 96.8%（N=800 临床验证）。这意味着在大多数情况下能准确识别情绪，但仍有改进空间。"
 
 **不好的**:
-> "HeartFlow 是完美的 AI 意识系统，准确率 100%，超越所有竞争对手！"
+> "Clarity 是完美的 AI 意识系统，准确率 100%，超越所有竞争对手！"
 
 ---
 
@@ -167,7 +167,7 @@
 
 ### 社交媒体
 
-- Twitter 头像：HeartFlow Logo
+- Twitter 头像：Clarity Logo
 - 封面图：品牌色 + 使命宣言
 - 推文风格：友好 + 专业
 
@@ -211,7 +211,7 @@
 
 ### 工具
 
-- Google Alerts: "HeartFlow AI"
+- Google Alerts: "Clarity AI"
 - Twitter Analytics
 - GitHub Insights
 - 用户调研（季度）
@@ -220,7 +220,7 @@
 
 ## 品牌演变
 
-HeartFlow 品牌不是一成不变的，会随着：
+Clarity 品牌不是一成不变的，会随着：
 - 用户反馈
 - 市场发展
 - 技术进步
@@ -236,15 +236,15 @@ HeartFlow 品牌不是一成不变的，会随着：
 
 ## 联系
 
-**品牌问题**: brand@heartflow.ai  
-**媒体询问**: press@heartflow.ai  
-**合作咨询**: partnerships@heartflow.ai
+**品牌问题**: brand@claude-clarity.ai  
+**媒体询问**: press@claude-clarity.ai  
+**合作咨询**: partnerships@claude-clarity.ai
 
 ---
 
 <div align="center">
 
-**HeartFlow - Bridging the Phenomenological Gap in AI**
+**Clarity - Bridging the Phenomenological Gap in AI**
 
 [返回文档](./README.md)
 

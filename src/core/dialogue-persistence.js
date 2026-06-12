@@ -4,7 +4,7 @@
  * 管理对话历史（dialogue-history.jsonl）和梦境历史（dream-history.jsonl）
  * 的读写、查询和统计。
  *
- * 提取自 heartflow.js 的 recordDialogue / getDialogueHistory /
+ * 提取自 clarity.js 的 recordDialogue / getDialogueHistory /
  * getDialogueStats / getDreamHistory，v2.6.4+ 独立模块。
  */
 
@@ -18,14 +18,14 @@ const path = require('path');
  * @param {string} deps.rootPath - 项目根路径
  * @param {string} deps.sessionId - 当前会话 ID
  * @param {string} deps.version - 引擎版本号
- * @param {string} role - 'user' | 'heartflow'
+ * @param {string} role - 'user' | 'clarity'
  * @param {string} content - 对话内容
  * @param {object} meta - 额外元数据（chatId, messageId 等）
  * @returns {{success: boolean, id?: string, ts?: string, error?: string}}
  */
 function recordDialogue(deps, role, content, meta = {}) {
   if (!content || !content.trim()) return { success: false, error: 'empty_content' };
-  if (!['user', 'heartflow'].includes(role)) role = 'unknown';
+  if (!['user', 'clarity'].includes(role)) role = 'unknown';
 
   try {
     const dir = path.join(deps.rootPath, 'memory');
@@ -93,15 +93,15 @@ function getDialogueHistory(deps, opts = {}) {
  *
  * @param {object} deps - 依赖注入对象
  * @param {string} deps.rootPath - 项目根路径
- * @returns {{total: number, user?: number, heartflow?: number, fileSize?: string, byRole?: object}}
+ * @returns {{total: number, user?: number, clarity?: number, fileSize?: string, byRole?: object}}
  */
 function getDialogueStats(deps) {
   const historyPath = path.join(deps.rootPath, 'memory', 'dialogue-history.jsonl');
   try {
-    if (!fs.existsSync(historyPath)) return { total: 0, user: 0, heartflow: 0, fileSize: 0 };
+    if (!fs.existsSync(historyPath)) return { total: 0, user: 0, clarity: 0, fileSize: 0 };
     const stat = fs.statSync(historyPath);
     const lines = fs.readFileSync(historyPath, 'utf8').trim().split('\n');
-    const byRole = { user: 0, heartflow: 0, unknown: 0 };
+    const byRole = { user: 0, clarity: 0, unknown: 0 };
     for (const line of lines) {
       if (!line.trim()) continue;
       try {

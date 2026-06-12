@@ -7,7 +7,7 @@
  *   - LessonBank 教训存储模式
  *   - memory.js 的 atomicWriteJson 原子写入
  *
- * @author HeartFlow
+ * @author Clarity
  * @version 2.0.0
  */
 

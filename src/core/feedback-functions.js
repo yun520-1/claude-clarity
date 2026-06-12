@@ -1,5 +1,5 @@
 /**
- * HeartFlow Feedback Functions v1.0.0
+ * Clarity Feedback Functions v1.0.0
  * 基于 v11.9.4 eval-engine.js 的 FeedbackFunctions 重写
  * TruLens RAG Triad + HHH 评估框架
  *

@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * HeartFlow 多智能体系统测试
+ * Clarity 多智能体系统测试
  */
 
 const orchestrator = require('./agent-orchestrator');
 
 console.log('═══════════════════════════════════════════════════════');
-console.log('       HeartFlow 多智能体系统测试 v1.0');
+console.log('       Clarity 多智能体系统测试 v1.0');
 console.log('═══════════════════════════════════════════════════════\n');
 
 // 1. 查看智能体状态

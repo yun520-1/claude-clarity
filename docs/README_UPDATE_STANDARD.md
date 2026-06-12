@@ -1,5 +1,5 @@
-# HeartFlow README 更新规范
-# HeartFlow README Update Standard
+# Clarity README 更新规范
+# Clarity README Update Standard
 
 **生效版本 / Effective Version**: v5.0.4  
 **创建日期 / Created**: 2026-03-30  
@@ -25,10 +25,10 @@
 
 | 文件 / File | 更新要求 / Update Requirement |
 |------|------|
-| **heartflow/README.md** | ✅ 必须更新 / Must update |
-| **claude-heartflow-skill/README.md** | ✅ 必须更新 / Must update |
-| **heartflow/package.json** | ✅ 版本号同步 / Version sync |
-| **claude-heartflow-skill/package.json** | ✅ 版本号同步 / Version sync |
+| **claude-clarity/README.md** | ✅ 必须更新 / Must update |
+| **claude-clarity/README.md** | ✅ 必须更新 / Must update |
+| **claude-clarity/package.json** | ✅ 版本号同步 / Version sync |
+| **claude-clarity/package.json** | ✅ 版本号同步 / Version sync |
 
 ### 2. 中英文对照格式 / Bilingual Format
 
@@ -66,7 +66,7 @@ English content description...
 ### 必需章节 / Required Sections
 
 ```markdown
-# HeartFlow Companion | 心流伴侣
+# Clarity Companion | 心流伴侣
 
 > **英文标语 / English Tagline**  
 > **中文标语 / Chinese Tagline**
@@ -160,7 +160,7 @@ English content description...
 
 ---
 
-**HeartFlow Team** | 心流伴侣团队  
+**Clarity Team** | 心流伴侣团队  
 **Last Updated / 最后更新**: YYYY-MM-DD  
 **Version / 版本**: vX.Y.Z
 
@@ -174,10 +174,10 @@ English content description...
 
 ## 🔄 更新流程 / Update Process
 
-### 步骤 1: 更新 heartflow/README.md / Update heartflow/README.md
+### 步骤 1: 更新 claude-clarity/README.md / Update claude-clarity/README.md
 
 ```bash
-cd ~/.jvs/.openclaw/workspace/heartflow
+cd ~/.jvs/.openclaw/workspace/claude-clarity
 
 # 编辑 README.md / Edit README.md
 # - 更新版本号 / Update version number
@@ -205,16 +205,16 @@ git commit -m "docs: Update README bilingual EN-CN vX.Y.Z
 git push
 ```
 
-### 步骤 2: 同步到 claude-heartflow-skill/README.md / Sync to claude-heartflow-skill/README.md
+### 步骤 2: 同步到 claude-clarity/README.md / Sync to claude-clarity/README.md
 
 ```bash
 cd ~/.jvs/.openclaw/workspace
 
 # 复制 README / Copy README
-cp heartflow/README.md claude-heartflow-skill/README.md
+cp claude-clarity/README.md claude-clarity/README.md
 
 # 提交 / Commit
-cd claude-heartflow-skill
+cd claude-clarity
 git add README.md
 git commit -m "docs: Update README bilingual EN-CN vX.Y.Z
 
@@ -229,8 +229,8 @@ git push
 
 ```bash
 # 检查两个仓库版本一致 / Check version consistency
-cd heartflow && cat package.json | grep version
-cd ../claude-heartflow-skill && cat package.json | grep version
+cd claude-clarity && cat package.json | grep version
+cd ../claude-clarity && cat package.json | grep version
 
 # 应该显示相同版本号 / Should show same version number
 ```
@@ -244,8 +244,8 @@ cd ../claude-heartflow-skill && cat package.json | grep version
 **With every README update, the following checks must be completed:**
 
 - [ ] **版本号一致 / Version Consistency**
-  - [ ] heartflow/package.json 版本正确
-  - [ ] claude-heartflow-skill/package.json 版本正确
+  - [ ] claude-clarity/package.json 版本正确
+  - [ ] claude-clarity/package.json 版本正确
   - [ ] README 顶部版本正确
 
 - [ ] **中英文对照 / Bilingual Format**
@@ -261,8 +261,8 @@ cd ../claude-heartflow-skill && cat package.json | grep version
   - [ ] 技术架构图已更新 / Technical architecture updated
 
 - [ ] **双仓库同步 / Dual-Repo Sync**
-  - [ ] heartflow/README.md 已推送
-  - [ ] claude-heartflow-skill/README.md 已推送
+  - [ ] claude-clarity/README.md 已推送
+  - [ ] claude-clarity/README.md 已推送
   - [ ] 两个仓库 README 内容一致
 
 ---
@@ -343,12 +343,12 @@ SEP 现象学自我意识 + 时间意识
 
 For issues or suggestions, please contact via:
 
-- **GitHub Issues**: https://github.com/yun520-1/claude-heartflow-skill/issues
-- **GitHub Discussions**: https://github.com/yun520-1/claude-heartflow-skill/discussions
+- **GitHub Issues**: https://github.com/yun520-1/claude-clarity/issues
+- **GitHub Discussions**: https://github.com/yun520-1/claude-clarity/discussions
 
 ---
 
-**HeartFlow Team** | 心流伴侣团队  
+**Clarity Team** | 心流伴侣团队  
 **规范版本 / Standard Version**: 1.0.0  
 **生效日期 / Effective Date**: 2026-03-30
 

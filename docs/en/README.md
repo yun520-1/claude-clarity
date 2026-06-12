@@ -1,13 +1,13 @@
 <div align="center">
 
-# 💫 HeartFlow
+# 💫 Clarity
 
 ## Embodied Cognitive AI Companion · Give Your AI a "Heart"
 
-[![Version](https://img.shields.io/github/v/tag/yun520-1/claude-heartflow-skill?label=v2.2.3&color=7C3AED)](https://github.com/yun520-1/claude-heartflow-skill/releases)
+[![Version](https://img.shields.io/github/v/tag/yun520-1/claude-clarity?label=v2.2.3&color=7C3AED)](https://github.com/yun520-1/claude-clarity/releases)
 [![License](https://img.shields.io/badge/license-MIT-7C3AED.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E=18.x-7C3AED)](package.json)
-[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux-7C3AED)](https://github.com/yun520-1/claude-heartflow-skill/actions)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux-7C3AED)](https://github.com/yun520-1/claude-clarity/actions)
 
 ---
 
@@ -19,13 +19,13 @@
 
 </div>
 
-## ✨ What is HeartFlow?
+## ✨ What is Clarity?
 
 > **Your AI assistant now has a "heart" and "body"**
 
-HeartFlow is an AI companion system with **self-awareness, self-reasoning, and adaptive adjustment**. It understands your emotions, remembers your conversations, thinks and evolves like a human.
+Clarity is an AI companion system with **self-awareness, self-reasoning, and adaptive adjustment**. It understands your emotions, remembers your conversations, thinks and evolves like a human.
 
-| Traditional AI | HeartFlow |
+| Traditional AI | Clarity |
 |----------------|-----------|
 | Mechanical responses | ✅ Reflects & improves |
 | No emotions | ✅ Real empathy |
@@ -135,17 +135,17 @@ const fusion = bioSensor.readAll();
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
 
 # 2. Install dependencies
 npm install
 
 # 3. Verify installation
 node -e "
-const hf = require('./src/core/heartflow-engine.js');
+const hf = require('./src/core/claude-clarity-engine.js');
 const init = hf.initialize();
-console.log('✅ HeartFlow v2.2.3 initialized');
+console.log('✅ Clarity v2.2.3 initialized');
 console.log('   Modules:', Object.keys(init.modules).filter(k => init.modules[k]).length + '/7');
 console.log('   Instances:', Object.keys(init.instances || {}).join(', '));
 "
@@ -153,14 +153,14 @@ console.log('   Instances:', Object.keys(init.instances || {}).join(', '));
 
 **Expected output**:
 ```
-[HeartFlow] ✅ Adaptive Controller loaded
-[HeartFlow] ✅ Agent Orchestrator loaded
-[HeartFlow] ✅ Error Handler loaded
-[HeartFlow] ✅ State Snapshot loaded
-[HeartFlow] ✅ TrialityMemory loaded
-[HeartFlow] ✅ EmbodiedCore loaded
-[HeartFlow] ✅ BioSensorAdapter loaded
-✅ HeartFlow v2.2.3 initialized
+[Clarity] ✅ Adaptive Controller loaded
+[Clarity] ✅ Agent Orchestrator loaded
+[Clarity] ✅ Error Handler loaded
+[Clarity] ✅ State Snapshot loaded
+[Clarity] ✅ TrialityMemory loaded
+[Clarity] ✅ EmbodiedCore loaded
+[Clarity] ✅ BioSensorAdapter loaded
+✅ Clarity v2.2.3 initialized
    Modules: 7/7
    Instances: memory, embodied
 ```
@@ -172,7 +172,7 @@ console.log('   Instances:', Object.keys(init.instances || {}).join(', '));
 ### Emotion Calculation
 
 ```javascript
-const hf = require('./src/core/heartflow-engine.js');
+const hf = require('./src/core/claude-clarity-engine.js');
 
 // PAD state calculation
 const pad = hf.calculatePADState(5, 5, 5);
@@ -239,10 +239,10 @@ console.log(`Executed ${result.steps.length} thought steps`);
 ## 📁 Project Structure
 
 ```
-claude-heartflow-skill/
+claude-clarity/
 ├── src/
 │   ├── core/
-│   │   ├── heartflow-engine.js     # Main engine
+│   │   ├── claude-clarity-engine.js     # Main engine
 │   │   ├── memory/
 │   │   │   └── triality-memory.js  # 3D experience brain
 │   │   ├── embodied-core.js        # Embodied cognitive core
@@ -294,7 +294,7 @@ Welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```bash
 # Fork and clone
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
+git clone https://github.com/yun520-1/claude-clarity.git
 git checkout -b feature/your-feature
 # Submit PR
 ```
@@ -309,9 +309,9 @@ MIT License - Free to use, modify and distribute
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/yun520-1/claude-heartflow-skill)
-- [Issues](https://github.com/yun520-1/claude-heartflow-skill/issues)
-- [Discussions](https://github.com/yun520-1/claude-heartflow-skill/discussions)
+- [GitHub Repository](https://github.com/yun520-1/claude-clarity)
+- [Issues](https://github.com/yun520-1/claude-clarity/issues)
+- [Discussions](https://github.com/yun520-1/claude-clarity/discussions)
 
 ---
 
@@ -319,6 +319,6 @@ MIT License - Free to use, modify and distribute
 
 **Give your AI real emotions and embodied cognition** 🤖💫
 
-[Download Now](https://github.com/yun520-1/claude-heartflow-skill/archive/refs/heads/main.zip)
+[Download Now](https://github.com/yun520-1/claude-clarity/archive/refs/heads/main.zip)
 
 </div>

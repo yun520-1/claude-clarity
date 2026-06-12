@@ -1,5 +1,5 @@
 /**
- * HeartFlow CodeGenerator v2.0.0
+ * Clarity CodeGenerator v2.0.0
  *
  * 代码生成引擎 - 心虫核心模块
  *
@@ -10,7 +10,7 @@
  * - 生成结果带置信度评分
  * - 与 MeaningfulMemory 打通，记录成功生成模式
  *
- * @author HeartFlow Team
+ * @author Clarity Team
  */
 
 const fs = require('fs');

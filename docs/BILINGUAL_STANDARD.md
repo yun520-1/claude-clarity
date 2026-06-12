@@ -2,9 +2,9 @@
 
 ## Purpose | 目的
 
-All HeartFlow documentation must be bilingual (Chinese-English) to ensure international accessibility while maintaining cultural authenticity.
+All Clarity documentation must be bilingual (Chinese-English) to ensure international accessibility while maintaining cultural authenticity.
 
-所有 HeartFlow 文档必须采用中英文双语格式，以确保国际可访问性，同时保持文化真实性。
+所有 Clarity 文档必须采用中英文双语格式，以确保国际可访问性，同时保持文化真实性。
 
 ---
 
@@ -153,4 +153,4 @@ Before publishing, verify: | 发布前验证：
 
 **Version | 版本**: 1.0  
 **Created | 创建**: 2026-04-02  
-**Author | 作者**: HeartFlow Team | 心流伴侣团队
+**Author | 作者**: Clarity Team | 心流伴侣团队

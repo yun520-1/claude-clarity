@@ -6,10 +6,10 @@
  *   变换（Transform） → 安全应用已知重构模式
  *   学习（Learn） → 追踪重构历史，优化建议
  *
- * 深度集成 HeartFlow code 子系统，与 CodeKnowledge / CodeEngine / CodeVerifier 互补。
+ * 深度集成 Clarity code 子系统，与 CodeKnowledge / CodeEngine / CodeVerifier 互补。
  * 重构变换聚焦 JS/TS/Python，不依赖外部 parser，使用正则 + 结构分析。
  *
- * @author HeartFlow
+ * @author Clarity
  * @version 2.0.0
  */
 
@@ -95,7 +95,7 @@ class CodeRefactor {
 
   /**
    * @param {Object} opts
-   * @param {Object} opts.hf - HeartFlow 实例（可选）
+   * @param {Object} opts.hf - Clarity 实例（可选）
    */
   constructor({ hf } = {}) {
     this.hf = hf;
@@ -1020,7 +1020,7 @@ class CodeRefactor {
   }
 
   /**
-   * 统一路由分发（与 heartflow.js dispatch 协议一致）
+   * 统一路由分发（与 clarity.js dispatch 协议一致）
    */
   dispatch(action, ...args) {
     switch (action) {

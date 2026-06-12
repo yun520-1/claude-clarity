@@ -1,4 +1,4 @@
-# HeartFlow - 한국어 문서
+# Clarity - 한국어 문서
 
 **버전**: v2.3.0  
 **최종 업데이트**: 2026-04-09
@@ -16,9 +16,9 @@
 
 ---
 
-## ✨ HeartFlow란?
+## ✨ Clarity란?
 
-HeartFlow는 **9차원 인지 아키텍처**를 가진 AI 동반자 시스템입니다:
+Clarity는 **9차원 인지 아키텍처**를 가진 AI 동반자 시스템입니다:
 
 | 차원 | 기능 |
 |------|------|
@@ -38,8 +38,8 @@ HeartFlow는 **9차원 인지 아키텍처**를 가진 AI 동반자 시스템입
 
 ```bash
 # 클론 및 설치
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
 npm install
 
 # 직접 실행
@@ -64,8 +64,8 @@ node bin/api-server.js
 
 ```bash
 # 1. 클론
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
 
 # 2. 설치
 npm install
@@ -128,12 +128,12 @@ node bin/api-server.js
 ## 📁 프로젝트 구조
 
 ```
-claude-heartflow-skill/
+claude-clarity/
 ├── bin/
 │   ├── cli.js
 │   └── api-server.js
 ├── src/core/
-│   ├── heartflow-engine.js
+│   ├── claude-clarity-engine.js
 │   ├── cognitive-loop.js
 │   ├── triality-memory.js
 │   └── ...
@@ -152,4 +152,4 @@ claude-heartflow-skill/
 
 ---
 
-*HeartFlow - AI에게 심성을 주다*
+*Clarity - AI에게 심성을 주다*

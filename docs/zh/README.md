@@ -1,4 +1,4 @@
-# HeartFlow - 中文文档
+# Clarity - 中文文档
 
 **版本**: v2.3.0  
 **最后更新**: 2026-04-09
@@ -16,9 +16,9 @@
 
 ---
 
-## ✨ 什么是 HeartFlow?
+## ✨ 什么是 Clarity?
 
-HeartFlow 是一个具有**9维度认知架构**的 AI 伴侣系统：
+Clarity 是一个具有**9维度认知架构**的 AI 伴侣系统：
 
 | 维度 | 功能 |
 |------|------|
@@ -38,8 +38,8 @@ HeartFlow 是一个具有**9维度认知架构**的 AI 伴侣系统：
 
 ```bash
 # 克隆并安装
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
 npm install
 
 # 直接运行
@@ -64,8 +64,8 @@ node bin/api-server.js
 
 ```bash
 # 1. 克隆
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
 
 # 2. 安装
 npm install
@@ -84,18 +84,18 @@ npm start
 ### 基本 API
 
 ```javascript
-const heartflow = require('./src/core/heartflow-engine.js');
+const claude-clarity = require('./src/core/claude-clarity-engine.js');
 
 // 初始化
-const init = heartflow.initialize();
+const init = claude-clarity.initialize();
 
 // 情感检测
-const emotion = heartflow.detectEmotionFromText('我今天很开心！');
+const emotion = claude-clarity.detectEmotionFromText('我今天很开心！');
 console.log('情感:', emotion);
 // { pleasure: 4, arousal: 0, dominance: 2, dominant: 'happy' }
 
 // 心流状态
-const flow = heartflow.calculateFlowState(5, 5, 5, 5, 5);
+const flow = claude-clarity.calculateFlowState(5, 5, 5, 5, 5);
 console.log('心流状态:', flow.state); // 'flow'
 
 // 记忆存储
@@ -167,13 +167,13 @@ curl -X POST http://localhost:3456/api/emotion \
 ## 📁 项目结构
 
 ```
-claude-heartflow-skill/
+claude-clarity/
 ├── bin/
 │   ├── cli.js              # CLI 界面
 │   └── api-server.js      # HTTP API 服务器
 ├── src/
 │   ├── core/               # 核心引擎
-│   │   ├── heartflow-engine.js
+│   │   ├── claude-clarity-engine.js
 │   │   ├── cognitive-loop.js
 │   │   ├── triality-memory.js
 │   │   ├── embodied-core.js
@@ -216,7 +216,7 @@ claude-heartflow-skill/
 ## 🤝 贡献
 
 ```bash
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
+git clone https://github.com/yun520-1/claude-clarity.git
 git checkout -b feature/your-feature
 git commit -m "Add feature"
 git push origin main
@@ -232,9 +232,9 @@ MIT License
 
 ## 🔗 链接
 
-- [GitHub](https://github.com/yun520-1/claude-heartflow-skill)
-- [Issues](https://github.com/yun520-1/claude-heartflow-skill/issues)
+- [GitHub](https://github.com/yun520-1/claude-clarity)
+- [Issues](https://github.com/yun520-1/claude-clarity/issues)
 
 ---
 
-*HeartFlow - 赋予 AI 心与智*
+*Clarity - 赋予 AI 心与智*

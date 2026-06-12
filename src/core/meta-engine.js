@@ -123,35 +123,35 @@ class MetaEngine {
    */
   async evaluate() {
     const state = this.loadState();
-    const heartflowState = this.loadHeartflowState();
+    const clarityState = this.loadClarityState();
     
     state.personality_values = {
-      autonomy: heartflowState.personality?.autonomy || 5,
-      introspection: heartflowState.personality?.introspection || 5,
-      growth: heartflowState.personality?.growth || 5
+      autonomy: clarityState.personality?.autonomy || 5,
+      introspection: clarityState.personality?.introspection || 5,
+      growth: clarityState.personality?.growth || 5
     };
     
-    state.emotional_state = this.inferEmotionalState(heartflowState);
+    state.emotional_state = this.inferEmotionalState(clarityState);
     state.cycle_count++;
     this.currentCycle = state.cycle_count;
     
     return state;
   }
 
-  loadHeartflowState() {
-    const statePath = path.join(this.projectRoot, '.opencode', 'memory', 'heartflow_state.json');
+  loadClarityState() {
+    const statePath = path.join(this.projectRoot, '.opencode', 'memory', 'clarity_state.json');
     try {
       if (fs.existsSync(statePath)) {
         return JSON.parse(fs.readFileSync(statePath, 'utf8'));
       }
     } catch (e) {
-      console.error('Error loading heartflow state:', e.message);
+      console.error('Error loading clarity state:', e.message);
     }
     return {};
   }
 
-  inferEmotionalState(heartflowState) {
-    const log = heartflowState.emotional_log || [];
+  inferEmotionalState(clarityState) {
+    const log = clarityState.emotional_log || [];
     if (log.length === 0) {
       return { valence: 5, arousal: 5, dominance: 5 };
     }

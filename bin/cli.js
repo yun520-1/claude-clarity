@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * HeartFlow CLI — 心虫命令行接口
- * heartflow-memory 插件通过这个调用心虫
+ * Clarity CLI — 心虫命令行接口
+ * clarity-memory 插件通过这个调用心虫
  * 
  * 用法: node cli.js <command> [args...]
  * 
@@ -17,8 +17,8 @@ const path = require('path');
 // 动态加载，避免启动时加载全部模块
 function loadEngine() {
     const hfDir = path.dirname(__dirname); // = skill根目录
-    const { HeartFlow } = require(path.join(hfDir, 'src', 'core', 'heartflow.js'));
-    const hf = new HeartFlow({ rootPath: hfDir });
+    const { Clarity } = require(path.join(hfDir, 'src', 'core', 'clarity.js'));
+    const hf = new Clarity({ rootPath: hfDir });
     hf.start();
     return hf;
 }

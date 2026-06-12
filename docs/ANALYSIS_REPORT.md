@@ -1,7 +1,7 @@
-# HeartFlow 技能仓库代码结构分析报告
+# Clarity 技能仓库代码结构分析报告
 
 **分析时间**: 2026-03-30  
-**分析对象**: https://github.com/yun520-1/claude-heartflow-skill  
+**分析对象**: https://github.com/yun520-1/claude-clarity  
 **当前版本**: v5.0.14  
 **代码规模**: 68,242+ 行 (src 目录)
 
@@ -12,7 +12,7 @@
 ### 1.1 项目结构
 
 ```
-claude-heartflow-skill/
+claude-clarity/
 ├── skill/                      # OpenClaw Skill 封装层
 │   ├── index.js               # Skill 入口
 │   ├── skill.json             # Skill 配置
@@ -295,7 +295,7 @@ const SelfEfficacyModule = {
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    HeartFlow v6.0                        │
+│                    Clarity v6.0                        │
 │              模块化理论引擎架构                           │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
@@ -732,7 +732,7 @@ docs/
 
 ## 📊 七、总结
 
-HeartFlow 当前是一个**理论深度极强但架构复杂度极高**的系统：
+Clarity 当前是一个**理论深度极强但架构复杂度极高**的系统：
 
 **优势**:
 - ✅ 100+ 心理学/哲学理论模块
@@ -762,5 +762,5 @@ HeartFlow 当前是一个**理论深度极强但架构复杂度极高**的系统
 ---
 
 *报告生成时间*: 2026-03-30  
-*分析师*: HeartFlow 代码分析 Subagent  
+*分析师*: Clarity 代码分析 Subagent  
 *版本*: v1.0

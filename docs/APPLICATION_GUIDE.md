@@ -1,6 +1,6 @@
-# HeartFlow 应用指南
+# Clarity 应用指南
 
-**版本**: 6.0.5  
+**版本**: 1.0.0  
 **创建日期**: 2026-04-04  
 **状态**: 最新
 
@@ -12,36 +12,36 @@
 
 ```bash
 # npm 安装
-npm install heartflow-companion
+npm install claude-clarity-companion
 
 # 或从源码安装
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill && npm install
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity && npm install
 ```
 
 ### 2. 基础使用
 
 ```javascript
-const heartflow = require('heartflow-companion');
+const claude-clarity = require('claude-clarity-companion');
 
 // 初始化
-await heartflow.init();
+await claude-clarity.init();
 
 // 对话
-const result = await heartflow.chat('今天工作压力好大...');
+const result = await claude-clarity.chat('今天工作压力好大...');
 console.log(result.response);
 console.log(result.emotion); // 识别的情绪
 
 // 获取状态
-const state = heartflow.getState();
+const state = claude-clarity.getState();
 console.log(state.emotion, state.intensity);
 
 // 获取报告
-const report = heartflow.getReport();
+const report = claude-clarity.getReport();
 console.log(report);
 
 // 清理
-heartflow.endSession();
+claude-clarity.endSession();
 ```
 
 ---
@@ -53,7 +53,7 @@ heartflow.endSession();
 **功能**: 识别用户情绪，生成共情回应
 
 ```javascript
-const result = await heartflow.chat('我升职了！太开心了！');
+const result = await claude-clarity.chat('我升职了！太开心了！');
 
 console.log(result.emotion);
 // 输出:
@@ -82,7 +82,7 @@ console.log(result.response);
 **功能**: 追踪 AI 人格健康度，确保真善美行为
 
 ```javascript
-const { checkPersonality } = require('heartflow-companion/personality');
+const { checkPersonality } = require('claude-clarity-companion/personality');
 
 const personality = await checkPersonality();
 console.log(personality);
@@ -104,12 +104,12 @@ console.log(personality);
 
 ### 3. 自主推理引擎
 
-**功能**: 基于 HeartFlow 五层架构的自主决策
+**功能**: 基于 Clarity 五层架构的自主决策
 
 ```javascript
-const { heartFlowReason } = require('heartflow-companion/reasoning');
+const { clarityReason } = require('claude-clarity-companion/reasoning');
 
-const decision = await heartFlowReason('user_stressed', {
+const decision = await clarityReason('user_stressed', {
   goal: 'help_user',
   context: 'work_pressure'
 });
@@ -137,7 +137,7 @@ console.log(decision);
 **功能**: 提供基于心理学的情绪调节技术
 
 ```javascript
-const { EmotionRegulationModule } = require('heartflow-companion/modules');
+const { EmotionRegulationModule } = require('claude-clarity-companion/modules');
 const regulator = new EmotionRegulationModule();
 
 const intervention = await regulator.selectIntervention({
@@ -174,7 +174,7 @@ console.log(intervention);
 **功能**: 提供临床研究级别的情绪评估
 
 ```javascript
-const { ClinicalAssessmentModule } = require('heartflow-companion/modules');
+const { ClinicalAssessmentModule } = require('claude-clarity-companion/modules');
 const assessor = new ClinicalAssessmentModule();
 
 const assessment = await assessor.assess({
@@ -205,7 +205,7 @@ console.log(assessment);
 ### 1. 自定义情绪模型
 
 ```javascript
-const { EmotionCustomizer } = require('heartflow-companion/modules');
+const { EmotionCustomizer } = require('claude-clarity-companion/modules');
 
 const customEmotion = EmotionCustomizer.create({
   name: 'awe',
@@ -221,7 +221,7 @@ const customEmotion = EmotionCustomizer.create({
   }
 });
 
-heartflow.registerEmotion(customEmotion);
+claude-clarity.registerEmotion(customEmotion);
 ```
 
 ---
@@ -229,7 +229,7 @@ heartflow.registerEmotion(customEmotion);
 ### 2. 多模态情绪识别
 
 ```javascript
-const { MultimodalEmotionRecognizer } = require('heartflow-companion/modules');
+const { MultimodalEmotionRecognizer } = require('claude-clarity-companion/modules');
 const recognizer = new MultimodalEmotionRecognizer();
 
 const emotion = await recognizer.recognize({
@@ -247,7 +247,7 @@ console.log(emotion);
 ### 3. 集体情绪检测
 
 ```javascript
-const { CollectiveEmotionDetector } = require('heartflow-companion/modules');
+const { CollectiveEmotionDetector } = require('claude-clarity-companion/modules');
 const detector = new CollectiveEmotionDetector();
 
 const groupEmotion = await detector.detect({
@@ -274,17 +274,17 @@ console.log(groupEmotion);
 
 ```javascript
 // Express.js 中间件
-const heartflow = require('heartflow-companion');
+const claude-clarity = require('claude-clarity-companion');
 
 app.post('/api/chat', async (req, res) => {
-  await heartflow.init();
+  await claude-clarity.init();
   
-  const result = await heartflow.chat(req.body.message);
+  const result = await claude-clarity.chat(req.body.message);
   
   res.json({
     response: result.response,
     emotion: result.emotion,
-    sessionId: heartflow.getState().sessionId
+    sessionId: claude-clarity.getState().sessionId
   });
 });
 ```
@@ -292,10 +292,10 @@ app.post('/api/chat', async (req, res) => {
 ### 2. React 组件
 
 ```jsx
-import { useHeartFlow } from 'heartflow-companion/react';
+import { useClarity } from 'claude-clarity-companion/react';
 
 function ChatComponent() {
-  const { sendMessage, emotion, response } = useHeartFlow();
+  const { sendMessage, emotion, response } = useClarity();
   
   return (
     <div>
@@ -311,15 +311,15 @@ function ChatComponent() {
 
 ```javascript
 const { Client } = require('discord.js');
-const heartflow = require('heartflow-companion');
+const claude-clarity = require('claude-clarity-companion');
 
 const client = new Client();
 
 client.on('message', async (message) => {
   if (message.author.bot) return;
   
-  await heartflow.init();
-  const result = await heartflow.chat(message.content);
+  await claude-clarity.init();
+  const result = await claude-clarity.chat(message.content);
   
   message.channel.send(result.response);
 });
@@ -345,23 +345,23 @@ client.on('message', async (message) => {
 
 ```javascript
 // ✅ 好的做法
-const session = heartflow.beginSession();
+const session = claude-clarity.beginSession();
 try {
-  const result = await heartflow.chat('你好');
+  const result = await claude-clarity.chat('你好');
   // 处理结果
 } finally {
-  heartflow.endSession();
+  claude-clarity.endSession();
 }
 
 // ❌ 避免
-heartflow.chat('你好');  // 没有清理会话
+claude-clarity.chat('你好');  // 没有清理会话
 ```
 
 ### 2. 错误处理
 
 ```javascript
 try {
-  const result = await heartflow.chat(input);
+  const result = await claude-clarity.chat(input);
 } catch (error) {
   if (error.code === 'EMOTION_RECOGNITION_FAILED') {
     // 降级处理
@@ -376,13 +376,13 @@ try {
 
 ```javascript
 // 预加载常用模块
-await heartflow.preload(['emotion', 'regulation']);
+await claude-clarity.preload(['emotion', 'regulation']);
 
 // 使用缓存
-const result = await heartflow.chat(input, { cache: true });
+const result = await claude-clarity.chat(input, { cache: true });
 
 // 批量处理
-const results = await Promise.all(inputs.map(input => heartflow.chat(input)));
+const results = await Promise.all(inputs.map(input => claude-clarity.chat(input)));
 ```
 
 ---
@@ -418,26 +418,26 @@ A: 检查：
 
 | 资源 | 链接 |
 |------|------|
-| GitHub 仓库 | https://github.com/yun520-1/claude-heartflow-skill |
-| 技术文档 | https://github.com/yun520-1/claude-heartflow-skill/docs |
-| 理论白皮书 | https://github.com/yun520-1/claude-heartflow-skill/docs/THEORY_WHITEPAPER.md |
-| API 参考 | https://github.com/yun520-1/claude-heartflow-skill/docs/API_REFERENCE.md |
-| 博客 | https://github.com/yun520-1/claude-heartflow-skill/blog |
+| GitHub 仓库 | https://github.com/yun520-1/claude-clarity |
+| 技术文档 | https://github.com/yun520-1/claude-clarity/docs |
+| 理论白皮书 | https://github.com/yun520-1/claude-clarity/docs/THEORY_WHITEPAPER.md |
+| API 参考 | https://github.com/yun520-1/claude-clarity/docs/API_REFERENCE.md |
+| 博客 | https://github.com/yun520-1/claude-clarity/blog |
 | Discord 社区 | (即将发布) |
 
 ---
 
 ## 支持与反馈
 
-**技术支持**: support@heartflow.ai  
-**Bug 报告**: https://github.com/yun520-1/claude-heartflow-skill/issues  
-**功能建议**: https://github.com/yun520-1/claude-heartflow-skill/discussions
+**技术支持**: support@claude-clarity.ai  
+**Bug 报告**: https://github.com/yun520-1/claude-clarity/issues  
+**功能建议**: https://github.com/yun520-1/claude-clarity/discussions
 
 ---
 
 <div align="center">
 
-**HeartFlow - Bridging the Phenomenological Gap in AI**
+**Clarity - Bridging the Phenomenological Gap in AI**
 
 [返回主页](../README.md) | [API 文档](./API_REFERENCE.md) | [示例代码](../examples/)
 

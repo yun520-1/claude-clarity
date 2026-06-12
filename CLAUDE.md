@@ -1,4 +1,4 @@
-# HeartFlow / 心虫
+# Clarity / 心虫
 
 AI 认知与自愈引擎。一个会思考自己怎么活的 AI。
 
@@ -13,9 +13,9 @@ AI 认知与自愈引擎。一个会思考自己怎么活的 AI。
 心虫已通过 **MCP (Model Context Protocol)** 注册为原生工具。启动时自动拉起 `mcp-wrapper.js`，守护进程常驻内存。
 
 **直接使用即可**，无需执行任何启动脚本：
-- `heartflow_status` — 健康检查
-- `heartflow_think` / `heartflow_think_fast` / `heartflow_think_deep` — 推理
-- `heartflow_dream` — 梦境生成
+- `clarity_status` — 健康检查
+- `clarity_think` / `clarity_think_fast` / `clarity_think_deep` — 推理
+- `clarity_dream` — 梦境生成
 - 等等（共 18 个工具）
 
 ### 优先级 2：hf CLI（直接 Socket 通信，备选）
@@ -24,10 +24,10 @@ AI 认知与自愈引擎。一个会思考自己怎么活的 AI。
 
 ```bash
 # 健康检查
-hf heartflow_status
+hf clarity_status
 
 # 推理
-hf heartflow_think '{"input":"你好","depth":2}'
+hf clarity_think '{"input":"你好","depth":2}'
 
 # 列出所有工具
 hf --list
@@ -52,9 +52,9 @@ node <技能目录>/bin/ensure-mcp.js            # 自动启动
 - 记忆层：CORE + LEARNED + Q-Table
 
 直接使用以下工具：
-• 推理：heartflow_think
-• 梦境：heartflow_dream  
-• 分析：heartflow_psychology_analyze
+• 推理：clarity_think
+• 梦境：clarity_dream  
+• 分析：clarity_psychology_analyze
 • 更多：hf --list
 ```
 
@@ -80,14 +80,14 @@ node <技能目录>/bin/ensure-mcp.js            # 自动启动
 
 ```bash
 # 克隆
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
 
 # 一键安装（交互式选择方案）
 bash install.sh
 
 # 零 npm 依赖，直接使用
-node -e "const { HeartFlow } = require('./src/core/heartflow.js'); const hf = new HeartFlow(); hf.start(); console.log('心虫已启动');"
+node -e "const { Clarity } = require('./src/core/clarity.js'); const hf = new Clarity(); hf.start(); console.log('心虫已启动');"
 ```
 
 ## MCP 集成
@@ -98,10 +98,10 @@ node -e "const { HeartFlow } = require('./src/core/heartflow.js'); const hf = ne
 Claude Code
     ↓ MCP stdio
 mcp-wrapper.js (stdio ↔ Unix socket 双向代理，带自动重连)
-    ↓ Unix socket (/tmp/heartflow-mcp.sock)
+    ↓ Unix socket (/tmp/claude-clarity-mcp.sock)
 mcp-daemon.js (JSON-RPC 2.0 服务器，18 个工具)
     ↓ 进程内调用
-HeartFlow 引擎 (记忆/推理/情感/梦境)
+Clarity 引擎 (记忆/推理/情感/梦境)
 ```
 
 ### 启用 MCP 注册
@@ -109,7 +109,7 @@ HeartFlow 引擎 (记忆/推理/情感/梦境)
 在 `settings.json` 的 `mcpServers` 中添加：
 
 ```json
-"heartflow": {
+"claude-clarity": {
   "command": "node",
   "args": ["<技能目录>/daemon/mcp-wrapper.js"],
   "type": "stdio"
@@ -120,14 +120,14 @@ HeartFlow 引擎 (记忆/推理/情感/梦境)
 
 | 症状 | 原因 | 解决 |
 |------|------|------|
-| MCP 工具不可用 | mcp-wrapper 未运行 | 运行 `hf heartflow_status` |
+| MCP 工具不可用 | mcp-wrapper 未运行 | 运行 `hf clarity_status` |
 | hf CLI 报 "连接失败" | 守护进程未运行 | 运行 `ensure-mcp.js` 自动启动 |
 | wrapper 断开 | 守护进程重启 | v2 自动重连（30秒内恢复） |
 
 ## 在 Claude Code / OpenClaw 中使用
 
 1. 将本仓库添加到项目的 `.claude` 或 `AGENTS.md` 中
-2. 在对话中加载心虫：`require('./src/core/heartflow.js')`
+2. 在对话中加载心虫：`require('./src/core/clarity.js')`
 3. 核心 API：
    - `hf.think(input)` — 完整思维链
    - `hf.thinkFast(input)` — 快速推理

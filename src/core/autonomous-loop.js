@@ -594,7 +594,7 @@ class AutonomousLoop {
     const status = this.getStatus();
     
     let report = '═══════════════════════════════════════\n';
-    report += '     🔄 HeartFlow 自主运行报告\n';
+    report += '     🔄 Clarity 自主运行报告\n';
     report += '═══════════════════════════════════════\n\n';
     
     report += '【运行状态】\n';

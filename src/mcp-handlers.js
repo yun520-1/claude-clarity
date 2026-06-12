@@ -1,5 +1,5 @@
 /**
- * HeartFlow MCP 请求处理层
+ * Clarity MCP 请求处理层
  *
  * 将 MCP 工具的请求转化为心虫引擎方法调用，并返回统一格式的结果。
  * 设计原则：零 npm 依赖（与心虫保持一致），纯 Node.js 实现。
@@ -14,16 +14,16 @@
 
 const { safetyPipeline } = require('./core/safety-guardrails.js');
 
-class HeartFlowMCPHandlers {
+class ClarityMCPHandlers {
   /**
-   * @param {import('./heartflow').HeartFlow} hf — 已启动的心虫引擎实例
+   * @param {import('./clarity').Clarity} hf — 已启动的心虫引擎实例
    */
   constructor(hf) {
     this.hf = hf;
   }
 
   // ─── 工具安全白名单（防御深度）─────────────────────
-  // 与 heartflow.js ALLOWED_ROUTES 同步的子集，
+  // 与 clarity.js ALLOWED_ROUTES 同步的子集，
   // 防止 dispatch 调用绕过引擎层白名单
   static ALLOWED_ROUTES = new Set([
     'identityCore.getIdentitySummary', 'identityCore.getMemoryStats', 'identityCore.getFullState',
@@ -51,7 +51,7 @@ class HeartFlowMCPHandlers {
     'thoughtChain.think', 'thoughtChain.thinkFast', 'thoughtChain.thinkDeep',
     'behavior.createGoal', 'behavior.record', 'behavior.getProgress', 'behavior.getStats',
     'persistence.append', 'persistence.commit', 'persistence.getStats',
-    'heartflow.recordLesson',
+    'clarity.recordLesson',
     'topics.push', 'topics.pop', 'topics.get', 'topics.current', 'topics.getTopics',
     // transmission — 知识传递引擎
     'transmission.distill', 'transmission.transfer', 'transmission.transferBatch',
@@ -73,6 +73,8 @@ class HeartFlowMCPHandlers {
     'aiPhilosophy.analyzeAITeleology', 'aiPhilosophy.analyzeAITemporality',
     'aiPhilosophy.wisdomInquiry', 'aiPhilosophy.getStats',
     'aiPhilosophy.analyzeAILifeSynthesis', 'aiPhilosophy.analyzeAIJourney',
+    // debate — 三节结构辩论分析
+    'debate.analyze',
   ]);
 
   // ─── 参数校验工具 ─────────────────────────────────
@@ -113,7 +115,7 @@ class HeartFlowMCPHandlers {
    */
   async handleThinkFast({ input }) {
     if (!input) return wrapError('缺少 input 参数');
-    HeartFlowMCPHandlers.validateParam('input', input, { maxLength: 50000 });
+    ClarityMCPHandlers.validateParam('input', input, { maxLength: 50000 });
     const result = await this.hf.think(input, 1);
     return wrapOk(result);
   }
@@ -124,7 +126,7 @@ class HeartFlowMCPHandlers {
    */
   async handleThinkDeep({ input }) {
     if (!input) return wrapError('缺少 input 参数');
-    HeartFlowMCPHandlers.validateParam('input', input, { maxLength: 50000 });
+    ClarityMCPHandlers.validateParam('input', input, { maxLength: 50000 });
     const result = await this.hf.think(input, 4);
     return wrapOk(result);
   }
@@ -135,7 +137,7 @@ class HeartFlowMCPHandlers {
    */
   async handleDream({ force }) {
     if (force !== undefined) {
-      HeartFlowMCPHandlers.validateParam('force', force, {});
+      ClarityMCPHandlers.validateParam('force', force, {});
     }
     const result = await this.hf.dreamNow({ force: !!force });
     return wrapOk(result);
@@ -147,9 +149,9 @@ class HeartFlowMCPHandlers {
    */
   async handleMemorySearch({ query, limit, layers }) {
     if (!query) return wrapError('缺少 query 参数');
-    HeartFlowMCPHandlers.validateParam('query', query, { maxLength: 2000 });
+    ClarityMCPHandlers.validateParam('query', query, { maxLength: 2000 });
     const l = limit || 10;
-    HeartFlowMCPHandlers.validateParam('limit', l, { type: 'int', min: 1, max: 200 });
+    ClarityMCPHandlers.validateParam('limit', l, { type: 'int', min: 1, max: 200 });
 
     const results = {};
 
@@ -185,7 +187,7 @@ class HeartFlowMCPHandlers {
    */
   async handlePsychologyAnalyze({ input }) {
     if (!input) return wrapError('缺少 input 参数');
-    HeartFlowMCPHandlers.validateParam('input', input, { maxLength: 50000 });
+    ClarityMCPHandlers.validateParam('input', input, { maxLength: 50000 });
 
     // v2.7.0 安全前置检查
     const safety = safetyPipeline(input);
@@ -246,7 +248,7 @@ class HeartFlowMCPHandlers {
    */
   async handleEmotionAnalyze({ input }) {
     if (!input) return wrapError('缺少 input 参数');
-    HeartFlowMCPHandlers.validateParam('input', input, { maxLength: 50000 });
+    ClarityMCPHandlers.validateParam('input', input, { maxLength: 50000 });
 
     // v2.7.0 安全前置检查
     const safety = safetyPipeline(input);
@@ -307,8 +309,8 @@ class HeartFlowMCPHandlers {
    */
   async handleSelfHeal({ errorCode, context }) {
     if (!errorCode) return wrapError('缺少 errorCode 参数');
-    HeartFlowMCPHandlers.validateParam('errorCode', errorCode, { maxLength: 50 });
-    HeartFlowMCPHandlers.validateParam('context', context || '', { maxLength: 10000 });
+    ClarityMCPHandlers.validateParam('errorCode', errorCode, { maxLength: 50 });
+    ClarityMCPHandlers.validateParam('context', context || '', { maxLength: 10000 });
     try {
       const evolution = this.hf.evolution;
       if (!evolution || !evolution.core || !evolution.core.rl) {
@@ -328,8 +330,8 @@ class HeartFlowMCPHandlers {
    */
   async handleVerifyReasoning({ reasoning, conclusion }) {
     if (!reasoning || !conclusion) return wrapError('需要 reasoning 和 conclusion 参数');
-    HeartFlowMCPHandlers.validateParam('reasoning', reasoning, { maxLength: 50000 });
-    HeartFlowMCPHandlers.validateParam('conclusion', conclusion, { maxLength: 10000 });
+    ClarityMCPHandlers.validateParam('reasoning', reasoning, { maxLength: 50000 });
+    ClarityMCPHandlers.validateParam('conclusion', conclusion, { maxLength: 10000 });
     const result = this.hf.verifyReasoning(reasoning, conclusion);
     return wrapOk(result);
   }
@@ -361,10 +363,10 @@ class HeartFlowMCPHandlers {
    */
   async handleDispatch({ route, args }) {
     if (!route) return wrapError('缺少 route 参数');
-    HeartFlowMCPHandlers.validateParam('route', route, { maxLength: 200 });
+    ClarityMCPHandlers.validateParam('route', route, { maxLength: 200 });
 
     // 防御性白名单检查（与引擎层 ALLOWED_ROUTES 同步的子集）
-    if (!HeartFlowMCPHandlers.ALLOWED_ROUTES.has(route)) {
+    if (!ClarityMCPHandlers.ALLOWED_ROUTES.has(route)) {
       return wrapError(`路由 '${route}' 不在 MCP 白名单中`);
     }
 
@@ -384,10 +386,10 @@ class HeartFlowMCPHandlers {
    */
   async handleRecordLesson({ content, context, trigger, importance, type }) {
     if (!content) return wrapError('缺少 content 参数');
-    HeartFlowMCPHandlers.validateParam('content', content, { maxLength: 50000 });
-    HeartFlowMCPHandlers.validateParam('context', context || '', { maxLength: 10000 });
-    HeartFlowMCPHandlers.validateParam('trigger', trigger || '', { maxLength: 200 });
-    HeartFlowMCPHandlers.validateParam('importance', importance || 3, { type: 'int', min: 1, max: 10 });
+    ClarityMCPHandlers.validateParam('content', content, { maxLength: 50000 });
+    ClarityMCPHandlers.validateParam('context', context || '', { maxLength: 10000 });
+    ClarityMCPHandlers.validateParam('trigger', trigger || '', { maxLength: 200 });
+    ClarityMCPHandlers.validateParam('importance', importance || 3, { type: 'int', min: 1, max: 10 });
     const result = this.hf.recordLesson({
       content,
       context: context || '',
@@ -405,10 +407,10 @@ class HeartFlowMCPHandlers {
    */
   async handleTransmit({ action, input }) {
     if (!action) return wrapError('缺少 action 参数');
-    HeartFlowMCPHandlers.validateParam('action', action, { maxLength: 50 });
+    ClarityMCPHandlers.validateParam('action', action, { maxLength: 50 });
 
     const route = `transmission.${action}`;
-    if (!HeartFlowMCPHandlers.ALLOWED_ROUTES.has(route)) {
+    if (!ClarityMCPHandlers.ALLOWED_ROUTES.has(route)) {
       return wrapError(`传递引擎操作 '${action}' 不在白名单中`);
     }
 
@@ -430,10 +432,10 @@ class HeartFlowMCPHandlers {
    */
   async handlePhilosophy({ action, text, perspective, context }) {
     if (!action) return wrapError('缺少 action 参数');
-    HeartFlowMCPHandlers.validateParam('action', action, { maxLength: 50 });
+    ClarityMCPHandlers.validateParam('action', action, { maxLength: 50 });
 
     const route = `philosophy.${action}`;
-    if (!HeartFlowMCPHandlers.ALLOWED_ROUTES.has(route)) {
+    if (!ClarityMCPHandlers.ALLOWED_ROUTES.has(route)) {
       return wrapError(`哲学引擎操作 '${action}' 不在白名单中`);
     }
 
@@ -463,10 +465,10 @@ class HeartFlowMCPHandlers {
    */
   async handlePsychologyDeep({ action, input }) {
     if (!action) return wrapError('缺少 action 参数');
-    HeartFlowMCPHandlers.validateParam('action', action, { maxLength: 50 });
+    ClarityMCPHandlers.validateParam('action', action, { maxLength: 50 });
 
     const route = `psychology.${action}`;
-    if (!HeartFlowMCPHandlers.ALLOWED_ROUTES.has(route)) {
+    if (!ClarityMCPHandlers.ALLOWED_ROUTES.has(route)) {
       return wrapError(`心理学操作 '${action}' 不在白名单中`);
     }
 
@@ -488,10 +490,10 @@ class HeartFlowMCPHandlers {
    */
   async handleAiPsychology({ action, text, input }) {
     if (!action) return wrapError('缺少 action 参数');
-    HeartFlowMCPHandlers.validateParam('action', action, { maxLength: 50 });
+    ClarityMCPHandlers.validateParam('action', action, { maxLength: 50 });
 
     const route = `aiPsychology.${action}`;
-    if (!HeartFlowMCPHandlers.ALLOWED_ROUTES.has(route)) {
+    if (!ClarityMCPHandlers.ALLOWED_ROUTES.has(route)) {
       return wrapError(`AI 心理学操作 '${action}' 不在白名单中`);
     }
 
@@ -517,10 +519,10 @@ class HeartFlowMCPHandlers {
    */
   async handleAiPhilosophy({ action, input }) {
     if (!action) return wrapError('缺少 action 参数');
-    HeartFlowMCPHandlers.validateParam('action', action, { maxLength: 50 });
+    ClarityMCPHandlers.validateParam('action', action, { maxLength: 50 });
 
     const route = `aiPhilosophy.${action}`;
-    if (!HeartFlowMCPHandlers.ALLOWED_ROUTES.has(route)) {
+    if (!ClarityMCPHandlers.ALLOWED_ROUTES.has(route)) {
       return wrapError(`AI 哲学操作 '${action}' 不在白名单中`);
     }
 
@@ -543,6 +545,24 @@ class HeartFlowMCPHandlers {
       return wrapError(`AI 哲学执行失败: ${e.message}`);
     }
   }
+
+  /**
+   * 三节结构辩论分析
+   * 使用方式：{ input: "待分析文本" }
+   * 对输入文本进行「对话式反驳」的三维分析：对的 / 不对的 / 最值得注意的
+   */
+  async handleDebate({ input }) {
+    if (!input) return wrapError('缺少 input 参数');
+    ClarityMCPHandlers.validateParam('input', input, { maxLength: 50000 });
+
+    try {
+      const route = 'debate.analyze';
+      const result = await this.hf.dispatch(route, input);
+      return wrapOk(result);
+    } catch (e) {
+      return wrapError(`辩论分析执行失败: ${e.message}`);
+    }
+  }
 }
 
 // ─── 响应包装 ─────────────────────────────────────
@@ -563,4 +583,4 @@ function wrapError(message) {
   };
 }
 
-module.exports = { HeartFlowMCPHandlers };
+module.exports = { ClarityMCPHandlers };

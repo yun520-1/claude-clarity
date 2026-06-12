@@ -18,3 +18,6 @@ downloads/
 
 # 安全：HMAC 密钥 — 不应提交到仓库
 memory/.hmac-key
+*.onnx
+internal/
+.DS_Store

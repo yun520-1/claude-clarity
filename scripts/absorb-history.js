@@ -16,14 +16,14 @@ const fs = require('fs');
 const path = require('path');
 
 // ============ 配置 ============
-const HEARTFLOW_DIR = path.resolve(__dirname, '..');
+const CLARITY_DIR = path.resolve(__dirname, '..');
 const SESSION_DIR = '/Users/apple/.claude/projects/-Users-apple--lark-channel-workspaces-claude-default';
-const DATA_DIR = path.join(HEARTFLOW_DIR, 'data');
-const MEMORY_DIR = path.join(HEARTFLOW_DIR, 'memory');
+const DATA_DIR = path.join(CLARITY_DIR, 'data');
+const MEMORY_DIR = path.join(CLARITY_DIR, 'memory');
 
 // 内存存储路径
 const LEARNED_PATH = path.join(MEMORY_DIR, 'meaningful-learned.json');
-const LESSON_PATH = path.join(HEARTFLOW_DIR, 'lesson-bank.json');
+const LESSON_PATH = path.join(CLARITY_DIR, 'lesson-bank.json');
 const DIALOGUE_PATH = path.join(MEMORY_DIR, 'dialogue-history.jsonl');
 const MEMORY_INDEX_PATH = path.join(DATA_DIR, 'memory-index.json');
 

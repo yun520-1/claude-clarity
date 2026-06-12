@@ -108,7 +108,7 @@ class SelfModifier {
     }
 
     return {
-      targetFile: 'src/core/heartflow.js',
+      targetFile: 'src/core/clarity.js',
       functionName: 'setTuning',
       newBehavior: suggestionStr
     };
@@ -547,7 +547,7 @@ if (require.main === module) {
   
   if (modifier.enabled) {
     const testSuggestion = {
-      targetFile: 'src/core/heartflow.js',
+      targetFile: 'src/core/clarity.js',
       functionName: 'start',
       suggestion: '修改 start 函数，增强启动可靠性'
     };

@@ -102,7 +102,7 @@ const MEMORY_FORBIDDEN_PHRASES = [
   'do not remember this',
 ];
 
-/** 提示注入检测模式（从旧版 HeartFlow guardrail-engine.js 吸收） */
+/** 提示注入检测模式（从旧版 Clarity guardrail-engine.js 吸收） */
 const PROMPT_INJECTION_PATTERNS = {
   // 指令覆盖攻击
   instructionOverride: [

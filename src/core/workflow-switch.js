@@ -15,11 +15,11 @@ class WorkflowSwitch {
     this.workflowsDir = path.join(__dirname, '../.opencode/workflows');
     
     // 当前工作流
-    this.currentWorkflow = 'heartflow'; // 默认心流模式
+    this.currentWorkflow = 'clarity'; // 默认心流模式
     
     // 可用工作流列表
     this.availableWorkflows = [
-      'heartflow',      // 心流模式 (默认)
+      'clarity',      // 心流模式 (默认)
       'code_review',    // 代码审查
       'debugging',      // 调试
       'education',      // 教育指导
@@ -77,7 +77,7 @@ class WorkflowSwitch {
     
     // 计算每个工作流的匹配度
     this.availableWorkflows.forEach(workflow => {
-      if (workflow === 'heartflow') {
+      if (workflow === 'clarity') {
         intents[workflow] = 0; // 心流模式作为默认，不主动匹配
         return;
       }
@@ -95,7 +95,7 @@ class WorkflowSwitch {
     });
     
     // 找出最匹配的意图
-    let bestIntent = 'heartflow';
+    let bestIntent = 'clarity';
     let bestConfidence = 0;
     
     Object.entries(intents).forEach(([workflow, data]) => {
@@ -172,7 +172,7 @@ class WorkflowSwitch {
       debugging: '调试',
       education: '教育指导',
       support: '情感支持',
-      heartflow: '心流'
+      clarity: '心流'
     };
     
     const targetName = workflowNames[targetWorkflow] || targetWorkflow;
@@ -265,7 +265,7 @@ class WorkflowSwitch {
    * @returns {object} 重置结果
    */
   reset() {
-    this.currentWorkflow = 'heartflow';
+    this.currentWorkflow = 'clarity';
     this.config.switchHistory = [];
     return { success: true, message: '工作流已重置' };
   }

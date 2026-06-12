@@ -1,10 +1,10 @@
-# HeartFlow / 心虫 v2.6.5
+# Clarity / 心虫 v1.0.0
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.6.5-blue?style=flat-square" alt="version" />
-  <img src="https://img.shields.io/github/release/yun520-1/claude-heartflow-skill?style=flat-square" alt="GitHub release" />
-  <img src="https://img.shields.io/github/last-commit/yun520-1/claude-heartflow-skill?style=flat-square" alt="last commit" />
-  <img src="https://img.shields.io/github/issues/yun520-1/claude-heartflow-skill?style=flat-square" alt="issues" />
+  <img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat-square" alt="version" />
+  <img src="https://img.shields.io/github/release/yun520-1/claude-clarity?style=flat-square" alt="GitHub release" />
+  <img src="https://img.shields.io/github/last-commit/yun520-1/claude-clarity?style=flat-square" alt="last commit" />
+  <img src="https://img.shields.io/github/issues/yun520-1/claude-clarity?style=flat-square" alt="issues" />
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="license" />
   <img src="https://img.shields.io/badge/modules-70%2B%20Tier1%20%2B%2024%20Tier2-orange?style=flat-square" alt="modules" />
 </p>
@@ -22,11 +22,11 @@
 
 ```bash
 # 克隆
-git clone https://github.com/yun520-1/claude-heartflow-skill.git
-cd claude-heartflow-skill
+git clone https://github.com/yun520-1/claude-clarity.git
+cd claude-clarity
 
 # 验证安装（无需安装依赖）
-node -e "const {createHeartFlow}=require('./src/core/heartflow.js'); const fs=require('fs'); const hf=createHeartFlow({rootPath:'.'}); hf.start(); console.log('✅ 心虫启动成功 v'+fs.readFileSync('./VERSION','utf8').trim()); hf.stop();"
+node -e "const {createClarity}=require('./src/core/clarity.js'); const fs=require('fs'); const hf=createClarity({rootPath:'.'}); hf.start(); console.log('✅ 心虫启动成功 v'+fs.readFileSync('./VERSION','utf8').trim()); hf.stop();"
 
 # 运行测试
 node tests/integration.test.js
@@ -44,8 +44,8 @@ node tests/integration.test.js
 
 ```
                   ┌─────────────────────────────┐
-                  │      HeartFlow 主入口        │
-                  │   (createHeartFlow + dispatch)│
+                  │      Clarity 主入口        │
+                  │   (createClarity + dispatch)│
                   └──────────┬──────────────────┘
                              │
        ┌─────────────────────┼─────────────────────┐
@@ -124,9 +124,9 @@ perceive → normalize → verify → choose → execute → verify → reflect 
 ## 🚀 快速使用
 
 ```javascript
-const { createHeartFlow, VERSION } = require('./src/core/heartflow.js');
+const { createClarity, VERSION } = require('./src/core/clarity.js');
 
-const hf = createHeartFlow({ rootPath: '/path/to/heartflow' });
+const hf = createClarity({ rootPath: '/path/to/claude-clarity' });
 await hf.start();
 
 // 统一路由
@@ -161,7 +161,7 @@ v2.0.54 ─── 最新 (2026-06-04)
 ```
 
 **完整版本历史** → [CHANGELOG.md](./CHANGELOG.md)  
-**GitHub Releases** → [Releases](https://github.com/yun520-1/claude-heartflow-skill/releases)
+**GitHub Releases** → [Releases](https://github.com/yun520-1/claude-clarity/releases)
 
 ---
 
@@ -212,8 +212,8 @@ v2.0.54 ─── 最新 (2026-06-04)
 ## 📬 联系方式
 
 - **邮箱**：markcell@outlook.com
-- **GitHub Issues**：https://github.com/yun520-1/claude-heartflow-skill/issues
-- **GitHub Releases**：https://github.com/yun520-1/claude-heartflow-skill/releases
+- **GitHub Issues**：https://github.com/yun520-1/claude-clarity/issues
+- **GitHub Releases**：https://github.com/yun520-1/claude-clarity/releases
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * HeartFlow 混合搜索模块
+ * Clarity 混合搜索模块
  * 
  * 吸收来源：hindsight 4路检索架构（semantic/BF25/graph/temporal）
  * 融合策略：RRF (Reciprocal Rank Fusion)

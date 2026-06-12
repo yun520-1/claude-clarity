@@ -1,5 +1,5 @@
 /**
- * HeartFlow Budget Manager — Token计数与思考预算管理
+ * Clarity Budget Manager — Token计数与思考预算管理
  * 
  * 吸收来源：hindsight Budget+token计数逻辑
  * 

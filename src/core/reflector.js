@@ -23,7 +23,7 @@ class Reflector {
     }
     
     this.projectRoot = resolvedRoot;
-    this.stateFile = path.join(resolvedRoot, '.opencode', 'memory', 'heartflow_state.json');
+    this.stateFile = path.join(resolvedRoot, '.opencode', 'memory', 'clarity_state.json');
     this.reportFile = path.join(resolvedRoot, 'logs', 'reflect-reports.json');
     this.logFile = path.join(resolvedRoot, 'logs', 'reflect.log');
     

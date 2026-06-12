@@ -9,7 +9,7 @@ const path = require('path');
 class ReflectionLoop {
   constructor(projectRoot) {
     this.projectRoot = projectRoot;
-    this.stateFile = path.join(projectRoot, '.opencode', 'memory', 'heartflow_state.json');
+    this.stateFile = path.join(projectRoot, '.opencode', 'memory', 'clarity_state.json');
     this.reflectionLog = [];
     this.MAX_LOG_SIZE = 100; // Bounded cache to prevent memory leak
     this.lastResponse = null;

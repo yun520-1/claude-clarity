@@ -1,4 +1,4 @@
-# HeartFlow 智能路由系统 | Intelligent Routing System
+# Clarity 智能路由系统 | Intelligent Routing System
 
 **版本**: v7.1.10  
 **创建时间**: 2026-04-07  

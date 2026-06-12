@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * HeartFlow MCP Wrapper v2 — 增强版守护进程代理
+ * Clarity MCP Wrapper v2 — 增强版守护进程代理
  *
  * 改进：
  *   1. 先尝试连接已有守护进程（＜1ms，零开销）
@@ -17,8 +17,8 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-const SOCKET_PATH = '/tmp/heartflow-mcp.sock';
-const PID_FILE = '/tmp/heartflow-mcp.pid';
+const SOCKET_PATH = '/tmp/claude-clarity.sock';
+const PID_FILE = '/tmp/claude-clarity.pid';
 const DAEMON_JS = path.resolve(__dirname, 'mcp-daemon.js');
 
 // ─── 连接已有守护进程 ─────────────────────────────────
@@ -52,7 +52,7 @@ function waitForSocket(timeout = 8000) {
 // ─── 后台启动守护进程 ─────────────────────────────────
 function startDaemon() {
   return new Promise((resolve, reject) => {
-    console.error('[HeartFlow] 心虫守护进程未运行，正在后台启动...');
+    console.error('[Clarity] 心虫守护进程未运行，正在后台启动...');
 
     const child = spawn(process.execPath, [DAEMON_JS], {
       detached: true,
@@ -100,7 +100,7 @@ function createProxy() {
     const sock = new net.Socket();
 
     sock.on('connect', () => {
-      console.error('[HeartFlow] 已连到守护进程');
+      console.error('[Clarity] 已连到守护进程');
       daemon = sock;
 
       // 清积压
@@ -115,7 +115,7 @@ function createProxy() {
     });
 
     sock.on('close', () => {
-      console.error('[HeartFlow] 守护进程连接断开');
+      console.error('[Clarity] 守护进程连接断开');
       daemon = null;
 
       // 重连（最多等 30 秒，每 2 秒试一次）
@@ -125,7 +125,7 @@ function createProxy() {
           retries++;
           if (retries > 15) {
             clearInterval(retryInterval);
-            console.error('[HeartFlow] 重连超时，退出');
+            console.error('[Clarity] 重连超时，退出');
             process.exit(1);
           }
           if (fs.existsSync(SOCKET_PATH)) {
@@ -142,7 +142,7 @@ function createProxy() {
         return;
       }
       if (err.code !== 'ECONNRESET') {
-        console.error(`[HeartFlow] Socket 错误: ${err.code}`);
+        console.error(`[Clarity] Socket 错误: ${err.code}`);
       }
     });
 
@@ -157,7 +157,7 @@ function createProxy() {
   process.stdin.on('end', () => {
     // stdin 关闭不代表要退出 — MCP 运行时可能会重新打开
     // 保留连接，等待 stdin 恢复
-    console.error('[HeartFlow] stdin 已关闭，保持代理存活');
+    console.error('[Clarity] stdin 已关闭，保持代理存活');
   });
 
   // 信号处理
@@ -173,7 +173,7 @@ async function main() {
   // 第 1 步：尝试直连
   try {
     const socket = await tryConnect();
-    console.error('[HeartFlow] 已连到已有守护进程');
+    console.error('[Clarity] 已连到已有守护进程');
     // 直接进入代理模式（使用已有 socket）
     createProxy(); // 这会调用 connectDaemon 重新连接
     // 现在清理旧的 socket 并用新的连接
@@ -191,11 +191,11 @@ async function main() {
   await startDaemon();
 
   // 第 4 步：进入代理模式
-  console.error('[HeartFlow] 心虫守护进程已就绪');
+  console.error('[Clarity] 心虫守护进程已就绪');
   createProxy();
 }
 
 main().catch((err) => {
-  console.error(`[HeartFlow] 启动失败: ${err.message}`);
+  console.error(`[Clarity] 启动失败: ${err.message}`);
   process.exit(1);
 });

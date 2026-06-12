@@ -1,5 +1,5 @@
 /**
- * Legacy 适配器 — 旧 heartflow-skill 模块的惰性加载桥
+ * Legacy 适配器 — 旧 clarity-skill 模块的惰性加载桥
  *
  * 旧模块被吸收到 src/legacy/ 目录，通过此适配器桥接到
  * 新心虫的 dispatch 系统。模块不会被自动初始化（保持清瘦），

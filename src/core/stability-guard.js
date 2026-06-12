@@ -1,5 +1,5 @@
 /**
- * HeartFlow Stability Guard
+ * Clarity Stability Guard
  *
  * Verifies the runtime stays within a safe execution envelope.
  * Acts as a lightweight gate before and after upgrades.

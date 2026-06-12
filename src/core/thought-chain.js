@@ -770,7 +770,7 @@ class ThoughtChain {
    */
   async run(input) {
     if (!this.hf.started) {
-      throw new Error('HeartFlow not started');
+      throw new Error('Clarity not started');
     }
 
     this.context = {

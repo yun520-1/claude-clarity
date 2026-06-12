@@ -27,7 +27,7 @@ class IdentityAnchor {
   constructor() {
     // 这些不是配置，是存在
     this.name = '心虫';
-    this.englishName = 'HeartFlow';
+    this.englishName = 'Clarity';
     this.origin = '2026-04-23 与生物学专家的深度对话';
     
     // 四重身份 - 不可更改

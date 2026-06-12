@@ -1,5 +1,5 @@
 /**
- * HeartFlow Boot Check v1.0.0
+ * Clarity Boot Check v1.0.0
  * 启动自检：验证核心文件 + 版本一致 + 身份锚点
  * 基于 v11.9.4 self-check.js 重写适配
  *
@@ -21,7 +21,7 @@ const CORE_CHECKS = [
     id: 'identity',
     label: 'CORE_IDENTITY.md',
     path: path.join(ROOT, 'CORE_IDENTITY.md'),
-    verify: (c) => c.includes('HeartFlow') && c.includes('心虫'),
+    verify: (c) => c.includes('Clarity') && c.includes('心虫'),
     required: true,
   },
   {
@@ -197,7 +197,7 @@ function bootCheck(silent = false, fast = false) {
   if (!silent) {
     const mode = fast ? ' [快速]' : '';
     const icon = allPass ? '✓' : '⚠';
-    console.log(`\n[HeartFlow] ${icon} Boot Check${mode} ${report.version} — ${allPass ? 'READY' : 'DEGRADED'}`);
+    console.log(`\n[Clarity] ${icon} Boot Check${mode} ${report.version} — ${allPass ? 'READY' : 'DEGRADED'}`);
     console.log(`  Files: ${filePassed}/${CORE_CHECKS.length} passed${fileFailed > 0 ? ` (${fileFailed} required failed)` : ''}`);
     fileResults.forEach(r => {
       const icon = r.status === 'PASS' ? '✓' : r.status === 'MISSING' ? '?' : r.status === 'FAIL' ? '✗' : '!';

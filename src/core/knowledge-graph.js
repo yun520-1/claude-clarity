@@ -316,11 +316,11 @@ class KnowledgeGraph {
   }
 
   // ═════════════════════════════════════════════════════════════════════════
-  // 兼容方法 — 与 heartflow.js 的 addKnowledge/searchKnowledge/getKnowledgeStats 对接
+  // 兼容方法 — 与 clarity.js 的 addKnowledge/searchKnowledge/getKnowledgeStats 对接
   // ═════════════════════════════════════════════════════════════════════════
 
   /**
-   * 添加知识节点（兼容 heartflow.js 的 addKnowledge 调用）
+   * 添加知识节点（兼容 clarity.js 的 addKnowledge 调用）
    *
    * 将节点信息存储为两个三元组：
    *   (name, "is_a", type)
@@ -358,7 +358,7 @@ class KnowledgeGraph {
   }
 
   /**
-   * 按关键词搜索知识节点（兼容 heartflow.js 的 searchKnowledge 调用）
+   * 按关键词搜索知识节点（兼容 clarity.js 的 searchKnowledge 调用）
    *
    * 对 subject/object 做模糊匹配，返回节点风格的搜索结果。
    *

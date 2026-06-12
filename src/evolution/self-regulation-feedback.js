@@ -11,7 +11,7 @@
  * 3. Feedback Comparison (反馈比较) - 比较现状与目标
  * 4. Self-Regulation Efforts (自我调节努力) - 缩小差距的行动
  * 
- * 整合到 HeartFlow 的认知评估系统 (cognitive-appraisal.js):
+ * 整合到 Clarity 的认知评估系统 (cognitive-appraisal.js):
  * - 在每次评估后跟踪结果
  * - 监控应对策略的有效性
  * - 基于反馈调整未来评估

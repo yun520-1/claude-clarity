@@ -1,6 +1,6 @@
 /**
  * MindSpace Guardian v1.0.0 — 心空间守护系统
- * 替代 heartflow.js 中的 plain object `_mindSpace`
+ * 替代 clarity.js 中的 plain object `_mindSpace`
  * 
  * 功能：
  * - 从 TrialityMemory CORE 层加载身份规则

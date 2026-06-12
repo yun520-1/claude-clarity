@@ -96,7 +96,7 @@ const openalexClient = {
       const req = https.get(url, { 
         headers: { 
           'Accept': 'application/json',
-          'User-Agent': 'HeartFlow/1.0'
+          'User-Agent': 'Clarity/1.0'
         } 
       }, (res) => {
         if (res.statusCode === 429 || res.statusCode >= 500) {

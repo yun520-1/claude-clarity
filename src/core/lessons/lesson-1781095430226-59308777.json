@@ -3,7 +3,7 @@
   "type": "correction",
   "content": "test lesson",
   "context": "user_recorded",
-  "trigger": "heartflow",
+  "trigger": "clarity",
   "importance": 7,
   "frequency": 1,
   "createdAt": "2026-06-10T12:43:50.226Z",

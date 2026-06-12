@@ -1,5 +1,5 @@
 /**
- * HeartFlow 大模型推理集成器 v3.0
+ * Clarity 大模型推理集成器 v3.0
  * 
  * 来源：
  * - ACL 2023 "Plan-and-Solve Prompting" (arxiv:2305.04091)

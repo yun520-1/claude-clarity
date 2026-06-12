@@ -1,5 +1,5 @@
 /**
- * HeartFlow HealingMemoryRL v11.6.3
+ * Clarity HealingMemoryRL v11.6.3
  * Q-learning based repair strategy memory for self-healing.
  * Paper: Reflexion (2023), CRITIC (2024), Titans (2025)
  *

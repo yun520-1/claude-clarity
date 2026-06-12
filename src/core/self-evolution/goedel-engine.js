@@ -914,7 +914,7 @@ class GoedelEngine {
       return {
         success: false,
         status: 'manual_only',
-        reason: 'HeartFlow self-modification disabled by default for marketplace-safe runtime'
+        reason: 'Clarity self-modification disabled by default for marketplace-safe runtime'
       };
     }
 

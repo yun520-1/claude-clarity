@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * HeartFlow 心虫 v2.0.61 — CodeEngine (代码引擎)
+ * Clarity 心虫 v2.0.61 — CodeEngine (代码引擎)
  * ============================================================================
  *
  * 代码分析、审查与审计引擎，是心虫认知系统的 Tier 1 核心模块。
@@ -21,7 +21,7 @@
  * - 所有 JSDoc 注释为中文
  *
  * @module code-engine
- * @author HeartFlow Core Team
+ * @author Clarity Core Team
  * @version 2.0.61
  * @license Proprietary
  */

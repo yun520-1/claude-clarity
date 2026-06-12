@@ -540,7 +540,7 @@ class LearningEngine {
     const knowledge = this.getKnowledgeState();
     
     let report = '═══════════════════════════════════════\n';
-    report += '     📚 HeartFlow 学习引擎报告\n';
+    report += '     📚 Clarity 学习引擎报告\n';
     report += '═══════════════════════════════════════\n\n';
     
     report += '【学习进度】\n';

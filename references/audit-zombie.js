@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 心虫模块僵尸审计器
- * 1. 从入口 heartflow.js + heartflow-engine.js + 顶层 require 文件开始追踪
+ * 1. 从入口 clarity.js + clarity-engine.js + 顶层 require 文件开始追踪
  * 2. 解析所有 require/import，构建传递闭包 R
  * 3. 列出 src/ 下不在 R 的文件
  * 4. 识别 stub（空 module.exports / 只有 placeholder）
@@ -10,13 +10,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOT = '/Users/apple/.hermes/skills/ai/claude-heartflow-skill';
+const ROOT = '/Users/apple/.claude/skills/claude-clarity';
 const SRC = path.join(ROOT, 'src');
 
-// 入口：heartflow.js + 顶层 test-boot.js 引用的
-// 心虫的实际启动路径是：test-boot.js -> heartflow.js -> 传递闭包
+// 入口：clarity.js + 顶层 test-boot.js 引用的
+// 心虫的实际启动路径是：test-boot.js -> clarity.js -> 传递闭包
 const ENTRY_POINTS = [
-  path.join(SRC, 'core/heartflow.js'),
+  path.join(SRC, 'core/clarity.js'),
   // 还可能从 SKILL.md 里有别的入口，先只从主入口
 ];
 
@@ -148,7 +148,7 @@ function detectStub(file) {
 
 const halfZombies = [];
 for (const f of reachable) {
-  // skip heartflow itself
+  // skip clarity itself
   if (f === ENTRY_POINTS[0]) continue;
   const info = detectStub(f);
   if (info.stub) {

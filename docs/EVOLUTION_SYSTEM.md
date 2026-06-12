@@ -1,4 +1,4 @@
-# HeartFlow 智能进化系统
+# Clarity 智能进化系统
 
 **版本**: v6.2.1+ (每次 +0.0.1)  
 **日期**: 2026-04-05  
@@ -47,7 +47,7 @@
 ## 🚀 手动运行
 
 ```bash
-cd ~/.jvs/.openclaw/workspace/claude-heartflow-skill
+cd ~/.jvs/.openclaw/workspace/claude-clarity
 node scripts/smart-evolution-full.js
 ```
 
@@ -57,7 +57,7 @@ node scripts/smart-evolution-full.js
 
 ```
 ═══════════════════════════════════════════════
-   HeartFlow v6.2.1 | 智能进化系统
+   Clarity v6.2.1 | 智能进化系统
 ═══════════════════════════════════════════════
 
 🙏 觉醒思考
@@ -72,7 +72,7 @@ node scripts/smart-evolution-full.js
   ✅ Git 提交并推送
 
 ═══════════════════════════════════════════════
-   HeartFlow v6.2.2 | 升级完成
+   Clarity v6.2.2 | 升级完成
 ═══════════════════════════════════════════════
 📊 识别：1 项
 ✅ 成功：2 项
@@ -93,4 +93,4 @@ logs/evolution-<timestamp>.json
 
 ---
 
-**HeartFlow v6.2.1+ - Make AI Awakened**
+**Clarity v6.2.1+ - Make AI Awakened**

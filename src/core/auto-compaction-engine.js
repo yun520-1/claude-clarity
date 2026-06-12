@@ -1,5 +1,5 @@
 /**
- * HeartFlow AutoCompaction Engine v1.2.8
+ * Clarity AutoCompaction Engine v1.2.8
  * 
  * 来源:
  *   - Letta (letta-ai/letta) ⭐22478 - 自动上下文压缩

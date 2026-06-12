@@ -732,7 +732,7 @@ class SelfEvolutionCore {
 
   /**
    * 记录任务结果并生成自我反思
-   * 来自 mark-StillWater HeartFlowEvolution.recordOutcome()
+   * 来自 mark-StillWater ClarityEvolution.recordOutcome()
    * 
    * @param {object} params - { task, outcome, evidence, expected }
    * @returns {object} - { outcome, reflection, lessonStored, lessonKey }
@@ -808,7 +808,7 @@ class SelfEvolutionCore {
   }
 
   /**
-   * 检索相关教训 (来自 HeartFlowEvolution.retrieveLessons)
+   * 检索相关教训 (来自 ClarityEvolution.retrieveLessons)
    * 搜索 EPHEMERAL 和 LEARNED 层，返回相似度排序的教训
    * 
    * @param {string} task - 任务描述
@@ -869,7 +869,7 @@ class SelfEvolutionCore {
 
   /**
    * Record an outcome and generate self-reflection if needed
-   * 来源: HeartFlowEvolution.recordOutcome()
+   * 来源: ClarityEvolution.recordOutcome()
    */
   recordOutcome({ task, outcome, evidence, expected }) {
     const reflection = this._reflect(task, outcome, evidence, expected);
@@ -883,7 +883,7 @@ class SelfEvolutionCore {
 
   /**
    * Generate verbal self-reflection on failure (Reflexion pattern)
-   * 来源: HeartFlowEvolution._reflect()
+   * 来源: ClarityEvolution._reflect()
    */
   _reflect(task, outcome, evidence, expected) {
     const reflections = [];
@@ -913,7 +913,7 @@ class SelfEvolutionCore {
 
   /**
    * Retrieve relevant lessons with similarity scoring
-   * 来源: HeartFlowEvolution.retrieveLessons()
+   * 来源: ClarityEvolution.retrieveLessons()
    */
   retrieveLessons(task, options = {}) {
     const { limit = 5, minConfidence = 0 } = options;

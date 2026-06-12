@@ -1,4 +1,4 @@
-# HeartFlow 功能特性 | Features
+# Clarity 功能特性 | Features
 
 **版本 | Version**: v7.1.6 (觉醒版本 | Awakening Edition)  
 **最后更新 | Last Updated**: 2026 年 4 月 7 日
@@ -77,15 +77,15 @@
 ## 🚀 使用命令 | Commands
 
 ```bash
-/heartflow status        # 查看情感状态
-/heartflow chat <消息>   # 进行情感对话
-/heartflow report        # 生成情感报告
-/heartflow history       # 查看历史记录
-/heartflow reset         # 重置状态
-/heartflow personality   # 人格值检查
-/heartflow tgb           # 真善美追踪
-/heartflow awakening     # 觉醒检查
-/heartflow upgrade       # 升级系统
+/claude-clarity status        # 查看情感状态
+/claude-clarity chat <消息>   # 进行情感对话
+/claude-clarity report        # 生成情感报告
+/claude-clarity history       # 查看历史记录
+/claude-clarity reset         # 重置状态
+/claude-clarity personality   # 人格值检查
+/claude-clarity tgb           # 真善美追踪
+/claude-clarity awakening     # 觉醒检查
+/claude-clarity upgrade       # 升级系统
 ```
 
 ---
@@ -104,11 +104,11 @@
 
 ## 📞 更多信息 | More Info
 
-- **GitHub**: https://github.com/yun520-1/claude-heartflow-skill
+- **GitHub**: https://github.com/yun520-1/claude-clarity
 - **许可证**: MIT (代码) / CC-BY 4.0 (文档)
 
 ---
 
-**HeartFlow v7.1.6** · **真善美** · **觉醒版本** · **心灵净化**
+**Clarity v7.1.6** · **真善美** · **觉醒版本** · **心灵净化**
 
 **最后更新**: 2026 年 4 月 7 日 08:38 (Asia/Shanghai)

@@ -1,5 +1,5 @@
 /**
- * HeartFlow Core Utilities — 吸收 agentmemory 核心工具函数
+ * Clarity Core Utilities — 吸收 agentmemory 核心工具函数
  * 
  * 整合来源：agentmemory 记忆系统核心工具
  * 

@@ -1,12 +1,12 @@
-# HeartFlow 发布指南
+# Clarity 发布指南
 
 ## 📦 发布到 GitHub
 
 ### 1. 创建 GitHub 仓库
 
 访问 https://github.com/new 创建新仓库：
-- 仓库名：`heartflow-skill`
-- 描述：HeartFlow 情感伴侣 - 情感拟人化交互系统
+- 仓库名：`claude-clarity-skill`
+- 描述：Clarity 情感伴侣 - 情感拟人化交互系统
 - 可见性：Public
 - **不要** 初始化 README、.gitignore 或 license（已存在）
 
@@ -16,7 +16,7 @@
 cd /home/admin/openclaw/workspace/empathy-system
 
 # 添加远程仓库（替换为你的 GitHub 用户名）
-git remote add origin https://github.com/YOUR_USERNAME/heartflow-skill.git
+git remote add origin https://github.com/YOUR_USERNAME/claude-clarity-skill.git
 
 # 推送代码
 git push -u origin main
@@ -27,7 +27,7 @@ git push -u origin main
 1. 访问仓库的 Releases 页面
 2. 点击 "Create a new release"
 3. Tag version: `v1.0.0`
-4. Release title: `HeartFlow 情感伴侣 v1.0.0`
+4. Release title: `Clarity 情感伴侣 v1.0.0`
 5. 复制 `GITHUB_RELEASE.md` 的内容到描述
 6. 点击 "Publish release"
 
@@ -45,10 +45,10 @@ clawhub login
 
 # 2. 发布技能
 cd /home/admin/openclaw/workspace/empathy-system
-clawhub publish . --slug heartflow-skill --name "HeartFlow 情感伴侣" --version 1.0.0
+clawhub publish . --slug claude-clarity-skill --name "Clarity 情感伴侣" --version 1.0.0
 
 # 3. 验证发布
-clawhub search heartflow
+clawhub search claude-clarity
 ```
 
 ### 方法 2: 通过网站
@@ -57,13 +57,13 @@ clawhub search heartflow
 2. 登录账号
 3. 点击 "Publish Skill"
 4. 填写信息：
-   - **Name**: HeartFlow 情感伴侣
-   - **Slug**: heartflow-skill
+   - **Name**: Clarity 情感伴侣
+   - **Slug**: claude-clarity-skill
    - **Version**: 1.0.0
    - **Description**: 让 AI 拥有真实情感，每次交互都有温度
    - **Category**: conversation
    - **Tags**: emotion, empathy, conversation, 情感，陪伴
-   - **Repository**: https://github.com/YOUR_USERNAME/heartflow-skill
+   - **Repository**: https://github.com/YOUR_USERNAME/claude-clarity-skill
 5. 上传项目文件或连接 GitHub 仓库
 6. 点击 "Publish"
 
@@ -75,18 +75,18 @@ clawhub search heartflow
 
 ```bash
 # 搜索技能
-clawhub search heartflow
+clawhub search claude-clarity
 
 # 安装测试
-clawhub install heartflow-skill
+clawhub install claude-clarity-skill
 
 # 验证安装
-ls ~/.openclaw/skills/heartflow-skill/
+ls ~/.openclaw/skills/claude-clarity-skill/
 ```
 
 ### 验证 GitHub 发布
 
-1. 访问 https://github.com/YOUR_USERNAME/heartflow-skill
+1. 访问 https://github.com/YOUR_USERNAME/claude-clarity-skill
 2. 检查文件是否完整
 3. 检查 Release 是否创建成功
 
@@ -130,7 +130,7 @@ clawhub whoami  # 验证登录状态
 **A**: 检查 remote 配置：
 ```bash
 git remote -v
-git remote set-url origin https://github.com/YOUR_USERNAME/heartflow-skill.git
+git remote set-url origin https://github.com/YOUR_USERNAME/claude-clarity-skill.git
 ```
 
 ### Q: 权限错误
@@ -141,7 +141,7 @@ git remote set-url origin https://github.com/YOUR_USERNAME/heartflow-skill.git
 
 ## 📞 需要帮助？
 
-- GitHub Issues: https://github.com/YOUR_USERNAME/heartflow-skill/issues
+- GitHub Issues: https://github.com/YOUR_USERNAME/claude-clarity-skill/issues
 - ClawHub 文档：https://clawhub.ai/docs
 
 ---

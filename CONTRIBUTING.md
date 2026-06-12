@@ -1,6 +1,6 @@
 # 贡献指南
 
-感谢你考虑为 HeartFlow 情感伴侣做出贡献！
+感谢你考虑为 Clarity 情感伴侣做出贡献！
 
 ## 如何贡献
 
@@ -30,8 +30,8 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/8xiaochongzi/heartflow-skill.git
-cd heartflow-skill
+git clone https://github.com/8xiaochongzi/claude-clarity-skill.git
+cd claude-clarity-skill
 
 # 安装依赖（本项目无外部依赖）
 npm install

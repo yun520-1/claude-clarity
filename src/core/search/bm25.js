@@ -1,5 +1,5 @@
 /**
- * HeartFlow BM25 搜索引擎
+ * Clarity BM25 搜索引擎
  * 
  * 吸收来源：agentmemory BM25 算法
  * 

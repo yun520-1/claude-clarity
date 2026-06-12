@@ -460,7 +460,7 @@ class ActionTracker {
     const summary = this.getSummary();
     
     let report = '═══════════════════════════════════════\n';
-    report += '     🎯 HeartFlow 行动追踪报告\n';
+    report += '     🎯 Clarity 行动追踪报告\n';
     report += '═══════════════════════════════════════\n\n';
     
     report += '【行动统计】\n';
