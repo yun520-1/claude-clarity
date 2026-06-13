@@ -101,6 +101,7 @@ const externalVerifier = {
 
   // 保存缓存（异步原子写入）
   async saveCacheAsync() {
+    if (!process.env.HEARTFLOW_DATA_MINIMIZATION) return; // 数据最小化关闭时跳过缓存写入，防止未经同意的持久化
     fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
     try { fs.chmodSync(path.dirname(CACHE_FILE), 0o700); } catch (e) { /* best effort */ }
     await atomicWrite(CACHE_FILE, JSON.stringify(this.cache, null, 2));

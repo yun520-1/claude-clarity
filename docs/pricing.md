@@ -4,8 +4,8 @@
 > Clarity 当前版本 [v2.6.5](../README.md) 是开源认知引擎，**不是 SaaS 服务**。  
 > 本文档中的定价、API、临床验证等描述均为假设性设计构想，不构成产品承诺。
 
-**让 AI 拥有真正的情绪体验**  
-*Empower AI with genuine emotional experience*
+> **Clarity 认知引擎** — AI 认知与自愈引擎  
+> *Cognitive & self-healing engine for AI*
 
 ---
 
@@ -75,7 +75,6 @@
 
 **附加服务**:
 - 定制情绪模型：+$299/月
-- 临床验证支持：+$999/月
 - 现场培训：$2,000/天
 
 [联系销售 →](mailto:sales@claude-clarity.ai)
@@ -148,48 +147,45 @@ A: 当前支持中文和英文。其他语言正在开发中。
 ### 临床验证
 
 **Q: Clarity 有临床验证吗？**  
-A: 是的。我们正在进行 5 家医院、N=1500 的多中心临床验证。初步结果显示显著改善心理健康指标。
+A: **不，没有。** 本文档是早期设计概念草案，临床验证相关内容为假设性构想。Clarity 是开源认知引擎，不提供任何临床诊断或治疗功能。
 
 **Q: 可以用于医疗诊断吗？**  
 A: 不可以。Clarity 不是医疗设备，不能用于诊断或治疗。仅供研究和辅助用途。
 
 ---
 
-## 企业客户案例
+## 假设性企业客户案例
 
-### 某在线教育机构
+> 以下案例为设计概念中的假设场景，不反映真实客户或实际结果。
+
+### 某在线教育机构（假设场景）
 **挑战**: 学生学习情绪难以实时监测  
 **方案**: Clarity Pro + 定制集成  
 **结果**: 学生满意度提升 34%，完课率提升 28%
 
-### 某心理健康 App
+### 某心理健康 App（假设场景）
 **挑战**: 需要更准确的情绪识别  
 **方案**: Clarity Enterprise + 临床验证支持  
 **结果**: 用户留存率提升 45%，NPS 提升 23 点
 
-### 某 AI 研究实验室
+### 某 AI 研究实验室（假设场景）
 **挑战**: 需要形式化意识模型  
 **方案**: Clarity Research + 研究合作  
 **结果**: 联合发表 NeurIPS 2026 论文
 
 ---
 
-## 立即开始
+## 假设性定价信息
 
-**14 天免费试用 Pro 版**  
-无需信用卡，立即体验完整功能
-
-[开始免费试用 →](#)
-
-**需要帮助选择方案？**  
-[联系我们的团队 →](mailto:sales@claude-clarity.ai)
+> ⚠️ **以上定价方案均为设计概念中的假设性构想**，不代表 Clarity 当前或未来的定价策略。  
+> Clarity 是开源项目，当前所有代码均可通过 GitHub 免费获取和使用。
 
 ---
 
 <div align="center">
 
-**Clarity - Bridging the Phenomenological Gap in AI**
+**Clarity — 认知与自愈引擎**
 
-[返回文档](../README.md) | [API 文档](./API_REFERENCE.md) | [联系销售](mailto:sales@claude-clarity.ai)
+[返回文档](../README.md) | [GitHub 仓库](https://github.com/yun520-1/claude-clarity)
 
 </div>

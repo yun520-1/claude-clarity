@@ -1,11 +1,11 @@
 /**
- * Clarity CodeVerifier v2.0.0
+ * Clarity CodeVerifier v2.0.1
  *
- * 代码验证引擎 - 三层验证 + 质量评分
+ * 代码验证引擎 - 三层验证 + 质量评分 + 安全检查
  *
  * 三层验证：
  * 1. 语法验证：基于 AST 解析（JS 使用 acorn，Python 使用 py_compile）
- * 2. 逻辑验证：执行 + 输出比对
+ * 2. 逻辑验证：执行 + 输出比对（带安全黑名单检查）
  * 3. 测试验证：TDD 模式（生成测试→执行→验证）
  *
  * 质量评分：0-100 分（可读性/效率/安全性/完整性）
@@ -32,6 +32,45 @@ try {
   acorn = require('acorn');
 } catch (e) {
   // acorn 未安装，跳过 AST 解析
+}
+
+// ============================================================
+// 安全检查（与 code-executor.js 同步）
+// ============================================================
+
+/**
+ * 安全检查函数 - 检查代码中的危险模式
+ * @param {string} code - 要检查的代码
+ * @returns {{ safe: boolean, reason: string }}
+ */
+function securityCheck(code) {
+  const DANGEROUS_PATTERNS = [
+    /rm\s+-rf\s+/i,                        // 禁止 rm -rf
+    /\.\.\/\.\.\//,                        // 路径穿越
+    /eval\s*\(/i,                           // 危险 eval
+    /exec\s*\(/i,                           // 危险 exec
+    /child_process/i,                       // 子进程
+    /require\s*\(\s*['\"]child_process['\"]\s*\)/i,
+    /\bsudo\s+rm\b/i,                       // sudo rm
+    /mkfs\./i,                              // 创建文件系统
+    /dd\s+if=/i,                            // 直接磁盘操作
+    /curl\s+-/i,                            // curl 下载
+    /wget\s+/i,                             // wget 下载
+    /process\.binding/i,                    // 原生绑定
+    /require\s*\(\s*['\"]net['\"]\s*\)/i,
+    /require\s*\(\s*['\"]vm['\"]\s*\)/i,
+    /require\s*\(\s*['\"]dgram['\"]\s*\)/i,
+    /require\s*\(\s*['\"]tls['\"]\s*\)/i,
+    /\bfs\.writeFileSync\s*\(/i,            // 写文件
+    /\bfs\.unlinkSync\s*\(/i,
+  ];
+
+  for (const pattern of DANGEROUS_PATTERNS) {
+    if (pattern.test(code)) {
+      return { safe: false, reason: `代码包含危险模式: ${pattern}` };
+    }
+  }
+  return { safe: true, reason: '' };
 }
 
 // ============================================================
@@ -677,6 +716,15 @@ class CodeVerifier {
       actualOutput: null,
       executionTime: 0
     };
+
+    // 安全检查：检测危险模式
+    const secCheck = securityCheck(code);
+    if (!secCheck.safe) {
+      for (const pattern of secCheck.matched) {
+        result.errors.push(`安全警告: 检测到危险模式 "${pattern}"`);
+      }
+      return result;
+    }
 
     const startTime = Date.now();
 

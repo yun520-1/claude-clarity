@@ -150,6 +150,10 @@ function _getOrCreateAesKey() {
     try {
       const meta = JSON.parse(fs.readFileSync(keyFile, 'utf-8'));
       _aesKey = Buffer.from(meta.key, 'base64');
+      // [安全修复] 使用文件密钥回退时发出启动警告
+      console.warn('[Memory] 警告: .aes-key 文件用于加密密钥。推荐使用 HEARTFLOW_AES_KEY 环境变量，'
+        + '以避免密钥文件被复制后导致加密数据泄露的风险。\n'
+        + '  设置方式: export HEARTFLOW_AES_KEY="<base64-encoded-32-byte-key>"');
       return _aesKey;
     } catch (e) {
       // corrupted, regenerate

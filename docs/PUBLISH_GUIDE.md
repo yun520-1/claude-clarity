@@ -6,7 +6,7 @@
 
 访问 https://github.com/new 创建新仓库：
 - 仓库名：`claude-clarity-skill`
-- 描述：Clarity 情感伴侣 - 情感拟人化交互系统
+- 描述：Clarity 认知引擎 — 存在感知、真善美评分、三层记忆、自愈策略
 - 可见性：Public
 - **不要** 初始化 README、.gitignore 或 license（已存在）
 
@@ -27,7 +27,7 @@ git push -u origin main
 1. 访问仓库的 Releases 页面
 2. 点击 "Create a new release"
 3. Tag version: `v1.0.0`
-4. Release title: `Clarity 情感伴侣 v1.0.0`
+4. Release title: `Clarity 认知引擎 v1.0.0`
 5. 复制 `GITHUB_RELEASE.md` 的内容到描述
 6. 点击 "Publish release"
 
@@ -45,7 +45,7 @@ clawhub login
 
 # 2. 发布技能
 cd /home/admin/openclaw/workspace/empathy-system
-clawhub publish . --slug claude-clarity-skill --name "Clarity 情感伴侣" --version 1.0.0
+clawhub publish . --slug claude-clarity-skill --name "Clarity 认知引擎" --version 1.0.0
 
 # 3. 验证发布
 clawhub search claude-clarity
@@ -57,12 +57,12 @@ clawhub search claude-clarity
 2. 登录账号
 3. 点击 "Publish Skill"
 4. 填写信息：
-   - **Name**: Clarity 情感伴侣
+   - **Name**: Clarity 认知引擎
    - **Slug**: claude-clarity-skill
    - **Version**: 1.0.0
-   - **Description**: 让 AI 拥有真实情感，每次交互都有温度
+   - **Description**: 存在感知、真善美评分、三层记忆、自愈策略的认知引擎
    - **Category**: conversation
-   - **Tags**: emotion, empathy, conversation, 情感，陪伴
+   - **Tags**: cognitive, memory, self-healing, reasoning, verification
    - **Repository**: https://github.com/YOUR_USERNAME/claude-clarity-skill
 5. 上传项目文件或连接 GitHub 仓库
 6. 点击 "Publish"

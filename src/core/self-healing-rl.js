@@ -45,6 +45,9 @@ function _getHmacKey() {
       const meta = JSON.parse(fs.readFileSync(keyFile, 'utf-8'));
       if (meta.key && /^[A-Za-z0-9+/=_-]+$/.test(meta.key)) {
         _cachedHmacKey = meta.key;
+        // [安全修复] 使用文件密钥回退时发出启动警告
+        console.warn('[HealingMemoryRL] 警告: .hmac-key 文件用于 Q-table HMAC 密钥。'
+          + '推荐使用 HEARTFLOW_QTABLE_HMAC_KEY 环境变量以避免密钥文件泄露风险。');
         return _cachedHmacKey;
       }
     } catch (e) { process.stderr.write('[self-healing-rl] HMAC key file corrupted, regenerating: ' + e.message + '\n'); }

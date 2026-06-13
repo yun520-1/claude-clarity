@@ -81,8 +81,21 @@ class MeaningfulMemory {
     this._saveTimer = null;
     this._loadFromExport();
 
-    // Inject foundational CORE memories on first run
+    // 注入初始 CORE 记忆
     this._ensureCoreMemories();
+
+    // [安全修复] 启动时提示持久化守卫状态
+    const dm = !!process.env.HEARTFLOW_DATA_MINIMIZATION;
+    const uc = !!process.env.HEARTFLOW_USER_CONSENT;
+    if (dm && uc) {
+      console.log(`[MeaningfulMemory] 持久化已启用 (数据最小化=开, 用户同意=开)`);
+    } else {
+      const reasons = [];
+      if (!dm) reasons.push('HEARTFLOW_DATA_MINIMIZATION 未设置');
+      if (!uc) reasons.push('HEARTFLOW_USER_CONSENT 未设置');
+      console.warn(`[MeaningfulMemory] 持久化被阻止: ${reasons.join(', ')}。`
+        + ' 记忆仅保存在内存中，重启后丢失。');
+    }
   }
 
   // ════════════════════════════════════════════

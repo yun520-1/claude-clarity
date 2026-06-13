@@ -27,7 +27,7 @@ const MAX_OUTPUT_SIZE = 10 * 1024;
 const DEFAULT_STEP_TIMEOUT = 5000;  // 单步执行：5秒
 const DEFAULT_TOTAL_TIMEOUT = 30000; // 总超时：30秒
 
-// 危险命令白名单（安全过滤）
+// 危险命令黑名单（安全过滤）
 const DANGEROUS_PATTERNS = [
   /rm\s+-rf\s+/,                        // 禁止 rm -rf 删除命令
   /^rm\s+-rf\s+/m,                     // 行首的 rm -rf
@@ -41,6 +41,15 @@ const DANGEROUS_PATTERNS = [
   /format\s+\//i,                       // 格式化根目录
   /mkfs\./i,                            // 创建文件系统
   /dd\s+if=/i,                          // 直接磁盘操作
+  /curl\s+-/i,                          // 禁止 curl 下载/网络访问
+  /wget\s+/i,                           // 禁止 wget 下载
+  /process\.binding/i,                  // 禁止原生模块绑定
+  /require\s*\(\s*['\"]net['\"]\s*\)/i, // 禁止网络模块
+  /require\s*\(\s*['\"]http['\"]\s*\)/i,
+  /require\s*\(\s*['\"]https['\"]\s*\)/i,
+  /require\s*\(\s*['\"]dgram['\"]\s*\)/i,
+  /require\s*\(\s*['\"]tls['\"]\s*\)/i,
+  /require\s*\(\s*['\"]vm['\"]\s*\)/i,
 ];
 
 // 扩展语言执行配置（v2.0 新增）
@@ -454,6 +463,11 @@ class CodeExecutor {
    * 执行代码（v2.0 增强版）
    */
   async execute(code, language, options = {}) {
+    // ⚠️ 安全警告: execute() 不提供沙箱隔离（仅检查黑名单）
+    // 推荐使用 sandbox() 方法获得完整的文件系统+网络访问限制
+    if (!options.silentDeprecation) {
+      console.warn('[CodeExecutor] 警告: execute() 方法没有沙箱隔离, 建议改用 sandbox() 方法');
+    }
     this.startTime = Date.now();
 
     // v2.0：缓存检查

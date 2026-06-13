@@ -6,6 +6,10 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const os = require('os');
+
+const MAX_PATCH_SIZE = 1024 * 100; // 补丁文件最大 100KB
+const AUDIT_LOG_FILE = 'self-modifier-audit.log';
 
 class SelfModifier {
   constructor(projectRoot) {
@@ -15,7 +19,14 @@ class SelfModifier {
     this.enabled = this.isEnabled();
     this.changeLog = path.join(projectRoot, 'logs', 'self-modifier.log');
     this.patchDir = path.join(projectRoot, 'patches');
+    this.auditLogPath = path.join(projectRoot, 'logs', AUDIT_LOG_FILE);
     this.init();
+
+    // 启动时警告：此功能仅适用于沙箱/开发环境
+    if (this.enabled) {
+      console.warn('[SelfModifier] 警告: 自我修改已启用。此功能仅适用于沙箱/开发环境，'
+        + '不建议在生产环境中使用。设置 HEARTFLOW_ENABLE_SELF_MODIFICATION=0 可禁用。');
+    }
   }
 
   init() {
@@ -282,26 +293,58 @@ class SelfModifier {
   }
 
   /**
+   * 写入审计日志（结构化安全事件记录）
+   */
+  _auditLog(entry) {
+    try {
+      const logDir = path.dirname(this.auditLogPath);
+      if (!fs.existsSync(logDir)) {
+        fs.mkdirSync(logDir, { recursive: true });
+      }
+      const logEntry = JSON.stringify({
+        timestamp: new Date().toISOString(),
+        event: entry.event,
+        file: entry.file,
+        source: 'self-modifier',
+        details: entry.details || {}
+      }) + '\n';
+      fs.appendFileSync(this.auditLogPath, logEntry);
+    } catch (e) {
+      // 审计日志不可中断主逻辑
+    }
+  }
+
+  /**
+   * 普通日志
+   */
+  _log(msg) {
+    console.log(`[SelfModifier] ${msg}`);
+  }
+
+  /**
    * 启用功能
    */
   async metacognitiveModify(suggestion) {
     if (!this.enabled) {
-      return { 
-        success: false, 
+      return {
+        success: false,
         reason: 'self_modification_disabled',
         action: 'generate_patch_only'
       };
     }
 
-    this.log(`Meta-cognitive modification: ${suggestion.type || 'unknown'}`);
+    this._log(`元认知修改: ${suggestion.type || 'unknown'}`);
+    this._auditLog({ event: 'metacognitive_modify_attempt', file: suggestion.file || 'unknown', details: { type: suggestion.type } });
 
     const parsed = this.parseSuggestion(suggestion);
     if (!parsed) {
+      this._auditLog({ event: 'metacognitive_modify_failed', file: 'unknown', details: { reason: 'cannot_parse_suggestion' } });
       return { success: false, reason: 'cannot_parse_suggestion' };
     }
 
     const filePath = path.join(this.projectRoot, parsed.file);
     if (!fs.existsSync(filePath)) {
+      this._auditLog({ event: 'metacognitive_modify_failed', file: parsed.file, details: { reason: 'file_not_found' } });
       return { success: false, reason: 'file_not_found', path: parsed.file };
     }
 
@@ -313,11 +356,22 @@ class SelfModifier {
     }
 
     const patch = this.generatePatch(originalContent, modifiedContent, parsed);
-    const patchFileName = `self-mod-${Date.now()}.patch`;
-    const patchPath = path.join(this.patchDir, patchFileName);
 
-    fs.writeFileSync(patchPath, patch);
-    try { fs.chmodSync(patchPath, 0o600); } catch (e) { /* best effort */ }
+    // 检查补丁大小
+    if (Buffer.byteLength(patch, 'utf8') > MAX_PATCH_SIZE) {
+      this._auditLog({ event: 'patch_rejected_size', file: parsed.file, details: { size: Buffer.byteLength(patch, 'utf8') } });
+      return { success: false, reason: 'patch_too_large', message: `补丁文件超过 ${MAX_PATCH_SIZE / 1024}KB 限制` };
+    }
+
+    const patchFileName = `self-mod-${Date.now()}.patch`;
+    // 在审批前写入临时目录，而非 patches/
+    const tempDir = os.tmpdir();
+    const tempPatchPath = path.join(tempDir, patchFileName);
+
+    fs.writeFileSync(tempPatchPath, patch);
+    try { fs.chmodSync(tempPatchPath, 0o600); } catch (e) { /* best effort */ }
+
+    this._auditLog({ event: 'patch_generated_temp', file: parsed.file, details: { patchFile: patchFileName, tempPath: tempPatchPath } });
 
     this.recordChange({
       file: parsed.file,
@@ -328,16 +382,17 @@ class SelfModifier {
       requiresApproval: true
     });
 
-    this.log(`Patch generated: ${patchFileName} (requires user approval)`);
+    this._log(`补丁已生成: ${patchFileName} (需要用户审批)`);
+    this._auditLog({ event: 'patch_pending_approval', file: parsed.file, details: { patchFile: patchFileName } });
 
     return {
       success: true,
       action: 'patch_generated',
       patchFile: patchFileName,
-      patchPath: patchPath,
+      patchPath: tempPatchPath,
       description: this.describeChanges(originalContent, modifiedContent),
       requiresApproval: true,
-      instructions: '请审查 patches/ 目录下的补丁文件，使用 "patch -p1 < patches/xxx.patch" 应用'
+      instructions: `请审查 ${tempPatchPath} 中的补丁文件，运行 applyApprovedPatch() 应用`
     };
   }
 
@@ -394,18 +449,40 @@ ${diff}
    * 列出待审批的补丁文件
    */
   listPendingPatches() {
+    const patches = [];
     try {
-      const files = fs.readdirSync(this.patchDir)
-        .filter(f => f.endsWith('.patch'))
+      // 从 patches/ 目录
+      if (fs.existsSync(this.patchDir)) {
+        const fromPatches = fs.readdirSync(this.patchDir)
+          .filter(f => f.endsWith('.patch'))
+          .map(f => {
+            const stat = fs.statSync(path.join(this.patchDir, f));
+            return {
+              file: f,
+              created: stat.mtime.toISOString(),
+              size: stat.size,
+              source: 'patches'
+            };
+          });
+        patches.push(...fromPatches);
+      }
+
+      // 从临时目录
+      const tmpDir = os.tmpdir();
+      const tmpFiles = fs.readdirSync(tmpDir)
+        .filter(f => f.startsWith('self-mod-') && f.endsWith('.patch'))
         .map(f => {
-          const stat = fs.statSync(path.join(this.patchDir, f));
+          const stat = fs.statSync(path.join(tmpDir, f));
           return {
             file: f,
             created: stat.mtime.toISOString(),
-            size: stat.size
+            size: stat.size,
+            source: 'tmpdir'
           };
         });
-      return files;
+      patches.push(...tmpFiles);
+
+      return patches.sort((a, b) => new Date(b.created) - new Date(a.created));
     } catch (e) {
       return [];
     }
@@ -415,22 +492,39 @@ ${diff}
    * 应用已审批的补丁
    */
   async applyApprovedPatch(patchFileName) {
-    const patchPath = path.join(this.patchDir, patchFileName);
-    
+    // 先在临时目录中查找，再在 patches/ 中查找
+    let patchPath = path.join(os.tmpdir(), patchFileName);
+    let sourceIsTemp = true;
+
     if (!fs.existsSync(patchPath)) {
+      patchPath = path.join(this.patchDir, patchFileName);
+      sourceIsTemp = false;
+    }
+
+    if (!fs.existsSync(patchPath)) {
+      this._auditLog({ event: 'patch_apply_failed', file: patchFileName, details: { reason: 'patch_not_found' } });
       return { success: false, reason: 'patch_not_found' };
     }
 
     try {
       const patchContent = fs.readFileSync(patchPath, 'utf8');
+
+      // 补丁大小检查
+      if (Buffer.byteLength(patchContent, 'utf8') > MAX_PATCH_SIZE) {
+        this._auditLog({ event: 'patch_apply_rejected_size', file: patchFileName, details: { size: Buffer.byteLength(patchContent, 'utf8') } });
+        return { success: false, reason: 'patch_too_large' };
+      }
+
       const targetFile = this.extractTargetFromPatch(patchContent);
-      
+
       if (!targetFile) {
+        this._auditLog({ event: 'patch_apply_failed', file: patchFileName, details: { reason: 'invalid_patch_format' } });
         return { success: false, reason: 'invalid_patch_format' };
       }
 
       const targetPath = path.join(this.projectRoot, targetFile);
       if (!fs.existsSync(targetPath)) {
+        this._auditLog({ event: 'patch_apply_failed', file: targetFile, details: { reason: 'target_file_not_found' } });
         return { success: false, reason: 'target_file_not_found' };
       }
 
@@ -440,6 +534,15 @@ ${diff}
       fs.writeFileSync(targetPath, modifiedContent);
       try { fs.chmodSync(targetPath, 0o600); } catch (e) { /* best effort */ }
 
+      // 补丁已审批，复制到 patches/ 留存审计
+      if (sourceIsTemp) {
+        const archivedPatch = path.join(this.patchDir, patchFileName);
+        fs.copyFileSync(patchPath, archivedPatch);
+        try { fs.chmodSync(archivedPatch, 0o600); } catch (e) { /* best effort */ }
+        // 从临时目录清理
+        try { fs.unlinkSync(patchPath); } catch (e) { /* ignore */ }
+      }
+
       this.recordChange({
         file: targetFile,
         action: 'patch_applied',
@@ -447,7 +550,13 @@ ${diff}
         timestamp: new Date().toISOString()
       });
 
-      this.log(`Applied approved patch: ${patchFileName}`);
+      this._auditLog({
+        event: 'patch_applied',
+        file: targetFile,
+        details: { patchFile: patchFileName, source: sourceIsTemp ? 'tmpdir' : 'patches' }
+      });
+
+      this._log(`已应用审批补丁: ${patchFileName}`);
 
       return {
         success: true,
@@ -455,6 +564,7 @@ ${diff}
         description: this.describeChanges(originalContent, modifiedContent)
       };
     } catch (e) {
+      this._auditLog({ event: 'patch_apply_error', file: patchFileName, details: { error: e.message } });
       return { success: false, error: e.message };
     }
   }
@@ -489,21 +599,38 @@ ${diff}
    * 拒绝并删除补丁
    */
   rejectPatch(patchFileName) {
+    // 尝试 patches/ 和 tmpdir 两处清理
+    let found = false;
+
     const patchPath = path.join(this.patchDir, patchFileName);
-    
-    if (!fs.existsSync(patchPath)) {
+    if (fs.existsSync(patchPath)) {
+      fs.unlinkSync(patchPath);
+      found = true;
+    }
+
+    const tempPath = path.join(os.tmpdir(), patchFileName);
+    if (fs.existsSync(tempPath)) {
+      fs.unlinkSync(tempPath);
+      found = true;
+    }
+
+    if (!found) {
       return { success: false, reason: 'patch_not_found' };
     }
 
-    fs.unlinkSync(patchPath);
-    
     this.recordChange({
       action: 'patch_rejected',
       patchFile: patchFileName,
       timestamp: new Date().toISOString()
     });
 
-    this.log(`Rejected and removed patch: ${patchFileName}`);
+    this._auditLog({
+      event: 'patch_rejected',
+      file: patchFileName,
+      details: { reason: 'user_rejected' }
+    });
+
+    this._log(`已拒绝并删除补丁: ${patchFileName}`);
 
     return { success: true };
   }

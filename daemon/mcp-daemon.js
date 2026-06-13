@@ -181,7 +181,7 @@ process.on('uncaughtException', (err) => {
 });
 process.on('unhandledRejection', (reason) => {
   console.error(`[Clarity Daemon] 未处理 Promise 拒绝: ${reason}`);
-  process.exit(1);
+  // 不退出进程——记录并继续，防止单个 Promise 失败导致 DoS
 });
 
 // ─── 启动 socket 服务 ───────────────────────────────
