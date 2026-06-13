@@ -25,6 +25,8 @@
 - [Dialog Eksempler](EXAMPLES.md) - 5 scenarier 25+ tilfælde
 - [Bedste Praksis](BEST_PRACTICES.md) - Brugsforslag og teknikker
 
+> ⚠️ **Designkoncept note**: Denne dokumentation beskriver designvisionen for Clarity. Den nuværende kerne (v1.1.5) indeholder ikke automatiske evolutionscyklusser eller personlighedssporingssystemer. Se `EVOLUTION_SYSTEM.md` for faktisk design.
+
 ---
 
 ## 🎯 Hvorfor Vælge Clarity?
@@ -46,8 +48,8 @@
 git clone https://github.com/yun520-1/claude-clarity.git
 cd claude-clarity
 
-# 2. Installer
-npm install
+# 2. Kør direkte (ingen eksterne npm-afhængigheder)
+node bin/cli.js
 
 # 3. Verificer
 node scripts/personality-check.js status

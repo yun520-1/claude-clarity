@@ -98,10 +98,11 @@ function main() {
   // 检查包装器进程（仅限 --wrapper）
   let wrapperOk = false;
   if (needWrapper) {
+    // 使用 PID 文件检查替代 ps aux 调用，避免跨平台兼容问题
+    const wrapperPidFile = '/tmp/claude-clarity-wrapper.pid';
     try {
-      const { spawnSync } = require('child_process');
-      const result = spawnSync('ps', ['aux'], { encoding: 'utf8', timeout: 2000 });
-      wrapperOk = result.stdout.includes('mcp-wrapper.js');
+      const wpPid = parseInt(fs.readFileSync(wrapperPidFile, 'utf8').trim());
+      wrapperOk = pidAlive(wpPid);
     } catch { wrapperOk = false; }
   }
 

@@ -2,7 +2,9 @@
 
 **版本**: 1.0.0  
 **创建日期**: 2026-04-04  
-**状态**: 最新
+**状态**: 设计概念参考
+
+> ⚠️ **设计概念说明**：本文档中的代码示例和 API 调用是为了展示设计思路，并非当前实际可用的 API。当前的心虫引擎通过 `src/core/clarity.js` 的 `Clarity` 类提供功能，请参考源代码和 SKILL.md 的实际使用方式。
 
 ---
 
@@ -11,12 +13,9 @@
 ### 1. 安装
 
 ```bash
-# npm 安装
-npm install claude-clarity-companion
-
-# 或从源码安装
+# 从源码使用
 git clone https://github.com/yun520-1/claude-clarity.git
-cd claude-clarity && npm install
+cd claude-clarity
 ```
 
 ### 2. 基础使用

@@ -1,6 +1,6 @@
 # 贡献指南
 
-感谢你考虑为 Clarity 情感伴侣做出贡献！
+感谢你考虑为 Clarity/心虫 — AI 认知引擎做出贡献！
 
 ## 如何贡献
 
@@ -28,14 +28,14 @@
 
 ### 开发环境
 
+本项目是零 npm 第三方依赖的纯 Node.js 引擎。`package.json` 中无运行时依赖。
+
 ```bash
 # 克隆仓库
 git clone https://github.com/8xiaochongzi/claude-clarity-skill.git
 cd claude-clarity-skill
 
-# 安装依赖（本项目无外部依赖）
-npm install
-
+# 本项目无外部 npm 依赖，clone 即用
 # 运行测试
 npm test
 

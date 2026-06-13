@@ -879,7 +879,7 @@ cd claude-clarity
 node -e "const {Clarity}=require('./src/core/clarity.js');const hf=new Clarity();hf.start();console.log('草履虫已启动')"
 
 # npm
-npm install claude-clarity
+> ⚠️ npm 包 `claude-clarity` 不是本项目维护的，请直接使用 Git 方式。
 ```
 
 > **零第三方 npm 依赖** — 草履虫仅使用 Node.js 内置库（path/fs/events/os/crypto/https），clone 即用，无需 npm install。
@@ -897,7 +897,7 @@ npm install claude-clarity
 
 ---
 
-> 版本历史已移入 `CHANGELOG.md`。当前版本：**1.1.2**。
+> 版本历史已移入 `CHANGELOG.md`。当前版本：**1.1.5**。
 
 ---
 

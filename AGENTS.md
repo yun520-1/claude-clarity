@@ -26,6 +26,7 @@ ln -s ../claude-clarity claude-clarity
 ### 方式二：作为 npm 包
 
 ```bash
+# 注意：npm 包 `claude-clarity` 不是本项目维护的，请优先使用 Git 方式
 npm install claude-clarity
 ```
 
@@ -39,7 +40,7 @@ hf.start();
 
 ## 版本
 
-当前版本：1.1.1
+当前版本：1.1.5
 
 ## 仓库
 

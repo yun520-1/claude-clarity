@@ -37,10 +37,9 @@ Clarity est un système d'IA compagnon avec une **architecture cognitive à 9 di
 ## 🚀 Démarrage Rapide
 
 ```bash
-# Cloner et installer
+# Cloner et exécuter directement (zéro dépendance npm externe)
 git clone https://github.com/yun520-1/claude-clarity.git
 cd claude-clarity
-npm install
 
 # Exécuter directement
 node bin/cli.js

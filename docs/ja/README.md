@@ -37,10 +37,9 @@ Clarityは**9次元認知アーキテクチャ**を持つAIコンパニオンシ
 ## 🚀 クイックスタート
 
 ```bash
-# クローンしてインストール
+# クローンして直接実行 (外部 npm 依存なし)
 git clone https://github.com/yun520-1/claude-clarity.git
 cd claude-clarity
-npm install
 
 # 直接実行
 node bin/cli.js

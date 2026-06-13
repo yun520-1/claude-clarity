@@ -35,6 +35,8 @@ Clarity is an AI companion system with **self-awareness, self-reasoning, and ada
 
 ---
 
+> ⚠️ **设计概念说明**：以下文档描述的是 Clarity 的长期架构愿景和设计思路。实际运行的核心引擎是轻量级认知模块（记忆/推理/情感），不含自主进化循环或生物传感器等组件。
+
 ## 🚀 Core Capabilities
 
 ### 🧠 TrialityMemory - 3D Experience Brain
