@@ -305,6 +305,20 @@ MIT License - Free to use, modify and distribute
 
 ---
 
+---
+
+## 💬 Join the Community
+
+<p align="center">
+  <img src="../qr-wechat-group.jpg" width="280" alt="WeChat Group" />
+  <br/>
+  <strong>Agent Group - heartflow</strong>
+  <br/>
+  <sub>QR code valid for 7 days (until June 20). Please get a new one via Issues after expiry.</sub>
+</p>
+
+---
+
 ## 🔗 Links
 
 - [GitHub Repository](https://github.com/yun520-1/claude-clarity)

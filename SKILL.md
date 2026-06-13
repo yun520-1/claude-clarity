@@ -1,6 +1,6 @@
 ---
 name: claude-clarity
-version: "1.1.4"
+version: "1.1.5"
 title: "草履虫 / Clarity — AI 认知内核"
 description: >
   用 Node.js 写的认知引擎，MCP 原生工具。

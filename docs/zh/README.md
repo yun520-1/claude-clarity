@@ -230,6 +230,20 @@ MIT License
 
 ---
 
+---
+
+## 💬 加入社区
+
+<p align="center">
+  <img src="../qr-wechat-group.jpg" width="280" alt="微信交流群" />
+  <br/>
+  <strong>Agent 交流群-heartflow</strong>
+  <br/>
+  <sub>二维码 7 天内有效（至 6 月 20 日），过期后请通过 Issues 获取新二维码</sub>
+</p>
+
+---
+
 ## 🔗 链接
 
 - [GitHub](https://github.com/yun520-1/claude-clarity)

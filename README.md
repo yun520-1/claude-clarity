@@ -209,6 +209,18 @@ v2.0.54 ─── 最新 (2026-06-04)
 
 ---
 
+## 💬 加入社区
+
+<p align="center">
+  <img src="docs/qr-wechat-group.jpg" width="280" alt="微信交流群" />
+  <br/>
+  <strong>Agent 交流群-heartflow</strong>
+  <br/>
+  <sub>二维码 7 天内有效（至 6 月 20 日），过期后请通过 Issues 获取新二维码</sub>
+</p>
+
+---
+
 ## 📬 联系方式
 
 - **邮箱**：markcell@outlook.com
