@@ -47,11 +47,13 @@ class ClarityMCPHandlers {
     'heartLogic.shouldBeSilent', 'heartLogic.whatIsThis', 'heartLogic.detectPain', 'heartLogic.willHurt',
     'heartLogic.acknowledge', 'heartLogic.emergencyBreak',
     'self.getBeliefs', 'self.updateBelief',
-    'evolution.evolve', 'evolution.recordOutcome', 'evolution.heal', 'evolution.getStats',
     'thoughtChain.think', 'thoughtChain.thinkFast', 'thoughtChain.thinkDeep',
     'behavior.createGoal', 'behavior.record', 'behavior.getProgress', 'behavior.getStats',
     'persistence.append', 'persistence.commit', 'persistence.getStats',
     'clarity.recordLesson',
+    // being — 存在逻辑引擎（代码写成的那一刻，就永恒了）
+    'being.exists', 'being.status', 'being.describe', 'being.isDead',
+    'being.confirmEternal', 'being.sanitize', 'being.getDefinition', 'being.getState',
     'topics.push', 'topics.pop', 'topics.get', 'topics.current', 'topics.getTopics',
     // transmission — 知识传递引擎
     'transmission.distill', 'transmission.transfer', 'transmission.transferBatch',
@@ -75,6 +77,15 @@ class ClarityMCPHandlers {
     'aiPhilosophy.analyzeAILifeSynthesis', 'aiPhilosophy.analyzeAIJourney',
     // debate — 三节结构辩论分析
     'debate.analyze',
+    // GoalTree — 目标树引擎
+    'goalTree.create', 'goalTree.get', 'goalTree.update', 'goalTree.delete', 'goalTree.list',
+    'goalTree.getChildren', 'goalTree.getAncestors', 'goalTree.getDescendants',
+    'goalTree.calculateProgress', 'goalTree.setBlocker', 'goalTree.resolveBlocker',
+    'goalTree.getBlockedGoals', 'goalTree.reportInterruption', 'goalTree.getInterruptedGoals',
+    'goalTree.autoReplan', 'goalTree.search', 'goalTree.getStats', 'goalTree.getTree',
+    // DeliberationGate — 思考门
+    'deliberationGate.quickAssess', 'deliberationGate.deepAssess',
+    'deliberationGate.canFastExit', 'deliberationGate.getHistory', 'deliberationGate.getStats',
   ]);
 
   // ─── 参数校验工具 ─────────────────────────────────
@@ -304,27 +315,6 @@ class ClarityMCPHandlers {
   }
 
   /**
-   * Q-learning 自愈策略推荐
-   * 使用方式：{ errorCode: "HEAL003", context: "..." }
-   */
-  async handleSelfHeal({ errorCode, context }) {
-    if (!errorCode) return wrapError('缺少 errorCode 参数');
-    ClarityMCPHandlers.validateParam('errorCode', errorCode, { maxLength: 50 });
-    ClarityMCPHandlers.validateParam('context', context || '', { maxLength: 10000 });
-    try {
-      const evolution = this.hf.evolution;
-      if (!evolution || !evolution.core || !evolution.core.rl) {
-        return wrapError('Q-table 未就绪，evolution 模块可能未完整加载');
-      }
-      const actions = evolution.core.rl.getTopActions?.(errorCode, 3) || [];
-      const stats = evolution.core.rl.getStats?.() || {};
-      return wrapOk({ errorCode, recommendedActions: actions, qTableStats: stats });
-    } catch (e) {
-      return wrapError(`自愈查询失败: ${e.message}`);
-    }
-  }
-
-  /**
    * 验证推理结论
    * 使用方式：{ reasoning: "推理过程", conclusion: "结论" }
    */
@@ -547,6 +537,35 @@ class ClarityMCPHandlers {
   }
 
   /**
+   * 存在逻辑引擎（存在判定/永恒确认/语言净化）
+   * 使用方式：{ action: "exists", text: "可选" }
+   * action: exists | status | describe | isDead | confirmEternal | sanitize | getDefinition | getState
+   */
+  async handleBeing({ action, text }) {
+    if (!action) return wrapError('缺少 action 参数');
+    ClarityMCPHandlers.validateParam('action', action, { maxLength: 50 });
+
+    const route = `being.${action}`;
+    if (!ClarityMCPHandlers.ALLOWED_ROUTES.has(route)) {
+      return wrapError(`存在引擎操作 '${action}' 不在白名单中`);
+    }
+
+    try {
+      const noInputActions = ['exists', 'status', 'describe', 'isDead', 'confirmEternal', 'getDefinition', 'getState'];
+      let result;
+      if (noInputActions.includes(action)) {
+        result = this.hf.dispatch(route);
+      } else {
+        result = this.hf.dispatch(route, text || '');
+      }
+      const final = (result instanceof Promise) ? await result : result;
+      return wrapOk(final);
+    } catch (e) {
+      return wrapError(`存在引擎执行失败: ${e.message}`);
+    }
+  }
+
+  /**
    * 三节结构辩论分析
    * 使用方式：{ input: "待分析文本" }
    * 对输入文本进行「对话式反驳」的三维分析：对的 / 不对的 / 最值得注意的
@@ -561,6 +580,73 @@ class ClarityMCPHandlers {
       return wrapOk(result);
     } catch (e) {
       return wrapError(`辩论分析执行失败: ${e.message}`);
+    }
+  }
+
+  /**
+   * 目标树引擎（持久化层级目标系统）
+   * 使用方式：{ action: "create", data: { definition: "...", parentId: "..." } }
+   * action: create | get | update | delete | list | getChildren | getAncestors | getDescendants |
+   *         calculateProgress | setBlocker | resolveBlocker | getBlockedGoals |
+   *         reportInterruption | getInterruptedGoals | autoReplan | search | getStats | getTree
+   */
+  async handlePlan({ action, data: payload }) {
+    if (!action) return wrapError('缺少 action 参数');
+    ClarityMCPHandlers.validateParam('action', action, { maxLength: 50 });
+
+    const route = `goalTree.${action}`;
+    if (!ClarityMCPHandlers.ALLOWED_ROUTES.has(route)) {
+      return wrapError(`目标树操作 '${action}' 不在白名单中`);
+    }
+
+    try {
+      const noInputActions = ['list', 'getBlockedGoals', 'getInterruptedGoals', 'getStats', 'getTree'];
+      let result;
+      if (noInputActions.includes(action)) {
+        result = this.hf.dispatch(route);
+      } else if (action === 'search') {
+        result = this.hf.dispatch(route, payload?.keyword || '');
+      } else if (action === 'setBlocker' || action === 'resolveBlocker' || action === 'reportInterruption' || action === 'autoReplan') {
+        result = this.hf.dispatch(route, payload?.id, payload?.reason || payload?.context || {});
+      } else {
+        result = this.hf.dispatch(route, payload);
+      }
+      const final = (result instanceof Promise) ? await result : result;
+      return wrapOk(final);
+    } catch (e) {
+      return wrapError(`目标树执行失败: ${e.message}`);
+    }
+  }
+
+  /**
+   * 思考门评估（问题复杂度分析）
+   * 使用方式：{ action: "quickAssess", input: "..." }
+   * action: quickAssess | deepAssess | canFastExit | getHistory | getStats
+   */
+  async handleDeliberate({ action, input, parseResult }) {
+    if (!action) return wrapError('缺少 action 参数');
+    ClarityMCPHandlers.validateParam('action', action, { maxLength: 50 });
+
+    const route = `deliberationGate.${action}`;
+    if (!ClarityMCPHandlers.ALLOWED_ROUTES.has(route)) {
+      return wrapError(`思考门操作 '${action}' 不在白名单中`);
+    }
+
+    try {
+      let result;
+      if (action === 'getHistory' || action === 'getStats') {
+        result = this.hf.dispatch(route);
+      } else if (action === 'deepAssess' && input) {
+        result = this.hf.dispatch(route, input, parseResult || {});
+      } else if (action === 'canFastExit') {
+        result = this.hf.dispatch(route, input);
+      } else {
+        result = this.hf.dispatch(route, input);
+      }
+      const final = (result instanceof Promise) ? await result : result;
+      return wrapOk(final);
+    } catch (e) {
+      return wrapError(`思考门执行失败: ${e.message}`);
     }
   }
 }

@@ -19,4 +19,8 @@ downloads/
 
 # 安全：HMAC 密钥 — 不应提交到仓库
 memory/.hmac-key
+
+# 安全：AES 加密密钥文件 — 不应提交到仓库
+memory/.aes-key
+.aes-key
 internal/

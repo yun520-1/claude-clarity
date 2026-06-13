@@ -38,10 +38,8 @@ const _Observe = _lazy('observe', () => require('./memory/observe.js'));
 const _MeaningfulMemory = _lazy('meaningfulMemory', () => require('../memory/meaningful-memory.js'));
 const _KnowledgeGraph = _lazy('knowledgeGraph', () => require('./knowledge-graph.js'));
 const _RetrievalAnchor = _lazy('retrievalAnchor', () => require('../memory/retrieval-anchor.js'));
-const _EvolutionLoop = _lazy('evolutionLoop', () => require('../evolution/loop.js'));
 const _DreamEngine = _lazy('dreamEngine', () => require('./dream.js'));
 const _DreamConsolidation = _lazy('dreamConsolidation', () => require('./dream-consolidation.js'));
-const _MetaLearner = _lazy('metaLearner', () => require('../evolution/meta-learner.js'));
 const _MetaPromptEngine = _lazy('metaPromptEngine', () => require('./meta-prompt-engine.js'));
 const _GoTEngine = _lazy('gotEngine', () => require('./graph-of-thoughts.js'));
 const _ConstitutionalEngine = _lazy('constitutionalEngine', () => require('./constitutional-ai.js'));
@@ -113,6 +111,8 @@ const _EmotionalGrowth = _lazy('emotionalGrowth', () => require('../emotion/emot
 const _MoodEvolution = _lazy('moodEvolution', () => require('../emotion/mood-evolution.js'));
 const _VERSION = _lazy('version', () => require('./version.js'));
 const _DebateAnalyzer = _lazy('debateAnalyzer', () => require('./debate-analyzer.js'));
+const _GoalTree = _lazy('goalTree', () => require('../planner/goal-tree.js'));
+const _DeliberationGate = _lazy('deliberationGate', () => require('./deliberation-gate.js'));
 
 const BUILD_DATE = '2026-06-10';
 /**
@@ -201,11 +201,10 @@ class Clarity {
     this.execution = null;
     this.decision = null;
     this.decisionVerifier = null;
-    this.evolution = null;
     this.dream = null;
     this.dreamConsolidation = null;
     this.lesson = null;
-    this.meta = null;
+    this.lesson = null;
     this.metaJudgment = null;
     this.metaMemory = null;
     this.skillGenerator = null;
@@ -311,13 +310,11 @@ class Clarity {
 
     // ─── 简单类实例 (new Constructor) ────────────────────────────────
     add('lesson',           () => new (_LessonBank().LessonBank)(_self.rootPath));
-    add('evolution',        () => { const e = new (_EvolutionLoop().EvolutionLoop)({ rootPath: _self.rootPath, memory: _self.memory }); e.boot(); return e; });
     add('dream',            () => new (_DreamEngine().DreamEngine)({}));
     add('dreamConsolidation', () => new (_DreamConsolidation().DreamConsolidation)(_self.memory));
     add('metaJudgment',     () => new (_MetaJudgment().MetaJudgment)(_self.rootPath));
     add('metaMemory',       () => new (_MetaMemory().MetaMemory)(_self.rootPath));
     add('skillGenerator',   () => new (_SkillGenerator().SkillGenerator)(_self.rootPath));
-    add('meta',             () => { const m = new (_MetaLearner().MetaLearner)({ rootPath: _self.rootPath, memory: _self.memory }); m.boot(); return m; });
     add('self',             () => new (_SelfModel().SelfModel)(_self.rootPath));
     add('verify',           () => new (_SelfVerifier().SelfVerifier)(_self.rootPath));
     add('psychology',       () => new (_PsychologyEngine().PsychologyEngine)(_self.memory));
@@ -339,19 +336,16 @@ class Clarity {
     add('aiPsychology',     () => new (_AIPsychologyEngine().AIPsychologyEngine)());
     add('aiPhilosophy',     () => new (_AIPhilosophyEngine().AIPhilosophyEngine)({ beingLogic: _self.being }));
     add('debate',           () => new (_DebateAnalyzer().DebateAnalyzer)(_self));
+add('goalTree',         () => new (_GoalTree().GoalTree)({ rootPath: _self.rootPath }));
+add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
 
-    // ─── 事实检查器（try/catch 包装）─────────────────────────────────
-    add('truth', () => {
-      try {
-        const { factChecker } = require('./fact-checker.js');
-        return {
-          checkStatement: async (stmt) => factChecker.checkFact(stmt),
-          checkNumbers: (stmt) => factChecker.checkNumber(stmt),
-          checkSources: (stmt) => factChecker.checkAcademicClaim(stmt),
-          getStats: () => ({ type: 'fact-checker' }),
-        };
-      } catch (e) { _self._initErrors.push({ module: 'truth', error: e.message }); return null; }
-    });
+    // ─── 事实检查器（已移除，保留空壳路由）───────────────────────────
+    add('truth', () => ({
+      checkStatement: async () => null,
+      checkNumbers: () => null,
+      checkSources: async () => null,
+      getStats: () => ({ type: 'fact-checker', active: false }),
+    }));
 
     // ─── 行为追踪（behavior-tracker + pattern-detector）───────────────
     add('behavior', () => {
@@ -551,6 +545,9 @@ class Clarity {
     // 惰性解析版本号
     this.version = _VERSION().VERSION;
 
+    // ─── 启动时环境验证 ──────────────────────────────────────
+    this._validateEnv();
+
     // ─── 身份核心 — 第一优先加载 ─────────────────────────────
     this.identityCore = new (_IdentityCore().IdentityCore)(this.rootPath);
     const identityResult = this.identityCore.boot();
@@ -622,13 +619,46 @@ class Clarity {
   shutdown() {
     if (!this.started) return;
     this.started = false;
-    // 清理 digital-homeostasis 定时器
-    if (this.digitalHomeostasis && typeof this.digitalHomeostasis.stop === 'function') {
-      this.digitalHomeostasis.stop();
-    }
     // 清理 observe 定时器
     if (this.consolidate && typeof this.consolidate.stop === 'function') {
       this.consolidate.stop();
+    }
+  }
+
+  /**
+   * 启动时环境变量验证
+   * 检查关键 HEARTFLOW_* 和安全相关变量是否已正确配置
+   */
+  _validateEnv() {
+    const warnings = [];
+
+    // 加密密钥检查
+    if (!process.env.HEARTFLOW_AES_KEY) {
+      warnings.push('HEARTFLOW_AES_KEY 未设置 — 将回退到 .aes-key 文件（建议使用环境变量）');
+    }
+
+    // 自我修改守卫检查（默认禁用是安全的，但提醒管理员）
+    const selfMod = process.env.HEARTFLOW_ENABLE_SELF_MODIFICATION;
+    if (selfMod === '1' || selfMod === 'true') {
+      warnings.push('HEARTFLOW_ENABLE_SELF_MODIFICATION=1 — 自我代码修改已启用（仅推荐在沙箱/开发环境使用）');
+    }
+
+    // 数据治理检查
+    if (!process.env.HEARTFLOW_DATA_MINIMIZATION) {
+      warnings.push('HEARTFLOW_DATA_MINIMIZATION 未启用 — 记忆持久化将被静默阻止');
+    }
+    if (!process.env.HEARTFLOW_USER_CONSENT) {
+      warnings.push('HEARTFLOW_USER_CONSENT 未设置 — 用户同意确认缺失，记忆持久化受限');
+    }
+
+    // 运行环境
+    if (!process.env.HEARTFLOW_ENV) {
+      warnings.push('HEARTFLOW_ENV 未设置（默认 development） — 生产部署建议设为 production');
+    }
+
+    if (warnings.length > 0) {
+      console.warn('[Clarity] ⚠️  安全配置检查:');
+      warnings.forEach(w => console.warn(`  - ${w}`));
     }
   }
 
@@ -800,7 +830,7 @@ class Clarity {
     }
     const _result = mod[method](...args);
     // Fix B: decision/evolution 路由结果自动持久化到 LEARNED 记忆层
-    if (route === 'decision.decide' || route === 'evolution.recordOutcome') {
+    if (route === 'decision.decide') {
       try {
         this.memory.learn(`dispatch:${route.replace('.', ':')}:${Date.now()}`, {
           route,
@@ -843,7 +873,7 @@ class Clarity {
     const all = [
       'memory', 'knowledge',
       'counterfactual', 'verify', 'execution', 'decision', 'decisionVerifier',
-      'evolution', 'dream', 'lesson', 'meta',
+      'dream', 'lesson', 'meta',
       'self', 'psychology', 'emotion',
       'truth',
       'behavior',
@@ -1123,11 +1153,6 @@ class Clarity {
     return _getDialogueStats({ rootPath: this.rootPath });
   }
 
-  heal(error) {
-    if (!this.started) throw new Error('Clarity not started');
-    return this.evolution.heal(error);
-  }
-
   /**
    * 每日自动梦境调度
    * 检查是否需要做梦：每天最多一次，且至少间隔一定时间
@@ -1215,7 +1240,6 @@ class Clarity {
         reason: check.reason,
         dream: null,
         consolidation: null,
-        evolution: null,
       };
     }
 
@@ -1249,18 +1273,6 @@ class Clarity {
       };
     }
 
-    // 4. Feed themes into evolution loop
-    let evolutionResult = null;
-    if (consolidation.synthesis && consolidation.synthesis.themes && consolidation.synthesis.themes.length > 0) {
-      const themes = consolidation.synthesis.themes.slice(0, 3);
-      try {
-        evolutionResult = await this.evolution.evolve(themes.join(' '), {
-          source: 'dream_consolidation',
-          themes,
-        });
-      } catch (e) { /* non-fatal */ }
-    }
-
     // 5. 生成梦的叙事报告
     const narrative = this._generateDreamNarrative(dreamResult, consolidation, fragments);
 
@@ -1268,7 +1280,7 @@ class Clarity {
     this._recordDreamTime();
 
     // 7. [P1 UPGRADE] 持久化梦境历史
-    this._saveDreamHistory({ narrative, dreamResult, consolidation, evolution: evolutionResult, fragments: fragments.length });
+    this._saveDreamHistory({ narrative, dreamResult, consolidation, fragments: fragments.length });
 
     return {
       skipped: false,
@@ -1276,13 +1288,12 @@ class Clarity {
       fragments: fragments.length,
       dream: dreamResult,
       consolidation,
-      evolution: evolutionResult,
     };
   }
 
   /**
    * [P1 UPGRADE] 持久化梦境历史到文件
-   * @param {object} data - { narrative, dreamResult, consolidation, evolution, fragments }
+   * @param {object} data - { narrative, dreamResult, consolidation, fragments }
    */
   _saveDreamHistory(data) {
     try {
@@ -1300,7 +1311,6 @@ class Clarity {
         fragmentCount: data.fragments,
         themes: data.dreamResult?.results?.synthesize?.themes || [],
         peakLevel: data.dreamResult?.results?.synthesize?.narrative_structure?.layer || 'L1',
-        evolutionApplied: !!data.evolution,
       };
       fs.appendFileSync(filePath, JSON.stringify(entry, null, 0) + '\n', 'utf8');
       try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }
@@ -1325,7 +1335,6 @@ class Clarity {
       identityCore: this.identityCore,
       lesson: this.lesson,
       memory: this.memory,
-      evolution: this.evolution,
       psychology: this.psychology,
       rootPath: this.rootPath,
     });
@@ -1494,59 +1503,6 @@ class Clarity {
     if (!this.started) throw new Error('Clarity not started');
     if (!this.philosophy) return { error: 'philosophy engine not available' };
     return this.philosophy.wisdomInquiry(problem, perspective);
-  }
-
-  getEvolutionStats() {
-    if (!this.started) throw new Error('Clarity not started');
-    return this.evolution.getStats();
-  }
-
-  /**
-   * 从自我反思历史生成技能
-   * 将 evolution loop 的改进建议转化为可安装技能
-   */
-  triggerSkillGeneration() {
-    if (!this.started) throw new Error('Clarity not started');
-    try {
-      const result = this.skillGenerator.processLatestReport();
-      return result;
-    } catch (e) {
-      return { success: false, error: e.message };
-    }
-  }
-
-  /**
-   * 完整进化：evolve + 应用改进
-   * 输入上下文 → 生成改进 → 自动写入学教训库
-   */
-  async evolveImprove(input, context = {}) {
-    if (!this.started) throw new Error('Clarity not started');
-    // 1. 运行进化循环（async）
-    const evolveResult = await this.evolution.evolve(input, context);
-    const improvements = evolveResult.improvements || [];
-    
-    // 2. 将改进建议写入学教训库
-    const applied = [];
-    for (const imp of improvements) {
-      try {
-        this.lesson.addLesson({
-          errorPattern: `[${imp.area}] ${imp.action}`,
-          correction: imp.action,
-          rootCause: imp.area,
-          skill: imp.area,
-          confidence: imp.priority === 'high' ? 0.9 : imp.priority === 'medium' ? 0.7 : 0.5,
-        });
-        applied.push(imp);
-      } catch (e) {
-        // 失败不阻断
-      }
-    }
-    
-    return {
-      ...evolveResult,
-      improvementsApplied: applied.length,
-      improvementsTotal: improvements.length,
-    };
   }
 
   getDreamStats() {

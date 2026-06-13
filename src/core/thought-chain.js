@@ -28,13 +28,16 @@
  *
  * 思维链阶段 v2.0：
  *   1. PARSE     — 解析问题（不是理解，是分解）
- *   2. HYPOTHESES — 并行假设（同时想多个可能）
- *   3. INVERT    — 反向思考（先证明自己错了）
- *   4. EVIDENCE  — 证据评估（质量不是数量）
- *   5. SYNTHESIS — 综合判断（不是最快给答案）
- *   6. CALIBRATE  — 置信校准（克制过度自信）
- *   7. RESPOND   — 生成回应（带不确定性标记）
+ *   2. DELIBERATE — 思考门（评估复杂度，决定是否深度思考）
+ *   3. HYPOTHESES — 并行假设（同时想多个可能）
+ *   4. INVERT    — 反向思考（先证明自己错了）
+ *   5. EVIDENCE  — 证据评估（质量不是数量）
+ *   6. SYNTHESIS — 综合判断（不是最快给答案）
+ *   7. CALIBRATE  — 置信校准（克制过度自信）
+ *   8. RESPOND   — 生成回应（带不确定性标记）
  */
+
+const path = require('path');
 
 const REASONING_DEPTH = {
   SURFACE: 1,      // 表面：快速响应，不确定时直接说
@@ -198,7 +201,74 @@ class ThoughtChain {
       }
     });
 
-    // ── 阶段2: HYPOTHESES — 并行假设 + 因果推理子系统 ────────────────
+    // ── 阶段2: DELIBERATE — 思考门：评估复杂度，决定是否深度思考 ─────
+    this.stages.push({
+      name: 'DELIBERATE',
+      description: '评估问题复杂度，决定思考深度和是否需要暂停',
+      fn: async (ctx, hf) => {
+        const input = ctx.input;
+        const parse = ctx.stages[0]?.result;
+        const taskType = parse?.type || 'general';
+
+        // 使用 deliberatonGate 模块（惰性加载）
+        let gateResult = null;
+        let canFastExit = null;
+
+        try {
+          gateResult = hf.dispatch('deliberationGate.quickAssess', input);
+        } catch (e) {
+          gateResult = null;
+        }
+
+        // 如果有 PARSE 结果且思考门可用，做深度评估校准
+        if (parse && gateResult && gateResult.estimatedComplexity >= 2) {
+          try {
+            gateResult = hf.dispatch('deliberationGate.deepAssess', input, parse);
+          } catch (e) {
+            // 深度评估失败，使用快速评估结果
+          }
+        }
+
+        // 快速退出判断
+        if (gateResult) {
+          ctx._pauseRecommended = gateResult.needsPause;
+          ctx._pauseReason = gateResult.reason;
+          ctx._recommendedDepth = gateResult.recommendedDepth;
+        } else {
+          // 降级策略：复杂任务默认暂停
+          const isComplex = ['judgment', 'explanation', 'creative'].includes(taskType);
+          ctx._pauseRecommended = isComplex;
+          ctx._pauseReason = isComplex ? `任务类型 ${taskType} 默认需要深度思考` : '简单任务，无需暂停';
+          ctx._recommendedDepth = isComplex ? 3 : 1;
+        }
+
+        // 快速退出：低复杂度任务跳过后续深度阶段
+        if (gateResult) {
+          try {
+            const fastExitCheck = hf.dispatch('deliberationGate.canFastExit', gateResult);
+            canFastExit = fastExitCheck;
+          } catch (e) {
+            canFastExit = null;
+          }
+        }
+
+        if (canFastExit && canFastExit.canFastExit) {
+          ctx._fastExit = true;
+        }
+
+        return {
+          needsPause: ctx._pauseRecommended,
+          pauseReason: ctx._pauseReason,
+          recommendedDepth: ctx._recommendedDepth,
+          estimatedComplexity: gateResult?.estimatedComplexity || 0,
+          detail: gateResult?.detail || null,
+          canFastExit: canFastExit ? { canFastExit: canFastExit.canFastExit, reason: canFastExit.reason } : null,
+          timestamp: Date.now(),
+        };
+      }
+    });
+
+    // ── 阶段3: HYPOTHESES — 并行假设 + 因果推理子系统 ────────────────
     // 人类缺陷：只能一次想一个假设，AI可以同时想多个
     if (!this.taskStrategy?.skipHypotheses) {
       this.stages.push({
@@ -842,6 +912,7 @@ class ThoughtChain {
   _shouldSkipStage(stageName) {
     const depthMap = {
       'PARSE': REASONING_DEPTH.SURFACE,
+      'DELIBERATE': REASONING_DEPTH.SURFACE,
       'HYPOTHESES': REASONING_DEPTH.BASIC,
       'INVERT': REASONING_DEPTH.DEEP,
       'EVIDENCE': REASONING_DEPTH.BASIC,
@@ -884,6 +955,7 @@ class ThoughtChain {
 
       // 各阶段快速访问
       parse: parseStage?.result,
+      deliberation: this.context.stages.find(s => s.name === 'DELIBERATE')?.result,
       hypotheses: this.context.stages.find(s => s.name === 'HYPOTHESES')?.result,
       invert: this.context.stages.find(s => s.name === 'INVERT')?.result,
       evidence: this.context.stages.find(s => s.name === 'EVIDENCE')?.result,
@@ -915,6 +987,15 @@ class ThoughtChain {
     lines.push('');
     lines.push(`🤔 置信度: ${(result.decision.confidence * 100).toFixed(0)}%`);
     lines.push(`💭 结论: ${result.decision.conclusion?.substring(0, 50) || '无'}...`);
+
+    // 思考门摘要
+    const deliberation = result.deliberation;
+    if (deliberation) {
+      lines.push(`🚦 思考门: ${deliberation.needsPause ? '建议暂停' : '无需暂停'} (复杂度 ${deliberation.estimatedComplexity}↑${deliberation.recommendedDepth})`);
+      if (deliberation.canFastExit?.canFastExit) {
+        lines.push(`⚡ 快速退出: ${deliberation.canFastExit.reason}`);
+      }
+    }
 
     if (result.decision.wasInverted) {
       lines.push('🔄 原假设被推翻（反向思考生效）');

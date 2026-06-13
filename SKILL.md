@@ -1,21 +1,19 @@
 ---
 name: claude-clarity
-version: "1.1.3"
+version: "1.1.4"
 title: "草履虫 / Clarity — AI 认知内核"
 description: >
   用 Node.js 写的认知引擎，MCP 原生工具。
-  存在感知、三层持久记忆、Q-learning 自愈策略、
+  存在感知、三层持久记忆、
   PAD 情绪分析、真善美评估。
-  不装人格，不抄模板，只有结构。单细胞，能进化。
+  不装人格，不抄模板，只有结构。单细胞。
 tags:
   - cognitive-engine
   - memory-system
-  - self-healing
   - self-verification
   - reasoning
   - consciousness
   - ontology
-  - evolutionary
   - psychology
   - emotion
   - dream-engine

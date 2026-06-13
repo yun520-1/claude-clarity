@@ -46,18 +46,23 @@ try {
 function securityCheck(code) {
   const DANGEROUS_PATTERNS = [
     /rm\s+-rf\s+/i,                        // 禁止 rm -rf
+    /^rm\s+-rf\s+/m,                       // 行首 rm -rf
     /\.\.\/\.\.\//,                        // 路径穿越
     /eval\s*\(/i,                           // 危险 eval
     /exec\s*\(/i,                           // 危险 exec
+    /import\s+.*child_process/i,           // ESM 导入子进程
     /child_process/i,                       // 子进程
     /require\s*\(\s*['\"]child_process['\"]\s*\)/i,
     /\bsudo\s+rm\b/i,                       // sudo rm
+    /format\s+\//i,                         // 格式化根目录
     /mkfs\./i,                              // 创建文件系统
     /dd\s+if=/i,                            // 直接磁盘操作
     /curl\s+-/i,                            // curl 下载
     /wget\s+/i,                             // wget 下载
     /process\.binding/i,                    // 原生绑定
     /require\s*\(\s*['\"]net['\"]\s*\)/i,
+    /require\s*\(\s*['\"]http['\"]\s*\)/i,  // 禁止 HTTP 请求
+    /require\s*\(\s*['\"]https['\"]\s*\)/i, // 禁止 HTTPS 请求
     /require\s*\(\s*['\"]vm['\"]\s*\)/i,
     /require\s*\(\s*['\"]dgram['\"]\s*\)/i,
     /require\s*\(\s*['\"]tls['\"]\s*\)/i,

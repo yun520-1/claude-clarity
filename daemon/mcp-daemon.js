@@ -69,10 +69,10 @@ const HANDLERS = {
     const mode = a?.mode || 'basic';
     try {
       switch (mode) {
-        case 'deep':   return await handlers.handlePsychologyDeep(a);
-        case 'ai':     return await handlers.handleAiPsychology(a);
-        case 'emotion':return await handlers.handleEmotionAnalyze(a);
-        default:       return await handlers.handlePsychologyAnalyze(a);
+        case 'deep':   return await handlers.handlePsychologyDeep({ action: a?.input ? 'analyzeDeep' : '', input: a?.input });
+        case 'ai':     return await handlers.handleAiPsychology({ action: 'analyzeAICognitiveState', text: a?.input, input: {} });
+        case 'emotion':return await handlers.handleEmotionAnalyze({ input: a?.input });
+        default:       return await handlers.handlePsychologyAnalyze({ input: a?.input });
       }
     } catch (e) { throw e; }
   },
@@ -86,7 +86,8 @@ const HANDLERS = {
   clarity_philosophy:     async (a) => {
     try {
       if (a?.mode === 'ai') return await handlers.handleAiPhilosophy(a);
-      return await handlers.handlePhilosophy(a);
+      const action = a?.mode === 'general' ? 'analyze' : (a?.mode || 'analyze');
+      return await handlers.handlePhilosophy({ action, text: a?.text, perspective: a?.perspective, context: a?.context });
     } catch (e) { throw e; }
   },
   clarity_debate:         (a) => handlers.handleDebate(a),

@@ -378,7 +378,7 @@ async function step17_engineFunctions(result) {
   // 引擎实际文件位置（已确认）：
   // - DreamEngine: dream.js (class DreamEngine)
   // - SelfModel: consciousness/self-model.js
-  // - SelfHealingRL: self-healing-rl.js ✓
+  // - SelfHealingRL: self-healing-rl.js ✓ (已删除)
   // - DecisionVerifier: decision-verifier.js ✓
   // - PsychologyEngine: psychology.js (函数式，非类) ✓
   // - EmotionalProtocol: 不存在（功能在 psychology.js）
@@ -387,7 +387,6 @@ async function step17_engineFunctions(result) {
     { name: 'PsychologyEngine', file: 'psychology.js', dir: 'src/core', fns: ['analyze', 'calculatePAD', 'detectPAD'] },
     { name: 'DreamEngine', file: 'dream.js', dir: 'src/core', fns: ['dream'] },
     { name: 'SelfModel', file: 'self-model.js', dir: 'src/core/consciousness', fns: ['update', 'get'] },
-    { name: 'SelfHealingRL', file: 'self-healing-rl.js', dir: 'src/core', fns: ['update', 'getAvailable'] },
     { name: 'DecisionVerifier', file: 'decision-verifier.js', dir: 'src/core', fns: ['check', 'verify'] },
     { name: 'LessonBank', file: 'lesson-bank.js', dir: 'src/core', fns: ['add', 'retrieve'] },
   ];

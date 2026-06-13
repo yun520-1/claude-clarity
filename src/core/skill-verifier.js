@@ -10,7 +10,7 @@ const knownSkills = new Set([
   'stability-guard', 'state-snapshot', 'execution-verifier', 'claim-extractor',
   'hypothesis-tester', 'lesson-retrieval', 'skill-verifier', 'lesson-bank',
   'reflector', 'meta-engine', 'being-logic', 'heart-logic', 'memory',
-  'meaningful-memory', 'dream', 'boot-check', 'self-healing-rl',
+  'meaningful-memory', 'dream', 'boot-check',
   'self-correction-loop', 'fact-checker', 'decision-verifier',
   'cognitive-appraisal', 'cognitive-protocol', 'narrative-generator',
   'embodied-core', 'spontaneous-restraint',
@@ -19,7 +19,7 @@ const knownSkills = new Set([
   'philosophy-engine', 'experience-replay', 'reflection-loop',
   'language-honesty', 'semantic-anchor', 'workflow-switch',
   'confidence-annotator', 'code-verifier', 'version', 'task-pipeline',
-  'self-healing', 'budget', 'feedback-functions'
+  'budget', 'feedback-functions'
 ]);
 
 // 严重性级别

@@ -246,13 +246,11 @@ claude-clarity/
 │   │   ├── memory/
 │   │   │   └── triality-memory.js  # 3D experience brain
 │   │   ├── embodied-core.js        # Embodied cognitive core
-│   │   ├── bio-sensor-adapter.js   # Bio sensor adapter
 │   │   ├── adaptive-controller.js  # Adaptive controller
 │   │   ├── agent-orchestrator.js   # Multi-agent orchestrator
 │   │   ├── error-handler.js        # Error handler
 │   │   └── state-snapshot.js       # State snapshot
 │   ├── agents/                     # Agents
-│   ├── autonomy/                   # Autonomy system
 │   ├── consciousness/              # Consciousness system
 │   ├── ethics/                     # Ethics system
 │   └── self/                       # Self system

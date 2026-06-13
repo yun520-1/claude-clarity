@@ -58,13 +58,6 @@ const CORE_CHECKS = [
     required: true,
   },
   {
-    id: 'self-healing-rl',
-    label: 'self-healing-rl.js',
-    path: path.join(ROOT, 'src/core/self-healing-rl.js'),
-    verify: (c) => c.includes('HealingMemoryRL') && c.length > 1000,
-    required: false,
-  },
-  {
     id: 'decision-verifier',
     label: 'decision-verifier.js',
     path: path.join(ROOT, 'src/core/decision-verifier.js'),
@@ -77,11 +70,9 @@ const CORE_CHECKS = [
 // triality-memory.js has been merged into meaningful-memory.js
 const MODULE_CHECKS = [
   { id: 'meaningful-memory', label: 'MeaningfulMemory', path: './meaningful-memory.js' },
-  { id: 'self-healing-rl', label: 'HealingMemoryRL', path: './self-healing-rl.js' },
   { id: 'decision-verifier', label: 'DecisionVerifier', path: './decision-verifier.js' },
   { id: 'confidence-calibrator', label: 'ConfidenceCalibrator', path: './confidence-calibrator.js' },
   { id: 'counterfactual-engine', label: 'CounterfactualEngine', path: './counterfactual-engine.js' },
-  { id: 'self-healing', label: 'SelfHealing', path: './self-healing.js' },
   { id: 'error-handler', label: 'ErrorHandler', path: './error-handler.js' },
   { id: 'state-snapshot', label: 'StateSnapshot', path: './state-snapshot.js' },
   { id: 'wake-up-verifier', label: 'WakeUpVerifier', path: './wake-up-verifier.js' },

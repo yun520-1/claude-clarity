@@ -12,7 +12,6 @@
  *   - 永久记忆(permanent-memory.jsonl)
  *   - 上下文记忆(context-memory.jsonl)
  *   - CORE/LEARNED/EPHEMERAL 记忆层
- *   - 进化循环状态
  *   - 心理学洞察
  */
 
@@ -26,13 +25,12 @@ const fs = require('fs');
  * @param {object} deps.identityCore - 身份核心实例（getIdentitySummary, getSessionHistory）
  * @param {object} deps.lesson - 教训系统实例（getTopLessons）
  * @param {object} deps.memory - 记忆系统实例（listCore, listLearned）
- * @param {object} deps.evolution - 进化循环实例（getStats）
  * @param {object} deps.psychology - 心理学引擎实例（getPsychologyStats）
  * @param {string} deps.rootPath - 项目根路径（用于查找 JSONL 文件）
  * @returns {Array<{text: string, layer: string, key: string, salience: number, ts?: string}>}
  */
 function getDreamFragments(deps) {
-  const { identityCore, lesson, memory, evolution, psychology, rootPath } = deps;
+  const { identityCore, lesson, memory, psychology, rootPath } = deps;
   const fragments = [];
   const loadJsonl = (filePath, maxLines, parseFn) => {
     try {
@@ -138,21 +136,6 @@ function getDreamFragments(deps) {
           const text = `[会话] ${h.summary || h.context || JSON.stringify(h).slice(0, 80)}`;
           fragments.push({ text, layer: 'EPHEMERAL', key: `session-${h.ts || ''}`, salience: 0.5 });
         }
-      }
-    }
-  } catch (e) { /* 可选模块 */ }
-
-  // 6. 进化循环的改进建议
-  try {
-    if (evolution?.getStats) {
-      const stats = evolution.getStats();
-      if (stats?.queueSize > 0) {
-        fragments.push({
-          text: `[进化] 队列中${stats.queueSize}个改进项，健康度${stats.healthScore}%`,
-          layer: 'LEARNED',
-          key: 'evolution-queue',
-          salience: 0.8,
-        });
       }
     }
   } catch (e) { /* 可选模块 */ }

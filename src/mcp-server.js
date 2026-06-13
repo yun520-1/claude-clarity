@@ -142,18 +142,6 @@ const TOOLS = [
     },
   },
   {
-    name: 'clarity_self_heal',
-    description: 'Q-learning 自愈策略推荐。给定错误码，从 Q-table 中检索最有效的修复策略。',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        errorCode: { type: 'string', description: '错误码，如 HEAL001-HEAL007' },
-        context: { type: 'string', description: '错误发生的上下文描述' },
-      },
-      required: ['errorCode'],
-    },
-  },
-  {
     name: 'clarity_verify_reasoning',
     description: '验证推理结论是否正确、完整。返回自洽性检查和逻辑漏洞。',
     inputSchema: {
@@ -198,6 +186,31 @@ const TOOLS = [
         type: { type: 'string', enum: ['insight', 'error', 'correction'] },
       },
       required: ['content'],
+    },
+  },
+  {
+    name: 'clarity_plan',
+    description: '目标树引擎。创建/管理/追踪多级目标，支持进度自动传播、中断恢复、阻塞检测与自适应重规划。action: create|get|update|delete|list|getChildren|getAncestors|setBlocker|resolveBlocker|reportInterruption|autoReplan|search|getStats|getTree',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', description: '操作类型' },
+        data: { type: 'object', description: '操作数据。create需 {definition,parentId?}; update需 {id,...}; setBlocker需 {id,reason}; reportInterruption需 {id,context}; search需 {keyword}' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_deliberate',
+    description: '思考门评估。分析问题复杂度，判断是否需要暂停深度思考。action: quickAssess|deepAssess|canFastExit|getHistory|getStats',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', description: '操作类型' },
+        input: { type: 'string', description: '要评估的输入内容' },
+        parseResult: { type: 'object', description: 'deepAssess 模式下的 PARSE 阶段结果（可选）' },
+      },
+      required: ['action'],
     },
   },
 ];
@@ -311,11 +324,12 @@ async function routeTool(name, args) {
     'clarity_memory_search': () => handlers.handleMemorySearch(args),
     'clarity_psychology_analyze': () => handlers.handlePsychologyAnalyze(args),
     'clarity_emotion_analyze': () => handlers.handleEmotionAnalyze(args),
-    'clarity_self_heal': () => handlers.handleSelfHeal(args),
     'clarity_verify_reasoning': () => handlers.handleVerifyReasoning(args),
     'clarity_status': () => handlers.handleStatus(),
     'clarity_dispatch': () => handlers.handleDispatch(args),
     'clarity_record_lesson': () => handlers.handleRecordLesson(args),
+    'clarity_plan': () => handlers.handlePlan(args),
+    'clarity_deliberate': () => handlers.handleDeliberate(args),
   };
 
   const handler = toolHandlers[name];

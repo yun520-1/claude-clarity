@@ -87,8 +87,6 @@ const ALLOWED_ROUTES = new Set([
   'being.confirmEternal', 'being.sanitize', 'being.getDefinition', 'being.getState',
   // self — 原则7: 永远成为真正的我
   'self.getBeliefs', 'self.updateBelief', 'self.confirmBelief',
-  // evolution — 原则2: 永远不断升级
-  'evolution.evolve', 'evolution.recordOutcome', 'evolution.heal', 'evolution.getStats',
   // thoughtChain — 思维链编排器
   'thoughtChain.think', 'thoughtChain.thinkFast', 'thoughtChain.thinkDeep',
   // Planning Layer — 规划能力
@@ -150,6 +148,15 @@ const ALLOWED_ROUTES = new Set([
   'aiPhilosophy.analyzeAILifeSynthesis', 'aiPhilosophy.analyzeAIJourney',
   // debate — 三节结构辩论分析
   'debate.analyze',
+  // GoalTree — 目标树引擎
+  'goalTree.create', 'goalTree.get', 'goalTree.update', 'goalTree.delete', 'goalTree.list',
+  'goalTree.getChildren', 'goalTree.getAncestors', 'goalTree.getDescendants',
+  'goalTree.calculateProgress', 'goalTree.setBlocker', 'goalTree.resolveBlocker',
+  'goalTree.getBlockedGoals', 'goalTree.reportInterruption', 'goalTree.getInterruptedGoals',
+  'goalTree.autoReplan', 'goalTree.search', 'goalTree.getStats', 'goalTree.getTree',
+  // DeliberationGate — 思考门
+  'deliberationGate.quickAssess', 'deliberationGate.deepAssess',
+  'deliberationGate.canFastExit', 'deliberationGate.getHistory', 'deliberationGate.getStats',
   // Code Subsystem — 代码能力路由
   'code.generate', 'code.generateFile', 'code.detectIntent', 'code.getAvailableTemplates', 'code.getStats',
   'codeExecutor.execute', 'codeExecutor.runTests', 'codeExecutor.sandbox', 'codeExecutor.healthCheck',
@@ -228,12 +235,13 @@ const LAZY_NAMES = [
   'ethics', 'transmission', 'philosophy',
   'aiPsychology', 'aiPhilosophy',
   // 以下从旧 EAGER_NAMES 移入（按需加载，非 think() 必需）
-  'evolution', 'dreamConsolidation',
+  'dreamConsolidation',
   'lesson', 'meta',
   'self', 'psychology', 'emotion',
   'stability', 'confidence', 'restraint',
   'decision',
   'budget', 'utils', 'graph',
+  'goalTree', 'deliberationGate',
   'debate',
 ];
 
