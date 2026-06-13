@@ -1,6 +1,6 @@
 {
   "name": "claude-clarity",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "草履虫 / Clarity v1.1.2 — AI 认知内核。单细胞，能进化。",
   "main": "src/core/clarity.js",
   "bin": {
