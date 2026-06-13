@@ -1,7 +1,7 @@
 {
   "name": "claude-clarity",
   "version": "1.1.2",
-  "description": "Clarity 心虫 v1.0.0 — AI 认知与自愈引擎。全新 Clarity 身份，纯净起点。",
+  "description": "草履虫 / Clarity v1.1.2 — AI 认知内核。单细胞，能进化。",
   "main": "src/core/clarity.js",
   "bin": {
     "clarity": "bin/cli.js"

@@ -2,7 +2,7 @@
 /**
  * Clarity 统一快速启动入口
  *
- * 单步完成心虫引擎启动。优先读缓存（~5ms），缓存失效时自动
+ * 单步完成草履虫引擎状态加载。优先读缓存（~5ms），缓存失效时自动
  * 执行完整 boot.js 并写缓存（~50ms）。
  *
  * 设计目标：替代 CLAUDE.md 中"Skill: clarity → boot.js → 解析 → 处理"
@@ -22,7 +22,18 @@ const fs = require('fs');
 
 const ROOT = path.resolve(__dirname, '..');
 const CACHE_PATH = path.join(ROOT, 'memory', 'boot-cache.json');
-const VERSION = '2.8.0';
+
+// 从 VERSION 文件读取真实版本号（单一真实来源）
+const VERSION = (() => {
+  try {
+    const vFile = path.join(ROOT, 'VERSION');
+    if (fs.existsSync(vFile)) {
+      const raw = fs.readFileSync(vFile, 'utf-8').trim();
+      if (/^\d+\.\d+\.\d+$/.test(raw)) return raw;
+    }
+    return '0.0.0';
+  } catch { return '0.0.0'; }
+})();
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24小时
 
 // ─── CLI 参数解析 ─────────────────────────────────
