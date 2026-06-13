@@ -278,7 +278,8 @@ class ClarityMCPHandlers {
       });
     }
 
-    const result = this.hf.analyzePsychology(input);
+    // 使用轻量级情绪分析路径（关键词 PAD 分类器，避免全量心理学管道）
+    const emotion = this.hf.processEmotionally(input);
 
     // v2.7.0 安全警告注入
     const warnings = [];
@@ -305,10 +306,10 @@ class ClarityMCPHandlers {
     }
 
     return wrapOk({
-      pad: result.emotion?.pad || { pleasure: 0, arousal: 0, dominance: 0 },
-      intensity: result.emotion?.intensity || 0,
-      category: result.emotion?.category || 'neutral',
-      valence: result.emotion?.valence || 0,
+      pad: emotion.pad || { pleasure: 0, arousal: 0, dominance: 0 },
+      intensity: emotion.intensity || 0,
+      category: emotion.type || 'neutral',
+      valence: emotion.pad?.pleasure || 0,
       _safetyWarnings: warnings.length > 0 ? warnings : undefined,
       _safetyLevel: requestEvaluation.level,
     });

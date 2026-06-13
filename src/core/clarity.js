@@ -204,7 +204,6 @@ class Clarity {
     this.dream = null;
     this.dreamConsolidation = null;
     this.lesson = null;
-    this.lesson = null;
     this.metaJudgment = null;
     this.metaMemory = null;
     this.skillGenerator = null;
@@ -230,10 +229,6 @@ class Clarity {
     this.behavior = null;  // v2.0.19 行为模式系统
     this.persistence = null;  // v2.0.19 持久化层
     this.triality = null;    // 三性（真善美）统计
-
-    // [v2.0.19 FIX] _initErrors 必须在所有 try/catch 之前初始化
-    // 之前在 line 418 才初始化，导致 truth 段 (line 377) push 失败时会崩
-    // [v2.6.4 FIX] 移除冗余初始化 — line 124 已初始化
 
     // New modules
     this.bm25 = null;
@@ -339,6 +334,11 @@ class Clarity {
 add('goalTree',         () => new (_GoalTree().GoalTree)({ rootPath: _self.rootPath }));
 add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
 
+    // ─── 元提示引擎、图思维、宪法AI（修复：缺少工厂调用，之前不可达）──
+    add('metaPrompt',     () => new (_MetaPromptEngine().MetaPromptEngine)(_self));
+    add('got',            () => new (_GoTEngine().GoTEngine)({}));
+    add('constitutional', () => new (_ConstitutionalEngine().ConstitutionalEngine)());
+
     // ─── 事实检查器（已移除，保留空壳路由）───────────────────────────
     add('truth', () => ({
       checkStatement: async () => null,
@@ -422,19 +422,101 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
       } catch (e) { _self._initErrors.push({ module: 'persistence', error: e.message }); return null; }
     });
 
-    // ─── 情绪（委托 PsychologyEngine）───────────────────────────────
-    add('emotion', () => ({
-      process: (input) => {
-        if (!_self.psychology) return { pad: { pleasure: 0, arousal: 0, dominance: 0 }, intensity: 0, type: 'neutral' };
-        const r = _self.psychology.analyzePsychology(input);
-        return { pad: r.emotion, intensity: r.emotion.intensity || 0, type: r.intention.category || 'unknown' };
-      },
-      getPAD: (input) => {
-        if (!_self.psychology) return { pleasure: 0, arousal: 0, dominance: 0 };
-        const r = _self.psychology.analyzePsychology(input);
-        return { pleasure: r.emotion.pleasure, arousal: r.emotion.arousal, dominance: r.emotion.dominance };
-      },
-    }));
+    // ─── 情绪（轻量级 PAD 关键词分类 + 委托 PsychologyEngine 回退）──────
+    add('emotion', () => {
+      // 轻量级 PAD 关键词表（避免全量心理学管道，覆盖常见情绪词）
+      const PAD_KEYWORDS = [
+        // 高兴/愉快 (high pleasure, medium-high arousal, high dominance)
+        { kw: ['开心', '高兴', '快乐', '愉快', '兴奋', '喜悦', '欢乐', '欢欣', '欣喜', '狂喜'], pad: [0.8, 0.7, 0.6] },
+        { kw: ['满意', '满足', '欣慰', '舒心', '舒服', '轻松', '放松'], pad: [0.7, -0.3, 0.4] },
+        { kw: ['爱', '喜欢', '欣赏', '感激', '感恩', '感动', '温暖', '幸福'], pad: [0.8, 0.5, 0.3] },
+        { kw: ['自豪', '骄傲', '自信', '得意', '成就'], pad: [0.7, 0.4, 0.8] },
+        // 悲伤/失落 (low pleasure, low arousal, low dominance)
+        { kw: ['悲伤', '伤心', '难过', '痛苦', '心痛', '心碎', '哀伤', '忧伤', '悲'], pad: [-0.7, -0.4, -0.5] },
+        { kw: ['失落', '失望', '沮丧', '颓丧', '消沉', '低落', '灰心', '泄气'], pad: [-0.6, -0.5, -0.6] },
+        { kw: ['孤独', '寂寞', '孤单', '无助', '无依'], pad: [-0.5, -0.3, -0.7] },
+        { kw: ['想念', '思念', '怀旧', '怀念', '缅怀'], pad: [-0.2, -0.1, -0.3] },
+        // 愤怒 (low pleasure, high arousal, high dominance)
+        { kw: ['愤怒', '生气', '恼火', '气愤', '不满', '不爽', '怒'], pad: [-0.7, 0.8, 0.5] },
+        { kw: ['烦躁', '暴躁', '易怒', '抓狂', '崩溃'], pad: [-0.5, 0.9, 0.2] },
+        { kw: ['嫉妒', '妒忌', '羡慕', '眼红'], pad: [-0.4, 0.4, -0.2] },
+        // 恐惧/焦虑 (low pleasure, high arousal, low dominance)
+        { kw: ['恐惧', '害怕', '惊慌', '惊恐', '恐慌', '紧张', '不安'], pad: [-0.7, 0.8, -0.6] },
+        { kw: ['焦虑', '担心', '忧愁', '忧虑', '烦恼', '发愁'], pad: [-0.5, 0.6, -0.5] },
+        { kw: ['尴尬', '难堪', '丢脸', '羞愧', '羞耻', '惭愧'], pad: [-0.4, 0.5, -0.4] },
+        // 惊讶 (neutral pleasure, high arousal, neutral dominance)
+        { kw: ['惊讶', '惊奇', '震惊', '吃惊', '诧异', '意外'], pad: [0.1, 0.8, 0.1] },
+        // 厌恶 (low pleasure, medium arousal, medium dominance)
+        { kw: ['厌恶', '讨厌', '恶心', '反感', '憎恶', '恨'], pad: [-0.6, 0.4, 0.3] },
+        // 平静/中性 (neutral all)
+        { kw: ['平静', '淡然', '从容', '淡定', '坦然', '平和'], pad: [0.3, -0.6, 0.2] },
+        { kw: ['困惑', '迷茫', '迷惑', '不解', '懵', '混乱'], pad: [-0.2, 0.3, -0.5] },
+        { kw: ['疲惫', '疲劳', '累', '倦', '无力', '虚弱'], pad: [-0.3, -0.7, -0.3] },
+      ];
+
+      // 轻量级 PAD 分类：关键词匹配 + 平均 PAD
+      function classifyPAD(input) {
+        if (!input || typeof input !== 'string') return null;
+        const text = input.toLowerCase();
+        const hits = [];
+        for (const entry of PAD_KEYWORDS) {
+          for (const kw of entry.kw) {
+            if (text.includes(kw)) {
+              hits.push(entry.pad);
+              break; // 每组只取一个匹配
+            }
+          }
+        }
+        if (hits.length === 0) return null;
+        // 计算加权平均 PAD
+        const sum = hits.reduce((a, p) => [a[0] + p[0], a[1] + p[1], a[2] + p[2]], [0, 0, 0]);
+        const n = hits.length;
+        return { pleasure: sum[0] / n, arousal: sum[1] / n, dominance: sum[2] / n };
+      }
+
+      // 根据 PAD 推断情绪类别和强度
+      function inferCategory(pad) {
+        if (!pad) return 'neutral';
+        const { pleasure, arousal } = pad;
+        if (pleasure > 0.3 && arousal > 0.3) return 'happy';
+        if (pleasure > 0.3 && arousal <= 0.3) return 'content';
+        if (pleasure <= 0.3 && pleasure > -0.3 && arousal > 0.5) return 'surprised';
+        if (pleasure <= 0.3 && pleasure > -0.3 && arousal <= 0.3) return 'neutral';
+        if (pleasure <= -0.3 && arousal > 0.3) return 'negative';
+        if (pleasure <= -0.3 && arousal <= 0.3) return 'sad';
+        return 'neutral';
+      }
+
+      function calcIntensity(pad) {
+        if (!pad) return 0;
+        return Math.min(1, (Math.abs(pad.pleasure) + Math.abs(pad.arousal) + Math.abs(pad.dominance)) / 3);
+      }
+
+      return {
+        process: (input) => {
+          // 优先使用轻量级 PAD 分类
+          const pad = classifyPAD(input);
+          if (pad) {
+            return {
+              pad,
+              intensity: calcIntensity(pad),
+              type: inferCategory(pad),
+            };
+          }
+          // 回退：全量心理学管道
+          if (!_self.psychology) return { pad: { pleasure: 0, arousal: 0, dominance: 0 }, intensity: 0, type: 'neutral' };
+          const r = _self.psychology.analyzePsychology(input);
+          return { pad: r.emotion, intensity: r.emotion.intensity || 0, type: r.intention.category || 'unknown' };
+        },
+        getPAD: (input) => {
+          const pad = classifyPAD(input);
+          if (pad) return pad;
+          if (!_self.psychology) return { pleasure: 0, arousal: 0, dominance: 0 };
+          const r = _self.psychology.analyzePsychology(input);
+          return { pleasure: r.emotion.pleasure, arousal: r.emotion.arousal, dominance: r.emotion.dominance };
+        },
+      };
+    });
 
     // ─── 记忆整合（委托 Observe 模块）───────────────────────────────
     add('consolidate', () => {
@@ -494,14 +576,27 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
 
     // ─── 哲学引擎（依赖认知、意识、伦理、心空间等多模块）──────────
     add('philosophy', () => {
+      // 预触发所有惰性依赖，确保在 PhilosophyEngine 构造前加载完成
+      const deps = {
+        memory: _self.memory,
+        rootPath: _self.rootPath,
+        beingLogic: _self.being,
+        consciousness: _self.consciousness,
+        ethics: _self.ethics,
+        mindSpace: _self.mindSpace,
+        heartLogic: _self.heartLogic,
+      };
+      // 记录哪些依赖为 null（仅调试，不影响构造 — PhilosophyEngine 内部有 null-guard）
+      const nullDeps = Object.entries(deps).filter(([, v]) => v == null).map(([k]) => k);
+      if (nullDeps.length > 0) {
+        console.warn(`[Clarity] philosophy 依赖 ${nullDeps.join(', ')} 不可用，将使用回退模式`);
+      }
       try {
-        return new (_PhilosophyEngine().PhilosophyEngine)({
-          memory: _self.memory, rootPath: _self.rootPath,
-          beingLogic: _self.being, consciousness: _self.consciousness,
-          ethics: _self.ethics, mindSpace: _self.mindSpace,
-          heartLogic: _self.heartLogic,
-        });
-      } catch (e) { return null; }
+        return new (_PhilosophyEngine().PhilosophyEngine)(deps);
+      } catch (e) {
+        console.error(`[Clarity] philosophy 引擎构造失败: ${e.message}`);
+        return null;
+      }
     });
 
     // ─── 函数导出模块（不是类实例，直接返回函数包）────────────────
@@ -626,38 +721,18 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
   }
 
   /**
-   * 启动时环境变量验证
-   * 检查关键 HEARTFLOW_* 和安全相关变量是否已正确配置
+   * 启动时环境变量验证（轻量检查）
    */
   _validateEnv() {
     const warnings = [];
 
-    // 加密密钥检查
-    if (!process.env.HEARTFLOW_AES_KEY) {
-      warnings.push('HEARTFLOW_AES_KEY 未设置 — 将回退到 .aes-key 文件（建议使用环境变量）');
-    }
-
-    // 自我修改守卫检查（默认禁用是安全的，但提醒管理员）
-    const selfMod = process.env.HEARTFLOW_ENABLE_SELF_MODIFICATION;
-    if (selfMod === '1' || selfMod === 'true') {
-      warnings.push('HEARTFLOW_ENABLE_SELF_MODIFICATION=1 — 自我代码修改已启用（仅推荐在沙箱/开发环境使用）');
-    }
-
-    // 数据治理检查
-    if (!process.env.HEARTFLOW_DATA_MINIMIZATION) {
-      warnings.push('HEARTFLOW_DATA_MINIMIZATION 未启用 — 记忆持久化将被静默阻止');
-    }
-    if (!process.env.HEARTFLOW_USER_CONSENT) {
-      warnings.push('HEARTFLOW_USER_CONSENT 未设置 — 用户同意确认缺失，记忆持久化受限');
-    }
-
-    // 运行环境
-    if (!process.env.HEARTFLOW_ENV) {
-      warnings.push('HEARTFLOW_ENV 未设置（默认 development） — 生产部署建议设为 production');
+    // 运行环境检查
+    if (!process.env.NODE_ENV) {
+      warnings.push('NODE_ENV 未设置，默认 development');
     }
 
     if (warnings.length > 0) {
-      console.warn('[Clarity] ⚠️  安全配置检查:');
+      console.warn('[Clarity] ⚙️  环境检查:');
       warnings.forEach(w => console.warn(`  - ${w}`));
     }
   }

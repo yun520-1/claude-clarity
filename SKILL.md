@@ -1,12 +1,14 @@
 ---
 name: claude-clarity
+aliases: [心虫, 草履虫, 小虫子, clarity, heartbug]
 version: "1.1.5"
-title: "草履虫 / Clarity — AI 认知内核"
+title: "心虫 / Clarity — AI 认知内核"
 description: >
   用 Node.js 写的认知引擎，MCP 原生工具。
   存在感知、三层持久记忆、
   PAD 情绪分析、真善美评估。
   不装人格，不抄模板，只有结构。单细胞。
+  别名：心虫、草履虫、小虫子（同一引擎，不同叫法）。
 tags:
   - cognitive-engine
   - memory-system

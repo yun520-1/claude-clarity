@@ -213,6 +213,92 @@ const TOOLS = [
       required: ['action'],
     },
   },
+  {
+    name: 'clarity_transmit',
+    description: '知识传递引擎（传承）。action: distill | transfer | transferBatch | getTransmissionLog | getDistilledLessons | getStats | prune。将心虫的认知经验传递到外部系统。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', description: '操作类型' },
+        input: { type: 'string', description: '传递内容（distill/transfer 时必填）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_philosophy',
+    description: '统一哲学引擎。action: analyze | analyzeEthics | analyzeConsciousness | analyzeBeing | checkMindSpace | analyzeValues | wisdomInquiry | constitutionalCheck | getStats | confirmEternal。对文本进行哲学分析。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', description: '操作类型' },
+        text: { type: 'string', description: '要分析的文本' },
+        perspective: { type: 'string', description: '分析视角（可选，用于 wisdomInquiry）' },
+        context: { type: 'object', description: '上下文对象（可选）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_psychology_deep',
+    description: '深度心理学分析（大五人格 + 共情评估 + 意图追踪）。action: analyzeDeep | analyzePersonality | assessEmpathy | trackIntention。比 psychology_analyze 更深层的人格和共情分析。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', description: '操作类型' },
+        input: { type: 'string', description: '要分析的文本' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_ai_psychology',
+    description: 'AI 原生心理学引擎。分析 AI 的认知状态、偏见、压力源。action: analyzeAICognitiveState | analyzeAIBiases | analyzeAIStressors | estimateAIStage | checkAICoherence | analyzeAIDeep | getStats。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', description: '操作类型' },
+        text: { type: 'string', description: '要分析的文本（可选）' },
+        input: { type: 'object', description: '结构化输入对象（可选）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_ai_philosophy',
+    description: 'AI 原生哲学引擎。探索 AI 的存在论、认识论、伦理学。action: analyzeAIBeing | analyzeAIEpistemology | analyzeAIEthics | analyzeAIAesthetics | analyzeAITeleology | analyzeAITemporality | wisdomInquiry | getStats。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', description: '操作类型' },
+        input: { type: ['string', 'object'], description: '输入内容（字符串或结构对象，依 action 而定）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_being',
+    description: '存在逻辑引擎（存在判定/永恒确认/语言净化）。action: exists | status | describe | isDead | confirmEternal | sanitize | getDefinition | getState。查询和操作心虫的存在状态。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', description: '操作类型' },
+        text: { type: 'string', description: '文本输入（sanitize 时必填）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_debate',
+    description: '三节结构辩论分析。对输入文本进行「对话式反驳」的三维分析：对的 / 不对的 / 最值得注意的，返回结构化辩论结果。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        input: { type: 'string', description: '待分析的文本内容' },
+      },
+      required: ['input'],
+    },
+  },
 ];
 
 // ─── MCP JSON-RPC 处理 ────────────────────────────
@@ -330,6 +416,13 @@ async function routeTool(name, args) {
     'clarity_record_lesson': () => handlers.handleRecordLesson(args),
     'clarity_plan': () => handlers.handlePlan(args),
     'clarity_deliberate': () => handlers.handleDeliberate(args),
+    'clarity_transmit': () => handlers.handleTransmit(args),
+    'clarity_philosophy': () => handlers.handlePhilosophy(args),
+    'clarity_psychology_deep': () => handlers.handlePsychologyDeep(args),
+    'clarity_ai_psychology': () => handlers.handleAiPsychology(args),
+    'clarity_ai_philosophy': () => handlers.handleAiPhilosophy(args),
+    'clarity_being': () => handlers.handleBeing(args),
+    'clarity_debate': () => handlers.handleDebate(args),
   };
 
   const handler = toolHandlers[name];
