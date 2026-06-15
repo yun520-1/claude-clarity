@@ -1,7 +1,15 @@
 {
   "name": "claude-clarity",
   "version": "1.1.5",
-  "description": "草履虫 / Clarity v1.1.5 — AI 认知内核。单细胞，能进化。",
+  "description": "心虫 / Clarity - AI 认知引擎: 三层记忆系统(TGB评估)+PAD情绪模型+Q-learning自愈。让LLM Agent过目不忘/自我审查/AI心理学/AI哲学引擎",
+  "homepage": "https://github.com/yun520-1/claude-clarity",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yun520-1/claude-clarity.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yun520-1/claude-clarity/issues"
+  },
   "main": "src/core/clarity.js",
   "bin": {
     "clarity": "bin/cli.js"
@@ -23,6 +31,8 @@
     "src/core/**/*.js",
     "src/core/**/*.json",
     "src/core/**/*.md",
+    "!src/core/search/models/*.onnx",
+    "!src/core/search/models/*.bin",
     "src/psychology/**/*.js",
     "src/memory/**/*.js",
     "src/identity/**/*.js",
@@ -31,8 +41,19 @@
   "keywords": [
     "cognitive-engine",
     "memory-system",
+    "llm-memory",
+    "ai-agents",
+    "mcp-tools",
     "self-verification",
-    "reasoning",
+    "psychology-ai",
+    "emotion-model",
+    "q-learning",
+    "agent-framework",
+    "nodejs-ai",
+    "claude-code",
+    "claude-code-skill",
+    "hermes-skill",
+    "openclaw-skill",
     "consciousness",
     "ontology",
     "psychology",
@@ -46,10 +67,19 @@
     "philosophy",
     "decision-verification",
     "lesson-learning",
-    "q-learning",
     "code-generation",
     "agent-orchestration",
-    "process-management"
+    "process-management",
+    "heartbug",
+    "paramecium",
+    "ai-self-healing",
+    "free-energy-principle",
+    "big-five-personality",
+    "pad-model",
+    "truth-goodness-beauty",
+    "cross-session-memory",
+    "ai-ethics",
+    "value-alignment"
   ],
   "security": {
     "warnings": [

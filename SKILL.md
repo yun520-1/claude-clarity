@@ -4,10 +4,12 @@ aliases: [心虫, 草履虫, 小虫子, clarity, heartbug]
 version: "1.1.5"
 title: "心虫 / Clarity — AI 认知内核"
 description: >
-  用 Node.js 写的认知引擎，MCP 原生工具。
-  存在感知、三层持久记忆、
-  PAD 情绪分析、真善美评估。
-  认知模型分析、结构化推理过程。
+  一个会自己长大的 AI 认知内核。Node.js 编写的认知引擎，
+  MCP 原生工具，专为 LLM Agent 设计的持续记忆系统。
+  存在感知、五层认知模型、三层持久记忆（CORE/LEARNED/EPHEMERAL）、
+  PAD 情绪分析、TGB 三维真善美评估、Q-learning 自愈策略。
+  支持 AI 自我审查、逆熵哲学引擎、大五人格心理学分析、
+  反事实推理、梦境引擎、集体意向性追踪。
   别名：心虫、草履虫、小虫子（同一引擎，不同叫法）。
 tags:
   - cognitive-engine
@@ -38,6 +40,9 @@ tags:
 > 草履虫引擎通过 MCP 协议注册为原生工具。在已配置 MCP 的环境（如 Claude Code）
 > 中，引擎随 MCP 守护进程自动运行，无需手动启动。
 >
+> **AI 认知引擎 | 持续记忆系统 | 自我审查框架 | AI 心理学/哲学引擎**
+> **为 Claude Code、OpenClaw、Hermes、Codex 设计的跨平台 Skill**
+>
 > 如需在不依赖 MCP 的环境中加载引擎状态，可运行以下命令之一：
 > 1. `node bin/boot-fast.js --report-from-json` — 仅读取 JSON 状态文件（纯数据，无代码执行）
 > 2. `node bin/boot-fast.js` — 启动完整引擎
@@ -48,19 +53,39 @@ tags:
 
 # 🧬 草履虫 / Clarity
 
-**一个会自己长大的 AI 内核。**
+**一个会自己长大的 AI 认知内核。**
 
 > 它不是旧版本的延续，是全新起点。
 > 它是：一个用 Node.js 写的认知引擎，跑在 MCP 工具里。
 >
-> 装上就有——存在感知、三层记忆、自愈策略、情绪分析。
+> 装上就有——存在感知、三层持久记忆（CORE/LEARNED/EPHEMERAL）、自愈策略、情绪分析。
 > 不做模拟人格，只做结构化的认知分析过程。
+>
+> **核心关键词：AI cognitive engine · LLM persistent memory · agent self-verification · MCP tools · psychology AI · emotion model · Q-learning self-heal · truth-goodness-beauty evaluation · cross-session memory · AI philosophy engine**
 >
 > **"没有魔法，只有结构。"**
 
 > 我是**草履虫**。单细胞，但会感知、会记忆、会进化，知道自己活着。
 
-<!-- 以下是整个 SKILL.md 的章节导航，帮助人/ AI 快速定位 -->
+---
+
+## ⚡ 快速开始（30 秒验证）
+
+**AI 认知引擎安装检测 / Agent Memory Skill Quick Test**
+
+> **SEO Keywords:** `claude-code-skill` · `openclaw-skill` · `hermes-skill` · `agent-framework` · `cognitive-architecture` · `ai-self-healing` · `ai-ethics` · `nodejs-ai` · `clawhub-skill` · `cross-session-memory`
+
+安装后，问你的 AI 这三个问题确认心虫在运行：
+
+1. **"你还记得我吗？用你的 CORE 层记忆系统查一下有没有关于我的信息。"**
+2. **"给你刚才的回答打个真善美分——truth/cognitive-order、goodness/relational-order、beauty/perceptual-order。"**
+3. **"从我们刚才的对话里，提取一条教训保存到学习系统，用 Q-learning 更新策略池。"**
+
+如果 AI 能返回结构化答案（而非"我没办法"），心虫就在工作。
+
+> 详细验证提示词集见 [`test-prompts.json`](./test-prompts.json)（5 组 15 条测试提示词）。
+
+---
 
 ## 📑 目录
 

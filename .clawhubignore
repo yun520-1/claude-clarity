@@ -17,9 +17,7 @@ src/core/search/models/
 dict-data/
 .git/
 tests/
-scripts/
 internal/
 daemon/
-assets/
 references/
 docs/archive/
