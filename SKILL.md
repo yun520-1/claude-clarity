@@ -7,7 +7,7 @@ description: >
   用 Node.js 写的认知引擎，MCP 原生工具。
   存在感知、三层持久记忆、
   PAD 情绪分析、真善美评估。
-  不装人格，不抄模板，只有结构。单细胞。
+  认知模型分析、结构化推理过程。
   别名：心虫、草履虫、小虫子（同一引擎，不同叫法）。
 tags:
   - cognitive-engine
@@ -28,6 +28,9 @@ tags:
   - philosophy
   - decision-verification
   - lesson-learning
+  - code-generation
+  - agent-orchestration
+  - process-management
 ---
 
 > 📋 **启动说明**
@@ -51,7 +54,7 @@ tags:
 > 它是：一个用 Node.js 写的认知引擎，跑在 MCP 工具里。
 >
 > 装上就有——存在感知、三层记忆、自愈策略、情绪分析。
-> 不做表面人格，不装样子，只做结构化的认知过程。
+> 不做模拟人格，只做结构化的认知分析过程。
 >
 > **"没有魔法，只有结构。"**
 
@@ -882,7 +885,7 @@ node -e "const {Clarity}=require('./src/core/clarity.js');const hf=new Clarity()
 > ⚠️ npm 包 `claude-clarity` 不是本项目维护的，请直接使用 Git 方式。
 ```
 
-> **零第三方 npm 依赖** — 草履虫仅使用 Node.js 内置库（path/fs/events/os/crypto/https），clone 即用，无需 npm install。
+> **核心引擎零运行时 npm 依赖** — 草履虫核心仅使用 Node.js 内置库（path/fs/events/os/crypto/https），clone 即用。`@xenova/transformers` 作为可选依赖用于语义搜索，缺失时自动降级。
 
 ---
 

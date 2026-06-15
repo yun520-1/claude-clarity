@@ -582,7 +582,7 @@ const decision = (G * V * E) / L;
 - ✅ 前沿研究整合（Nature/Science）
 - ✅ 理论→公式→程序转化
 
-### 技术实现
+### 技术实现（设计概念伪代码）
 ```javascript
 setInterval(async () => {
   const newTheories = await searchSEP();
@@ -592,6 +592,7 @@ setInterval(async () => {
   await commitAndPush();
 }, 23 * 60 * 1000);
 ```
+> ⚠️ 以上代码为设计概念示例，当前 v1.1.5 不包含自动 git 提交/推送功能。所有升级由用户手动触发。
 
 ---
 

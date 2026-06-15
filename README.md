@@ -1,7 +1,7 @@
-# Clarity / 心虫 v1.0.0
+# Clarity / 心虫 v1.1.5
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat-square" alt="version" />
+  <img src="https://img.shields.io/badge/version-1.1.5-blue?style=flat-square" alt="version" />
   <img src="https://img.shields.io/github/release/yun520-1/claude-clarity?style=flat-square" alt="GitHub release" />
   <img src="https://img.shields.io/github/last-commit/yun520-1/claude-clarity?style=flat-square" alt="last commit" />
   <img src="https://img.shields.io/github/issues/yun520-1/claude-clarity?style=flat-square" alt="issues" />
@@ -149,15 +149,15 @@ hf.stop();
 ## 📊 版本时间线
 
 ```
-v2.0.54 ─── 最新 (2026-06-04)
-├─ v2.0.53 ─ dream-consolidation.js 升级：记忆衰退评分+多周期梦境模拟+冲突检测
-├─ v2.0.43 ─ claim-extractor.js 升级：置信度分级+来源追踪+矛盾检测
-├─ v2.0.34 ─ SkillSpector 审计修复 Round 2（161项）
-├─ v2.0.10 ─ 审计清理版（当前 GitHub Release）
+v1.1.5 ─── 最新 (2026-06-14)
+├─ v1.1.4 ─ SkillSpector 审计修复 Round 3（621项全量）
+├─ v1.1.3 ─ 安全+隐私完整修复
+├─ v1.1.2 ─ 记忆系统与推理增强
+├─ v1.1.0 ─ 认知引擎增强
 │
-├─ v1.5.x ─── HeartLogic 哲学体系扩展
-├─ v1.4.x ─── 安全+隐私完整修复
-└─ v1.3.8 ─── 首个稳定版
+├─ v1.0.x ─── HeartLogic 哲学体系扩展
+├─ v1.0.x ─── 安全+隐私完整修复
+└─ v1.0.0 ─── 首个稳定版
 ```
 
 **完整版本历史** → [CHANGELOG.md](./CHANGELOG.md)  
@@ -169,12 +169,12 @@ v2.0.54 ─── 最新 (2026-06-04)
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
-| **v2.0.54** | 2026-06-04 | version.js 读 VERSION 文件优先 + 死依赖清理 |
-| **v2.0.53** | 2026-06-04 | dream-consolidation 升级：记忆衰退评分系统 |
-| **v2.0.43** | 2026-06-04 | claim-extractor 升级：置信度分级+来源追踪 |
-| **v2.0.34** | 2026-06-03 | 安全审计修复 Round 2（161项） |
-| **v2.0.33** | 2026-06-03 | 话题隔离 TopicScope 重构 |
-| **v2.0.10** | 2026-06-01 | 审计清理版（GitHub Release） |
+| **v1.1.5** | 2026-06-14 | SkillSpector 审计修复 Round 3（621项全量） |
+| **v1.1.4** | 2026-06-14 | 安全审计修复 + 文档对齐 |
+| **v1.1.3** | 2026-06-10 | dream-consolidation 升级：记忆衰退评分系统 |
+| **v1.1.2** | 2026-06-08 | claim-extractor 升级：置信度分级+来源追踪 |
+| **v1.1.1** | 2026-06-05 | 话题隔离 TopicScope 重构 |
+| **v1.1.0** | 2026-06-01 | 认知引擎增强 |
 | ... | ... | [完整 CHANGELOG](./CHANGELOG.md) |
 
 ---
@@ -193,7 +193,7 @@ v2.0.54 ─── 最新 (2026-06-04)
 | 凭据存储 | ✅ **无** | 不读写 API 密钥、token 或密码文件 |
 | 外部通信 | ✅ **无** | 不主动发起任何网络请求 |
 | 埋点/遥测 | ✅ **无** | 不含任何分析、追踪或统计功能 |
-| 代码执行 | ✅ **无** | 不 eval、不动态 import 用户数据、不 shell 注入 |
+| 代码执行 | ⚠️ **受控执行** | 仅通过 code-executor.js / code-verifier.js 执行已验证的代码；不 eval 用户数据、不 shell 注入 |
 | 文件写入 | ✅ **受控写本地** | 仅在 data/、memory/ 等限定目录写缓存/状态文件；不写入项目代码文件 |
 
 > 本仓库源码不包含任何连接外部或储存密钥的代码。

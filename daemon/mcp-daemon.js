@@ -178,7 +178,8 @@ process.on('exit', cleanup);
 
 process.on('uncaughtException', (err) => {
   console.error(`[Clarity Daemon] 未捕获异常: ${err.message}`);
-  process.exit(1);
+  console.error(err.stack);
+  // 不退出进程——记录并继续，防止单个未捕获异常导致 DoS
 });
 process.on('unhandledRejection', (reason) => {
   console.error(`[Clarity Daemon] 未处理 Promise 拒绝: ${reason}`);

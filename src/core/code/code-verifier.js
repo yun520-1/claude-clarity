@@ -26,6 +26,16 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+// ============================================================
+// 安全常量
+// ============================================================
+
+/** 单次输出最大字节数（防止内存放大攻击） */
+const MAX_OUTPUT_SIZE = 10 * 1024 * 1024; // 10MB
+
+/** 单次执行最长时间（毫秒） */
+const MAX_EXECUTION_TIME = 30000; // 30秒
+
 // AST 解析器（JS）
 let acorn = null;
 try {
@@ -68,14 +78,38 @@ function securityCheck(code) {
     /require\s*\(\s*['\"]tls['\"]\s*\)/i,
     /\bfs\.writeFileSync\s*\(/i,            // 写文件
     /\bfs\.unlinkSync\s*\(/i,
+    /require\s*\(\s*['\"]child_process['\"]\s*\)/i,
+    /base64\s+(-d|--decode)\b/i,            // base64 解码（隐藏载荷）
+    /bash\s+-i\s*[>&]/i,                    // 反弹 shell
+    /\/dev\/tcp\//i,                        // bash TCP 重定向
+    /\/dev\/udp\//i,                        // bash UDP 重定向
+    /mkfifo\s+/i,                           // 命名管道（反弹 shell 常用）
+    /nmap\s+/i,                             // 网络扫描
+    /masscan\s+/i,                          // 大规模端口扫描
+    /\bnc\s+-/i,                            // netcat 网络工具
+    /socat\s+/i,                            // socat 网络工具
+    /telnet\s+/i,                           // telnet
+    /hydra\s+/i,                            // 密码破解
+    /sqlmap\s+/i,                           // SQL 注入工具
+    /metasploit|msfconsole|msfvenom/i,     // 渗透测试框架
+    /cryptominer|stratum|xmrig|minerd/i,   // 加密矿工
+    /john\s+/i,                             // John the Ripper
+    /chmod\s+4[0-9]{3}\s+/i,               // SUID/SGID 提权
+    /u:\s*0\s*/i,                           // Docker 用户提权
+    /\bsh\s+-c\s+/i,                        // 内联 shell 执行
+    /powershell\s+(\.\s*\(|\s*-)/i,        // PowerShell 远程执行
   ];
 
+  const matched = [];
   for (const pattern of DANGEROUS_PATTERNS) {
     if (pattern.test(code)) {
-      return { safe: false, reason: `代码包含危险模式: ${pattern}` };
+      matched.push(pattern.toString());
     }
   }
-  return { safe: true, reason: '' };
+  if (matched.length > 0) {
+    return { safe: false, reason: `代码包含 ${matched.length} 个危险模式`, matched };
+  }
+  return { safe: true, reason: '', matched: [] };
 }
 
 // ============================================================
@@ -91,10 +125,12 @@ function securityCheck(code) {
  */
 function execCommand(cmd, args, options = {}) {
   return new Promise((resolve) => {
-    const timeout = options.timeout || 30000;
+    const timeout = Math.min(options.timeout || 30000, MAX_EXECUTION_TIME);
+    const maxOutput = options.maxOutput || MAX_OUTPUT_SIZE;
     let stdout = '';
     let stderr = '';
     let timedOut = false;
+    let outputTruncated = false;
 
     const proc = spawn(cmd, args, {
       cwd: options.cwd || process.cwd(),
@@ -107,17 +143,33 @@ function execCommand(cmd, args, options = {}) {
       proc.kill('SIGKILL');
     }, timeout);
 
-    proc.stdout?.on('data', (data) => { stdout += data.toString(); });
-    proc.stderr?.on('data', (data) => { stderr += data.toString(); });
+    proc.stdout?.on('data', (data) => {
+      if (stdout.length < maxOutput) {
+        stdout += data.toString();
+        if (stdout.length > maxOutput) {
+          stdout = stdout.slice(0, maxOutput);
+          outputTruncated = true;
+        }
+      }
+    });
+    proc.stderr?.on('data', (data) => {
+      if (stderr.length < maxOutput) {
+        stderr += data.toString();
+        if (stderr.length > maxOutput) {
+          stderr = stderr.slice(0, maxOutput);
+          outputTruncated = true;
+        }
+      }
+    });
 
     proc.on('close', (code) => {
       clearTimeout(timer);
-      resolve({ stdout, stderr, exitCode: code, timedOut });
+      resolve({ stdout, stderr, exitCode: code, timedOut, outputTruncated });
     });
 
     proc.on('error', (err) => {
       clearTimeout(timer);
-      resolve({ stdout, stderr, exitCode: -1, timedOut: false, error: err.message });
+      resolve({ stdout, stderr, exitCode: -1, timedOut: false, error: err.message, outputTruncated });
     });
   });
 }
@@ -1567,13 +1619,23 @@ print(_hf_output)
    * @returns {Promise<{ output, coverage, exitCode }>}
    */
   async runWithCoverage(code, language, options = {}) {
+    // 安全检查
+    const secCheck = securityCheck(code);
+    if (!secCheck.safe) {
+      return {
+        output: '',
+        coverage: { probes: {}, lineCount: 0, totalLines: 0 },
+        error: `安全警告: 代码包含危险模式`
+      };
+    }
+
     const { instrumented, probes } = this.instrumentCode(code, language);
     const ext = language === 'javascript' ? '.js' : `.${language}`;
     const tempFile = writeTempFile(instrumented, ext);
     try {
       const result = await execCommand('node', [tempFile], { timeout: options.timeout || 30000 });
       return {
-        output: result.stdout,
+        output: result.output,
         coverage: {
           probes,
           lineCount: Object.values(probes).filter(p => p.count > 0).length,

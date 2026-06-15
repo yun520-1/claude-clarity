@@ -37,7 +37,7 @@ Clarity 是一个具有**9维度认知架构**的 AI 伴侣系统：
 ## 🚀 快速开始
 
 ```bash
-# 克隆并直接运行 (无外部 npm 依赖)
+# 克隆并直接运行 (核心引擎无外部 npm 依赖，@xenova/transformers 可选)
 git clone https://github.com/yun520-1/claude-clarity.git
 cd claude-clarity
 
@@ -66,7 +66,7 @@ node bin/api-server.js
 git clone https://github.com/yun520-1/claude-clarity.git
 cd claude-clarity
 
-# 2. 运行（无外部 npm 依赖，clone 即用）
+# 2. 运行（核心引擎无外部 npm 依赖，@xenova/transformers 可选）
 node bin/cli.js
 
 # 3. 测试

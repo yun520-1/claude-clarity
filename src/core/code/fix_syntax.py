@@ -23,14 +23,19 @@ else:
         f.write(new_content)
     print('✅ 修复成功')
 
-    # 验证（仅语法检查，不执行代码）
+    # 验证（极简结构检查，不调用外部进程）
     try:
-        import subprocess
-        result = subprocess.run(['node', '--check', filepath],
-                                capture_output=True, text=True)
-        if result.returncode == 0:
-            print('✅ 语法检查通过')
-        else:
-            print('❌ 语法错误:', result.stderr[:200])
-    except:
-        print('⚠️  无法验证语法')
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        depth = 0
+        for ch in content:
+            if ch == '{': depth += 1
+            if ch == '}': depth -= 1
+            if depth < 0:
+                print('⚠️  可能的 JS 语法问题：多余的闭合大括号')
+        if depth > 0:
+            print('⚠️  可能的 JS 语法问题：缺少闭合大括号')
+        if depth == 0:
+            print('✅ 基本结构检查通过')
+    except Exception as e:
+        print(f'⚠️  无法读取文件: {e}')

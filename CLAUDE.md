@@ -88,7 +88,7 @@ cd claude-clarity
 # 一键安装（交互式选择方案）
 bash install.sh
 
-# 零 npm 依赖，直接使用
+# 核心引擎零 npm 运行时依赖（@xenova/transformers 可选），直接使用
 node -e "const { Clarity } = require('./src/core/clarity.js'); const hf = new Clarity(); hf.start(); console.log('心虫已启动');"
 ```
 
@@ -138,7 +138,7 @@ Clarity 引擎 (记忆/推理/情感/梦境)
 
 ## 设计原则
 
-- 零 npm 第三方依赖
+- 核心引擎零 npm 运行时依赖（@xenova/transformers 可选，用于语义搜索）
 - CommonJS 模块系统
 - Node.js 14+ 兼容
 - 跨平台（macOS / Linux / Windows）

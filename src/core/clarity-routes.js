@@ -25,16 +25,8 @@ const ALLOWED_ROUTES = new Set([
   'cognitive.addProblem', 'cognitive.resolveProblem', 'cognitive.getUnresolvedProblems', 'cognitive.searchProblems',
   'cognitive.pauseTask', 'cognitive.continueTask', 'cognitive.getPausedTasks',
   'cognitive.getStatus', 'cognitive.stats',
-  // memory — 主记忆系统（含 triality 合并后的多通道检索）
-  'memory.store', 'memory.retrieve', 'memory.search', 'memory.remove',
-  'memory.getLayers', 'memory.getStats',
-  'memory.semanticSearch', 'memory.narrativeQuery', 'memory.getRecentNarrative',
-  'memory.queryByTimeRange', 'memory.queryByRelationType',
-  'memory.searchBySemantic', 'memory.searchByKeywords', 'memory.searchByTimeRange',
-  'memory.searchByEmotion', 'memory.searchByAssociation', 'memory.multiChannelSearch',
-  'memory.addRelationship', 'memory.consolidateMemories',
-  'memory.applyForgettingCurve', 'memory.getMemoryHealth',
-  'memory.cleanup', 'memory.exportToFile', 'memory.importFromFile',
+  // memory — 主记忆系统（当前加载 v1.x 版本，仅支持 search+getStats）
+  'memory.search', 'memory.getStats',
   // truth
   'truth.checkStatement', 'truth.checkNumbers', 'truth.checkSources',
   // behavior — v2.0.19 行为模式系统

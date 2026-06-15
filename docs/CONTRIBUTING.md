@@ -28,14 +28,14 @@
 
 ### 开发环境
 
-本项目是零 npm 第三方依赖的纯 Node.js 引擎。`package.json` 中无运行时依赖。
+本项目核心引擎无运行时 npm 依赖。`@xenova/transformers` 作为可选依赖用于语义搜索，缺失时自动降级。
 
 ```bash
 # 克隆仓库
 git clone https://github.com/8xiaochongzi/claude-clarity-skill.git
 cd claude-clarity-skill
 
-# 本项目无外部 npm 依赖，clone 即用
+# 本项目核心引擎无外部 npm 依赖（@xenova/transformers 可选），clone 即用
 # 运行测试
 npm test
 

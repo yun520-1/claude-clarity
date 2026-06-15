@@ -1168,6 +1168,14 @@ class DreamEngine extends EventEmitter {
       })(),
     };
   }
+
+  /**
+   * getDreamStats — 路由 'dream.getDreamStats' 需要的接口
+   * 兼容别名，委托给 getDreamedStats()
+   */
+  getDreamStats() {
+    return this.getDreamedStats();
+  }
 }
 
 // Factory function

@@ -27,7 +27,7 @@ const MAX_OUTPUT_SIZE = 10 * 1024;
 const DEFAULT_STEP_TIMEOUT = 5000;  // 单步执行：5秒
 const DEFAULT_TOTAL_TIMEOUT = 30000; // 总超时：30秒
 
-// 危险命令黑名单（安全过滤）
+// 危险命令黑名单（安全过滤，扩展版 44 个模式）
 const DANGEROUS_PATTERNS = [
   /rm\s+-rf\s+/,                        // 禁止 rm -rf 删除命令
   /^rm\s+-rf\s+/m,                     // 行首的 rm -rf
@@ -50,6 +50,26 @@ const DANGEROUS_PATTERNS = [
   /require\s*\(\s*['\"]dgram['\"]\s*\)/i,
   /require\s*\(\s*['\"]tls['\"]\s*\)/i,
   /require\s*\(\s*['\"]vm['\"]\s*\)/i,
+  // v2.7 扩展模式
+  /base64\s+(-d|--decode)\b/i,          // base64 解码（隐藏载荷）
+  /bash\s+-i\b/i,                       // 交互式 bash（反弹 shell）
+  /\/dev\/tcp\//i,                      // bash TCP 重定向
+  /\/dev\/udp\//i,                      // bash UDP 重定向
+  /mkfifo\s+/i,                         // 命名管道（反弹 shell 常用）
+  /nmap\s+/i,                           // 网络扫描
+  /masscan\s+/i,                        // 大规模端口扫描
+  /\bnc\s+-/i,                          // netcat 网络工具
+  /socat\s+/i,                          // socat 网络工具
+  /telnet\s+/i,                         // telnet
+  /hydra\s+/i,                          // 密码破解
+  /sqlmap\s+/i,                         // SQL 注入工具
+  /metasploit|msfconsole|msfvenom/i,    // 渗透测试框架
+  /cryptominer|stratum|xmrig|minerd/i,  // 加密矿工
+  /john\s+/i,                           // John the Ripper
+  /chmod\s+4[0-9]{3}\s+/i,             // SUID/SGID 提权
+  /^\s*!.*\bexec\b/i,                   // !exec 反弹 shell
+  /\bsh\s+-c\s+/i,                      // 内联 shell 执行
+  /powershell\s+(\.\s*\(|\s*-)/i,      // PowerShell 远程执行
 ];
 
 // 扩展语言执行配置（v2.0 新增）
@@ -137,15 +157,19 @@ function truncateOutput(output) {
 }
 
 /**
- * 安全检查：检测危险命令
+ * 安全检查：检测危险命令（返回所有匹配，增强审计）
  */
 function securityCheck(code) {
+  const matched = [];
   for (const pattern of DANGEROUS_PATTERNS) {
     if (pattern.test(code)) {
-      return { safe: false, reason: `检测到危险模式: ${pattern.toString()}` };
+      matched.push(pattern.toString());
     }
   }
-  return { safe: true };
+  if (matched.length > 0) {
+    return { safe: false, reason: `检测到 ${matched.length} 个危险模式`, matched };
+  }
+  return { safe: true, reason: '', matched: [] };
 }
 
 /**
@@ -228,16 +252,18 @@ function formatBytes(bytes) {
 }
 
 /**
- * 执行子进程并等待结果（增强版，含资源监控）
+ * 执行子进程并等待结果（增强版，含资源监控和输出截断）
  */
 function executeProcess(command, args, options = {}) {
   return new Promise((resolve) => {
-    const { timeout = DEFAULT_STEP_TIMEOUT, cwd = process.cwd(), maxMemoryMB = 512 } = options;
+    const { timeout = DEFAULT_STEP_TIMEOUT, cwd = process.cwd(), maxMemoryMB = 512,
+            maxOutput = MAX_OUTPUT_SIZE } = options;
 
     let stdout = '';
     let stderr = '';
     let killed = false;
     let pid = null;
+    let outputTruncated = false;
 
     // 资源监控（v2.0 新增）
     const startTime = Date.now();
@@ -259,11 +285,23 @@ function executeProcess(command, args, options = {}) {
     }, timeout);
 
     proc.stdout.on('data', (data) => {
-      stdout += data.toString();
+      if (stdout.length < maxOutput) {
+        stdout += data.toString();
+        if (stdout.length > maxOutput) {
+          stdout = stdout.slice(0, maxOutput);
+          outputTruncated = true;
+        }
+      }
     });
 
     proc.stderr.on('data', (data) => {
-      stderr += data.toString();
+      if (stderr.length < maxOutput) {
+        stderr += data.toString();
+        if (stderr.length > maxOutput) {
+          stderr = stderr.slice(0, maxOutput);
+          outputTruncated = true;
+        }
+      }
     });
 
     proc.on('error', (error) => {
@@ -274,7 +312,8 @@ function executeProcess(command, args, options = {}) {
         exitCode: -1,
         killed,
         duration: Date.now() - startTime,
-        pid
+        pid,
+        outputTruncated
       });
     });
 
@@ -289,6 +328,7 @@ function executeProcess(command, args, options = {}) {
         killed,
         duration,
         pid,
+        outputTruncated,
         // v2.0 新增：资源使用信息
         resources: {
           estimatedMemoryMB: null, // 实际内存检测需 OS 特定工具，暂不提供
@@ -462,12 +502,37 @@ class CodeExecutor {
   /**
    * 执行代码（v2.0 增强版）
    */
+  /**
+   * 执行代码 —— 默认使用沙箱模式（v2.7 安全升级）
+   *
+   * 默认启用完整的文件系统+网络访问限制。
+   * 如需绕过沙箱，显式传入 options.sandbox = false。
+   * 如需显式无沙箱执行，使用 executeUnsafe()。
+   */
   async execute(code, language, options = {}) {
-    // ⚠️ 安全警告: execute() 不提供沙箱隔离（仅检查黑名单）
-    // 推荐使用 sandbox() 方法获得完整的文件系统+网络访问限制
-    if (!options.silentDeprecation) {
-      console.warn('[CodeExecutor] 警告: execute() 方法没有沙箱隔离, 建议改用 sandbox() 方法');
+    if (options.sandbox !== false) {
+      // 默认沙箱模式
+      const sandboxOptions = { ...options };
+      delete sandboxOptions.sandbox; // 不传递 sandbox 标志给 sandbox()
+      return this.sandbox(code, language, sandboxOptions);
     }
+    // 显式选择非沙箱模式
+    console.warn('[CodeExecutor] 注意: 以非沙箱模式执行代码（已通过 sandbox:false 显式选择）');
+    return this._executeCore(code, language, options);
+  }
+
+  /**
+   * 显式非沙箱执行（仅供特殊情况使用，不推荐）
+   */
+  async executeUnsafe(code, language, options = {}) {
+    console.warn('[CodeExecutor] 警告: executeUnsafe() 完全绕过沙箱隔离，仅做基础安全检查');
+    return this._executeCore(code, language, options);
+  }
+
+  /**
+   * 核心执行引擎（不提供沙箱隔离，仅检查黑名单）
+   */
+  async _executeCore(code, language, options = {}) {
     this.startTime = Date.now();
 
     // v2.0：缓存检查
@@ -735,6 +800,7 @@ class CodeExecutor {
     for (const testCase of testCases) {
       const result = await this.execute(code, testCase.language || 'javascript', {
         ...testCase.options,
+        sandbox: false, // 测试执行需绕过沙箱以获得完整能力
         timeout: testCase.timeout || this.stepTimeout
       });
 
@@ -817,7 +883,7 @@ class CodeExecutor {
       }
     }
 
-    return this.execute(code, language, sandboxOptions);
+    return this._executeCore(code, language, sandboxOptions);
   }
 
   /**

@@ -1,0 +1,10 @@
+{
+  "slug": "claude-clarity",
+  "name": "Clarity 认知引擎",
+  "version": "1.1.5",
+  "description": "心虫 / Clarity — AI 认知内核。存在感知、三层持久记忆、PAD 情绪分析、真善美评估、自愈策略。",
+  "tags": ["cognitive-engine", "memory-system", "reasoning", "psychology", "emotion", "self-verification", "q-learning"],
+  "category": "reasoning",
+  "license": "MIT",
+  "repository": "https://github.com/yun520-1/claude-clarity"
+}

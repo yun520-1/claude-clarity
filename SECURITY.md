@@ -13,7 +13,7 @@
 
 ## 安全承诺
 
-- 无后台进程、无自升级、无 HTTP 服务、无凭据存储、无外部通信、无埋点/遥测
+- 有后台进程（MCP 守护进程 daemon/mcp-daemon.js，仅启动时不安装 cron/launchd/systemd）、无自升级、无 HTTP 服务（使用 Unix Socket）、无凭据存储、无外部通信（仅在用户明确发起请求时使用）、无埋点/遥测
 - 所有依赖最小化（仅 @xenova/transformers）
 - 本地存储优先，所有用户数据归属用户
 
