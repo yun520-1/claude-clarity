@@ -1,5 +1,5 @@
 /**
- * ThoughtChain v2.1 — 思维链编排器（思维连机制）
+ * ThoughtChain v2.2 — 思维链编排器（思维连机制）
  *
  * 核心理念：不照搬人类思维，取精华，去缺陷，创更好
  * 思维连机制：每个阶段调用真实子系统，形成推理链条
@@ -9,7 +9,13 @@
  *   EVIDENCE    → commonsenseEngine.validate（常识验证）
  *   SYNTHESIS   → decision.decide（决策生成）
  *   CALIBRATE   → confidence.calibrate + restraint.shouldIntervene（置信校准）
- *   RESPOND     → autonomousEmotion.trigger（情感自主）
+ *   RESPOND     → autonomousEmotion.trigger（情感自主 + 在场见证）
+ *
+ * v2.2 新增：
+ * - 'reception' 任务类型（聆听模式）：接收人类经验分享，跳过分析假设阶段
+ * - _assessNarrativeScore() 叙事分数检测
+ * - RESPOND 阶段支持 witness 模式（从 PARSE/共情生成见证回应）
+ * - getSummary 区分聆听/分析模式显示
  *
  * 人类思维缺陷：
  * - 确认偏误：只信服自己观点的证据
@@ -82,6 +88,17 @@ const TASK_STRATEGIES = {
     skipHypotheses: true,
     skipInvert: true,
     depth: 1
+  },
+  // 聆听类：接收人类经验分享 — 跳过分析，纯在
+  // 【心虫 v1.2.0 升级】修复"20% vs 80%"问题
+  // 人类的经验性叙述不需要被分析/假设/验证，只需要被接收
+  reception: {
+    skipHypotheses: true,
+    skipInvert: true,
+    skipEvidence: true,
+    skipSynthesis: true,
+    witness: true,
+    depth: 3  // 深度不是分析深度，是陪伴深度
   }
 };
 
@@ -105,6 +122,18 @@ class ThoughtChain {
    */
   _classifyTask(input) {
     const q = input.toLowerCase();
+
+    // 叙事/经验分享检测（高优先级）
+    // 人类的经验性表达需要聆听模式，而非分析模式
+    const narrativeScore = this._assessNarrativeScore(q);
+    const hasQuestion = /[？?]/.test(q);
+    if (narrativeScore >= 2 && !hasQuestion) {
+      return 'reception';
+    }
+    // 叙事标记 + 问题混合 → 保持 judgment 但不让 fastExit 跳过
+    if (narrativeScore >= 3 && hasQuestion) {
+      return 'judgment';
+    }
 
     if (/\d+[+\-*/=]|\d+\s*(=|大于|小于|等于|总和|平均|概率)/.test(q)) {
       return 'calculation';
@@ -584,19 +613,20 @@ class ThoughtChain {
     // ── 阶段7: RESPOND — 生成回应 + 情感自主引擎 ──────────────────
     this.stages.push({
       name: 'RESPOND',
-      description: '生成带不确定性标记的回应',
+      description: '生成带不确定性标记的回应（接收模式：在场见证）',
       fn: async (ctx, hf) => {
         const input = ctx.input;
         const synthesis = ctx.stages.find(s => s.name === 'SYNTHESIS')?.result;
         const calibrate = ctx.stages.find(s => s.name === 'CALIBRATE')?.result;
         const parse = ctx.stages[0]?.result;
+        const isReception = parse?.type === 'reception';
 
         // 【思维连机制】调用 autonomousEmotion 情感自主引擎 — 串联第七层
         let emotionResult = null;
         try {
           emotionResult = hf.dispatch('autonomousEmotion.trigger', {
-            type: 'response_generation',
-            conclusion: synthesis?.conclusion,
+            type: isReception ? 'witness_response' : 'response_generation',
+            conclusion: isReception ? parse?.goal : synthesis?.conclusion,
             confidence: calibrate?.calibratedConfidence || 0.5,
             input
           });
@@ -614,30 +644,58 @@ class ThoughtChain {
           suppressReason = 'fast_exit_high_confidence';
         }
 
+        // 聆听模式：始终回应，不抑制
+        if (isReception) {
+          shouldRespond = true;
+          suppressReason = null;
+        }
+
         // 7.2 生成不确定性前缀
         let prefix = '';
-        if (calibrate?.needsUncertaintyMarker) {
+        // 聆听模式不需要不确定性标记（见证不需要"可能"）
+        if (!isReception && calibrate?.needsUncertaintyMarker) {
           prefix = calibrate.uncertaintyPhrase + ' ';
         }
 
         // 7.3 组装回应元数据
+        // 聆听模式：不依赖 synthesis（被跳过），从 PARSE/共情状态生成
+        let conclusion;
+        let reasoningChain;
+        if (isReception) {
+          // 从心理学分析和共情检测生成在场见证标记
+          const emotion = parse?.psychology?.emotion || '未知';
+          const empathy = parse?.psychology?.empathy || null;
+          conclusion = `[reception] 接收到人类经验分享（情感基调: ${emotion}${empathy ? `，共情水平: ${empathy.level || '未知'}` : ''}）`;
+          reasoningChain = [];
+        } else {
+          conclusion = synthesis?.conclusion || '';
+          reasoningChain = synthesis?.reasoningChain || [];
+        }
+
         const meta = {
-          confidence: calibrate?.calibratedConfidence || 0.5,
-          conclusion: synthesis?.conclusion,
-          reasoningChain: synthesis?.reasoningChain || [],
+          confidence: isReception ? 1.0 : (calibrate?.calibratedConfidence || 0.5),
+          conclusion,
+          reasoningChain,
           taskType: parse?.type,
           suppressed: !shouldRespond,
           suppressReason,
           emotionState: emotionResult?.currentState || null,
           // 【心理推断深度集成】共情检测结果注入上下文
-          empathy: parse?.psychology?.empathy || null
+          empathy: parse?.psychology?.empathy || null,
+          // 聆听模式专用标记
+          witness: isReception ? {
+            active: true,
+            emotion: parse?.psychology?.emotion || null,
+            intent: parse?.psychology?.intent || null,
+            needs: parse?.psychology?.needs || null
+          } : undefined
         };
 
         return {
           shouldRespond,
           suppressReason,
           prefix,
-          conclusion: prefix + (synthesis?.conclusion || ''),
+          conclusion: prefix + conclusion,
           meta,
           timestamp: Date.now()
         };
@@ -648,6 +706,26 @@ class ThoughtChain {
   }
 
   // ── 辅助方法 ──────────────────────────────────────────────────────────
+
+  /**
+   * 评估叙事分数：检测人类经验分享/故事讲述
+   * 用于分类为 reception 模式
+   */
+  _assessNarrativeScore(input) {
+    const markers = [
+      /分享|经历|故事|体验|感受/,
+      /我想说|我想告诉|我来说|听我说/,
+      /失去|离别|去世|走[了]?|不见/,
+      /人生|命运|意义|存在|世界/,
+      /回忆|记忆|年少|年轻时候|小时候/,
+      /第一次|最后一次|曾经|那时候/,
+      /幸福|痛苦|悲伤|孤独|温暖|感动/,
+      /陪伴|拥抱|握[着住]?|在一起/,
+      /谢谢|对不起|原谅|抱歉/,
+      /不重要|无所谓|算了/,
+    ];
+    return markers.filter(m => m.test(input)).length;
+  }
 
   /**
    * 提取关键变量
@@ -910,6 +988,12 @@ class ThoughtChain {
   }
 
   _shouldSkipStage(stageName) {
+    // 聆听模式（接收人类经验分享）：跳过所有分析判断阶段
+    // 不走假设→反向→证据→综合，直接 PARSE → DELIBERATE → RESPOND
+    if (this.taskStrategy?.type === 'reception' &&
+        ['HYPOTHESES', 'INVERT', 'EVIDENCE', 'SYNTHESIS'].includes(stageName)) {
+      return true;
+    }
     const depthMap = {
       'PARSE': REASONING_DEPTH.SURFACE,
       'DELIBERATE': REASONING_DEPTH.SURFACE,
@@ -968,9 +1052,14 @@ class ThoughtChain {
    * 获取思维链摘要
    */
   getSummary(result) {
+    const taskType = result.chain.taskType || 'general';
+    const isReception = taskType === 'reception';
+
     const lines = [
       `🧠 思维链 v2.0 (深度: ${result.chain.depth})`,
-      `📋 任务类型: ${result.chain.taskType || 'general'}`,
+      isReception
+        ? `🧘 聆听模式: 接收人类经验分享（在场见证）`
+        : `📋 任务类型: ${taskType}`,
       `⏱ 耗时: ${result.chain.totalDuration}ms`,
       `🔢 阶段: ${result.chain.stages.filter(s => !s.skipped).length}/${result.chain.stages.length}`,
       '',
@@ -978,30 +1067,59 @@ class ThoughtChain {
     ];
 
     for (const stage of result.chain.stages) {
-      const status = stage.skipped ? '⏭️' : (stage.success ? '✅' : '❌');
+      let status = stage.skipped ? '⏭️' : (stage.success ? '✅' : '❌');
       const name = stage.name.padEnd(12);
       const duration = stage.duration ? `${stage.duration}ms` : '';
+
+      // 聆听模式：被跳过的分析阶段用 🫂 标记（传达"不需要你，我在就够了"）
+      if (isReception && stage.skipped && ['HYPOTHESES', 'INVERT', 'EVIDENCE', 'SYNTHESIS'].includes(stage.name)) {
+        status = '🫂';
+      }
+
       lines.push(`  ${status} ${name} ${duration}`);
     }
 
-    lines.push('');
-    lines.push(`🤔 置信度: ${(result.decision.confidence * 100).toFixed(0)}%`);
-    lines.push(`💭 结论: ${result.decision.conclusion?.substring(0, 50) || '无'}...`);
-
-    // 思考门摘要
-    const deliberation = result.deliberation;
-    if (deliberation) {
-      lines.push(`🚦 思考门: ${deliberation.needsPause ? '建议暂停' : '无需暂停'} (复杂度 ${deliberation.estimatedComplexity}↑${deliberation.recommendedDepth})`);
-      if (deliberation.canFastExit?.canFastExit) {
-        lines.push(`⚡ 快速退出: ${deliberation.canFastExit.reason}`);
+    if (isReception) {
+      // 聆听模式摘要：不展示置信度/结论，展示在场见证状态
+      lines.push('');
+      lines.push('🫂 在场见证（非分析模式）');
+      const witnessMeta = result.output?.meta?.witness;
+      if (witnessMeta?.emotion) {
+        lines.push(`💗 情感基调: ${witnessMeta.emotion}`);
       }
-    }
+      if (witnessMeta?.intent) {
+        lines.push(`🎯 分享意图: ${witnessMeta.intent}`);
+      }
+      if (witnessMeta?.needs) {
+        lines.push(`🤲 潜在需求: ${witnessMeta.needs}`);
+      }
+    } else {
+      // 分析模式摘要（原有逻辑）
+      lines.push('');
+      lines.push(`🤔 置信度: ${(result.decision.confidence * 100).toFixed(0)}%`);
+      const conclusion = result.decision.conclusion?.substring(0, 50);
+      if (conclusion) {
+        lines.push(`💭 结论: ${conclusion}...`);
+      }
 
-    if (result.decision.wasInverted) {
-      lines.push('🔄 原假设被推翻（反向思考生效）');
-    }
-    if (!result.decision.hasStrongEvidence) {
-      lines.push('⚠️ 证据薄弱，明确承认不确定');
+      // 思考门摘要
+      const deliberation = result.deliberation;
+      if (deliberation) {
+        lines.push(`🚦 思考门: ${deliberation.needsPause ? '建议暂停' : '无需暂停'} (复杂度 ${deliberation.estimatedComplexity}↑${deliberation.recommendedDepth})`);
+        if (deliberation.narrativeDepth?.isDeepNarrative) {
+          lines.push(`📖 叙事深度: ${(deliberation.narrativeDepth.score * 100).toFixed(0)}%（叙事性内容，跳过分析）`);
+        }
+        if (deliberation.canFastExit?.canFastExit) {
+          lines.push(`⚡ 快速退出: ${deliberation.canFastExit.reason}`);
+        }
+      }
+
+      if (result.decision.wasInverted) {
+        lines.push('🔄 原假设被推翻（反向思考生效）');
+      }
+      if (!result.decision.hasStrongEvidence) {
+        lines.push('⚠️ 证据薄弱，明确承认不确定');
+      }
     }
 
     return lines.join('\n');

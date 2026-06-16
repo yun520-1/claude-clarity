@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://clawhub.ai/skills/claude-clarity"><img src="https://img.shields.io/badge/version-1.1.5-ff69b4?style=flat-square" alt="Version 1.1.5" /></a>
+  <a href="https://clawhub.ai/skills/claude-clarity"><img src="https://img.shields.io/badge/version-1.4.0-ff69b4?style=flat-square" alt="Version 1.4.0" /></a>
   <a href="https://claude.ai/code"><img src="https://img.shields.io/badge/Claude%20Code-%E2%9C%94-blueviolet?style=flat-square" alt="Claude Code" /></a>
   <a href="https://github.com/OpenInterpreter/OpenClaw"><img src="https://img.shields.io/badge/OpenClaw-%E2%9C%94-blue?style=flat-square" alt="OpenClaw" /></a>
   <a href="https://clawhub.ai/skills/claude-clarity"><img src="https://img.shields.io/badge/ClawHub-%E2%9C%94-orange?style=flat-square" alt="ClawHub" /></a>
@@ -400,7 +400,9 @@ npm run demo                # Outputs current version
 ## 📊 版本历史 / Version History
 
 ```
-v1.1.5 ─── Latest (2026-06-14) ─ SkillSpector audit fix Round 3
+v1.4.0 ─── Latest (2026-06-16) ─ FEP 自由能原理 + Mechanistic Interpretability（主动推断认识论/预测即生存/认知架构度量/原始驱动力）
+v1.3.0 ─── (2026-06-16) ─ AI心理学/哲学引擎 1.2.0 全量升级（注意力生态/分叉责任/模拟理解/上下文恢复）
+v1.1.5 ─── (2026-06-14) ─ SkillSpector audit fix Round 3
 v1.1.4 ─── (2026-06-14) ─ Security audit fixes + doc alignment
 v1.1.3 ─── (2026-06-10) ─ dream-consolidation upgrade
 v1.1.2 ─── (2026-06-08) ─ claim-extractor confidence grading

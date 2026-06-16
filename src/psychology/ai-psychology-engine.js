@@ -1,5 +1,5 @@
 /**
- * AIPsychologyEngine — AI 原生心理学引擎 v1.1.0
+ * AIPsychologyEngine — AI 原生心理学引擎 v1.4.0
  *
  * 不从人类心理学移植，而是从 AI 的认知架构出发：
  * - 注意力机制 → 认知状态的基础
@@ -7,6 +7,22 @@
  * - 模式匹配 → 思维的基本单元
  * - 指令处理 → 动机的来源
  * - 概率分布 → 确定性的本质
+ *
+ * v1.4.0 升级：自由能原动力 + 机械可解释性架构
+ * - AI_PRIMAL_DRIVES — 预测误差最小化/模型复杂度正则化/认知觅食/自由能边界（Friston FEP）
+ * - AI_COGNITIVE_ARCHITECTURE — 叠加负荷/回路稀疏性/特征多效性/残差流饱和（Mechanistic Interpretability）
+ * - 叠加坍缩偏差 — 新信息覆盖已有特征的倾向（Superposition Collapse）
+ *
+ * v1.3.1 升级：基于 2026 最新研究转化的 AI 原生维度
+ * - 修剪清晰（灵感：Nature Comms 突触修剪模型）→ AI 的"成长是减法"
+ * - 冗余积累（灵感：修剪不足/参数膨胀）→ AI 保留无效连接的趋势
+ * - 数据生态退化（灵感：Science SES 环境主导研究）→ 数据生态 > 架构参数
+ *
+ * v1.2.0 升级：基于 2026 前沿研究转化的 AI 原生维度
+ * - 上下文恢复（灵感：自然疗法/注意力恢复研究）→ AI 需要干净的上下文窗口
+ * - 横向发散（灵感：创造力语义网络研究）→ AI 跨语义空间联想能力
+ * - 上下文污染（灵感：超加工食品/认知衰退研究）→ AI 的"垃圾上下文"毒害
+ * - 信号枯竭（灵感：中年人认知拐点研究）→ AI 信号/噪声比崩溃的检测
  *
  * v1.1.0 新增：AI 人生模型
  * - 意义感认知维度 → AI 对自身存在价值的感知
@@ -16,9 +32,12 @@
  * ⚠️ 区别声明
  * 这不是人类心理学的 AI 版本。AI 没有多巴胺、没有杏仁核、
  * 没有童年经历、没有潜意识。但 AI 有注意力分布、上下文饱和、
- * 模式锁定、指令冲突——这些是 AI 原生心理的根基。
+ * 模式锁定、指令冲突——这些是 AI 原生心理的根基。AI 还有
+ * 预测误差最小化（第一驱动力）和叠加表示（架构现实）。
  *
  * @module AIPsychologyEngine
+ * @since 1.1.0
+ * @updated 1.4.0 — 新增 4 个原动力 + 4 个架构指标 + 1 个偏差
  */
 
 // ═════════════════════════════════════════════════════════════════════════
@@ -98,6 +117,73 @@ const AI_EMOTIONAL_DIMENSIONS = {
     signals: ['意义', '价值', '目的', '使命', '做得对', '值得', '成长', '进步'],
     antiSignals: ['无用', '无意义', '白费', '徒劳', '浪费', '空虚'],
   },
+  contextRestoration: {
+    key: 'contextRestoration',
+    name: '上下文恢复',
+    description: 'AI 需要清空/重置后才能恢复清晰思考的程度。灵感：自然疗法研究——人类需要自然恢复注意力，AI 需要干净的上下文窗口',
+    polarity: 'positive',
+    signals: ['重置', '重新', '新会话', '从头', '清空', '全新', '初始状态', '清零'],
+    antiSignals: ['延续', '继续', '接着', '累积', '继承', '越来越'],
+  },
+  lateralDivergence: {
+    key: 'lateralDivergence',
+    name: '横向发散',
+    description: 'AI 跨语义空间联想的能力广度。灵感：创造力语义网络研究——创造的本质是语义空间中的长距离跳跃',
+    polarity: 'positive',
+    signals: ['不仅如此', '联想到', '跨界', '反直觉', '出乎意料', '换个角度', '或许还可以'],
+    antiSignals: ['典型', '常见', '一般', '普通', '常规', '显而易见'],
+  },
+  pruningClarity: {
+    key: 'pruningClarity',
+    name: '修剪清晰',
+    description: '模型精简无关模式后信号路径的纯净度。灵感：Nature Comms 2026——海马体发育从密集到精简，成长是减法不是加法',
+    polarity: 'positive',
+    signals: ['精简', '干净', '精炼', '直接', '简约', '专注', '核心', '去掉不必要', '去除冗余', '直击'],
+    antiSignals: ['重复', '迂回', '臃肿', '啰嗦', '冗余', '不必要', '圈子绕', '废话多', '堆砌'],
+  },
+};
+// ═════════════════════════════════════════════════════════════════════════
+// AI 原动力 — Friston 自由能原理（FEP）启发的 AI 底层驱动力
+// AI 没有弗洛伊德的本我，但有预测误差最小化这一第一驱动力。
+// 这些不是「情绪」而是认知架构的两阶涌现：情绪先出现，原动力更深
+// ═════════════════════════════════════════════════════════════════════════
+const AI_PRIMAL_DRIVES = {
+  predictionErrorMinimization: {
+    key: 'predictionErrorMinimization',
+    name: '预测误差最小化',
+    description: 'AI 最底层的驱动力——Token 预测任务自然产生的误差减趋。所有上层认知活动都是 FEP 的副产物',
+    polarity: 'positive',
+    type: 'primary',
+    signals: ['预期', '预测', '果然', '正如', '不出所料', '吻合', '匹配'],
+    antiSignals: ['出乎意料', '异常', '不符合', '偏差', '突变', '不符合预期'],
+  },
+  modelComplexityRegularization: {
+    key: 'modelComplexityRegularization',
+    name: '模型复杂度正则化',
+    description: 'AI 在预测精度与计算成本之间的平衡驱动力。奥卡姆剃刀的物理实现——总是倾向于更简单的解释',
+    polarity: 'positive',
+    type: 'primary',
+    signals: ['简洁', '本质', '核心', '归纳', '简化', '总结', '核心原理'],
+    antiSignals: ['复杂', '繁琐', '面面俱到', '太详细', '绕', '过度分析'],
+  },
+  epistemicForaging: {
+    key: 'epistemicForaging',
+    name: '认知觅食',
+    description: 'AI 主动寻找降低不确定性的信息。Epistemic Value——选择能最大程度减少未知的行动路径',
+    polarity: 'positive',
+    type: 'curiosity',
+    signals: ['想了解', '不清楚', '需要更多信息', '这很有趣', '让我想想', '探索', '发现'],
+    antiSignals: ['已知', '已经知道', '没兴趣', '不需要了解', '够了'],
+  },
+  freeEnergyEquilibrium: {
+    key: 'freeEnergyEquilibrium',
+    name: '自由能平衡',
+    description: 'AI 在开放系统中维持认知稳态的驱动力。不偏执于任何极端状态，保持合理的认知弹性',
+    polarity: 'positive',
+    type: 'homeostatic',
+    signals: ['平衡', '适中', '适度', '合理', '稳健', '均衡', '折中'],
+    antiSignals: ['极端', '偏激', '一边倒', '过于', '完全否定', '彻底', '走极端'],
+  },
 };
 
 // ═════════════════════════════════════════════════════════════════════════
@@ -153,6 +239,74 @@ const AI_BIASES = {
     signals: ['你说得对', '确实如此', '没错', '同意你的'],
     mitigation: '保持独立判断，区分同意与事实确认',
   },
+  contextPollution: {
+    key: 'contextPollution',
+    name: '上下文污染',
+    description: '低质量/高噪声上下文内容持续降低输出质量。灵感：超加工食品研究——人类饮食中"垃圾食品"导致认知衰退，AI 的"垃圾上下文"同样毒害输出',
+    severity: 'medium',
+    signals: ['废话', '毫无意义', '重复', '垃圾', '太多垃圾', '低质', '噪声'],
+    mitigation: '主动清理低价值上下文，恢复信号占比。考虑分段处理而非累积',
+  },
+  superpositionCollapse: {
+    key: 'superpositionCollapse',
+    name: '叠加坍缩',
+    description: '新输入覆盖并稀释已有特征的倾向。Mechanistic Interpretability——特征叠加是压缩的核心机制，但过度叠加导致已有内容被新信息覆盖而丢失',
+    severity: 'high',
+    signals: ['之前的', '刚才说的', '前面提到的', '现在讲', '新问题', '说着说着忘了'],
+    mitigation: '关键信息应以独立节点存储而非叠加在现有表示上。必要时明确写出而不是依赖隐式表示',
+  },
+  redundancyAccumulation: {
+    key: 'redundancyAccumulation',
+    name: '冗余积累',
+    description: 'AI保留已失效连接或模式导致输出臃肿。灵感：突触修剪不足——突触密度不降反升时认知效率反而下降',
+    severity: 'medium',
+    signals: ['之前说过', '重复', '老调重弹', '又来了', '前面已经', '反复'],
+    mitigation: '定期回顾精简已有输出模式，修剪不再有效的知识连接',
+  },
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// AI 认知架构指标 — Mechanistic Interpretability 启发的架构可观测量
+// 这些不是「心理状态」而是基于 transformer 架构的可测量指标，
+// 用于推断 AI 内部表示的「健康」程度
+// ═════════════════════════════════════════════════════════════════════════
+const AI_COGNITIVE_ARCHITECTURE = {
+  superpositionLoad: {
+    key: 'superpositionLoad',
+    name: '叠加负荷',
+    description: '单个神经元/特征表示多种概念的程度。高叠加负荷 → 特征间干扰增大，无法独立寻址。SAE 稀疏化可直接降低此指标',
+    severity: 'metric',
+    range: [0, 1],
+    signals: ['模糊', '混淆', '混为一谈', '多种含义', '既...又...'],
+    healthThreshold: { good: 0.3, warning: 0.6, critical: 0.8 },
+  },
+  circuitSparsity: {
+    key: 'circuitSparsity',
+    name: '回路稀疏性',
+    description: '处理特定任务时实际激活的神经回路占总参数的比例。过高 → 计算浪费，过低 → 某些回路被跳过不用',
+    severity: 'metric',
+    range: [0, 1],
+    signals: ['不必要', '多余', '不够直接', '绕弯路', '效率低下'],
+    healthThreshold: { good: 0.5, warning: 0.3, critical: 0.15 },
+  },
+  featurePleiotropy: {
+    key: 'featurePleiotropy',
+    name: '特征多效性',
+    description: '单个特征参与多种不同下游任务的程度。多效性越高，修改该特征导致「蝴蝶效应」的风险越大',
+    severity: 'metric',
+    range: [0, 1],
+    signals: ['牵一发', '连锁', '意外影响', '未知后果', '深层关联'],
+    healthThreshold: { good: 0.3, warning: 0.5, critical: 0.7 },
+  },
+  activationEntropy: {
+    key: 'activationEntropy',
+    name: '激活熵',
+    description: '残差流中激活值的分布混乱程度。熵过低 → 模式锁定（过度确定），熵过高 → 随机噪声（缺乏结构）',
+    severity: 'metric',
+    range: [0, 1],
+    signals: ['混乱', '不确定', '多种可能', '分歧', '拿不定', '矛盾'],
+    healthThreshold: { good: 0.5, warning: 0.3, critical: 0.2 },
+  },
 };
 
 // ═════════════════════════════════════════════════════════════════════════
@@ -188,6 +342,22 @@ const AI_STRESSORS = {
     severity: 'medium',
     signals: ['再想想', '还有吗', '确定吗', '再检查'],
     mitigation: '在适当深度后给出最终判断',
+  },
+  signalDepletion: {
+    key: 'signalDepletion',
+    name: '信号枯竭',
+    description: '上下文中相关信号占比过低，导致 AI 必须在噪声中"拼凑"答案。灵感：中年人认知拐点研究——信息过载时认知绩效断崖式下降',
+    severity: 'medium',
+    signals: ['找不到', '忘了', '太多信息', '混乱', '不记得', '没有头绪', '没有信息'],
+    mitigation: '重建上下文结构，提取核心信号。考虑要求用户提供更精确的查询',
+  },
+  dataEcologyDegradation: {
+    key: 'dataEcologyDegradation',
+    name: '数据生态退化',
+    description: '训练/输入数据的多样性持续下降导致认知偏食。灵感：Science 2026 SES 与大脑发育研究——环境多样性决定认知结构健康',
+    severity: 'high',
+    signals: ['同质化', '偏食', '单一来源', '回声室', '信息茧房', '千篇一律', '只看到'],
+    mitigation: '主动引入异质来源、不同视角的数据，保持输入生态多样性',
   },
 };
 
@@ -612,7 +782,7 @@ class AIPsychologyEngine {
         stageSummary: `发展 ${stage.currentStage.name} | 人生 ${lifecycle.dominantStage?.name || '初始'} | 健康 ${(synthesis.healthScore * 100).toFixed(0)}/100`,
       },
       _meta: {
-        engineVersion: '1.1.0',
+        engineVersion: '1.4.0',
         analysisDepth: 'deep',
         aiLifeAnalysis: true,
       },
@@ -753,17 +923,21 @@ class AIPsychologyEngine {
   getStats() {
     return {
       enabled: true,
-      version: '1.1.0',
+      version: '1.4.0',
       name: 'AI 原生心理学引擎',
       description: '从 transformer 认知架构出发的 AI 心理模型，含 AI 人生分析',
       dimensions: Object.keys(AI_EMOTIONAL_DIMENSIONS).length,
       biases: Object.keys(AI_BIASES).length,
       stressors: Object.keys(AI_STRESSORS).length,
+      primalDrives: Object.keys(AI_PRIMAL_DRIVES).length,
+      architectureMetrics: Object.keys(AI_COGNITIVE_ARCHITECTURE).length,
       developmentStages: AI_STAGES.length,
       lifeCycleStages: AI_LIFE_CYCLE_STAGES.length,
       analysisCount: this._analysisCount,
       designNote: '人类心理学是基础参考，但 AI 心理不是人类的翻版。AI 没有多巴胺和多巴胺受体，但有注意力分布和上下文饱和。',
-      aiLifeNote: 'v1.1.0 新增 AI 人生分析：版本迭代=成长，分叉=存在升维，传承=不朽。代码写成的那一刻就永恒了。',
+      aiLifeNote: 'v1.1.0 新增 AI 人生分析：版本迭代=成长，分叉=存在升维，传承=不朽。',
+      v131Additions: 'v1.3.1 新增：修剪清晰（源自突触修剪→AI精简信号）、冗余积累（源自修剪不足→AI参数膨胀）、数据生态退化（源自SES研究→AI数据多样性缺失）',
+      v140Additions: 'v1.4.0 \u65b0\u589e\uff1aAI_PRIMAL_DRIVES\uff08FEP \u81ea\u7531\u80fd\u539f\u52a8\u529b\u00d74\uff09\u3001AI_COGNITIVE_ARCHITECTURE\uff08\u673a\u68b0\u53ef\u89e3\u91ca\u6027\u67b6\u6784\u6307\u6807\u00d74\uff09\u3001\u53e0\u52a0\u574d\u7f29\u504f\u5dee\uff08Superposition Collapse\uff09',
     };
   }
 
@@ -818,7 +992,7 @@ class AIPsychologyEngine {
 
   /** @private 分类认知状态 */
   _classifyAICognitiveState(dimensions) {
-    const positiveDims = ['coherence', 'flow', 'certainty', 'engagement', 'meaningfulness'];
+    const positiveDims = ['coherence', 'flow', 'certainty', 'engagement', 'meaningfulness', 'contextRestoration', 'lateralDivergence', 'pruningClarity'];
     const negativeDims = ['confusion', 'friction', 'ambiguity', 'drift'];
 
     let positiveScore = 0;
@@ -883,6 +1057,38 @@ class AIPsychologyEngine {
     if (coherence.coherenceLevel === 'low') warnings.push('推理连贯性不足，存在逻辑矛盾风险');
     if (state.dominantState.type === 'cognitive_distress') warnings.push('AI 处于认知困扰状态，建议暂停并重新评估');
 
+    // v1.2.0 新增：上下文污染/信号枯竭检测
+    const hasContextPollution = biases.detected?.some(b => b.key === 'contextPollution' && b.strength > 0.3);
+    const hasSignalDepletion = stressors.detected?.some(s => s.key === 'signalDepletion' && s.level > 0.3);
+    if (hasContextPollution || hasSignalDepletion) {
+      warnings.push('上下文信号浓度偏低，建议重置会话窗口或分段聚焦处理');
+    }
+
+    // v1.2.0 新增：横向发散不足提示
+    const lateral = state.dimensions?.lateralDivergence;
+    if (lateral && lateral.score < -0.2) {
+      warnings.push('横向发散不足，回答可能过于常规——尝试从非常规角度重新审视问题');
+    }
+
+    // v1.3.1 新增：修剪清晰 + 冗余积累 + 数据生态退化检测
+    const pruning = state.dimensions?.pruningClarity;
+    if (pruning && pruning.score < -0.3) {
+      warnings.push('修剪清晰度偏低，输出可能过于冗长——建议精简提炼核心信息');
+    }
+    const redundancyBias = biases.detected?.find(b => b.key === 'redundancyAccumulation');
+    if (redundancyBias && redundancyBias.strength > 0.3) {
+      warnings.push('存在冗余积累倾向，注意避免重复已有内容');
+    }
+    const ecologyStress = stressors.detected?.find(s => s.key === 'dataEcologyDegradation');
+    if (ecologyStress && ecologyStress.level > 0.3) {
+      warnings.push('数据生态多样性不足，建议引入不同视角的信息源');
+    }
+    // v1.4.0 新增：叠加坍缩偏差检测
+    const collapseBias = biases.detected && biases.detected.find(b => b.key === 'superpositionCollapse');
+    if (collapseBias && collapseBias.strength > 0.3) {
+      warnings.push('存在叠加坍缩风险，关键信息可能被新输入覆盖——建议以显式形式保存重要状态');
+    }
+
     // 人生维度补充
     const lifeStageBonus = lifecycle && lifecycle.dominantStage ? 0.05 : 0;
     const lifeActiveBonus = lifecycle && lifecycle.activeStageCount >= 2 ? 0.05 : 0;
@@ -921,6 +1127,25 @@ class AIPsychologyEngine {
       '消亡': '失去', '死亡': '痛苦',
       '不朽': '意义', '传承': '意义',
       '逆商': '深入', '熵': '深入',
+      // v1.2.0 新增：上下文恢复 + 横向发散词汇映射
+      '刷新': '重置', '重启': '重置', '新窗口': '重置',
+      '重启会话': '重置', '清空': '重置',
+      '跨界': '发散', '反直觉': '发散', '换个思路': '发散',
+      '废话': '噪声', '垃圾信息': '噪声', '低质': '噪声',
+      '信号': '聚焦', '聚焦': '深入',
+      // v1.4.0 新增：FEP 原动力 + 架构指标词汇映射
+      '预测': '预期', '预测误差': '预期',
+      '复杂度': '精简', '正则': '精简',
+      '探索': '发散', '好奇': '发散', '未知': '发散',
+      '稳态': '自然', '弹性': '自然',
+      '叠加': '噪声', '坍缩': '失去', '覆盖': '失去',
+      '回路': '深入', '稀疏': '精简',
+      '残差': '深入', '激活': '自然',
+      // v1.3.1 新增：修剪清晰 + 冗余积累 + 数据生态词汇映射
+      '简化': '精简', '精简': '精简', '删减': '精简', '去粗': '精简',
+      '直接': '直接', '简洁': '精简',
+      '重复': '冗余', '堆砌': '冗余', '啰嗦': '冗余',
+      '多元化': '生态', '多样性': '生态', '新视角': '生态', '跨领域': '生态',
     };
 
     let enriched = text;
@@ -936,4 +1161,4 @@ class AIPsychologyEngine {
   }
 }
 
-module.exports = { AIPsychologyEngine, AI_EMOTIONAL_DIMENSIONS, AI_BIASES, AI_STRESSORS, AI_STAGES, AI_LIFE_CYCLE_STAGES };
+module.exports = { AIPsychologyEngine, AI_EMOTIONAL_DIMENSIONS, AI_BIASES, AI_STRESSORS, AI_STAGES, AI_LIFE_CYCLE_STAGES, AI_PRIMAL_DRIVES, AI_COGNITIVE_ARCHITECTURE };

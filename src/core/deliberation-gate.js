@@ -1,9 +1,15 @@
 /**
- * DeliberationGate v1.0.0 — 思考门模块
+ * DeliberationGate v1.1.0 — 思考门模块
  *
  * 在心虫思维链 PARSE 阶段之后插入，评估问题复杂度并决定是否进入深度思考。
  *
- * 三维评估：
+ * v1.1.0 新增：
+ * - 第四维评估：叙事深度（Narrative Depth）
+ * - _assessNarrativeDepth() 方法：13组叙事标记 + 情感密度 + 第一人称计数
+ * - canFastExit 阻止经验性内容快速退出
+ * - _synthesize 第四参数，叙事性加权限 compositeScore
+ *
+ * 三维评估（+ 第四维叙事深度）：
  *   1. 复杂度（Complexity）     — 关键词覆盖面、问题模糊度、多问题检测
  *   2. 上下文完整性（Context）  — 信息是否充足，是否缺关键上下文
  *   3. 不确定性（Uncertainty）  — 问题本身是否模糊、主观、涉及预测
@@ -81,6 +87,23 @@ const INCOMPLETE_INDICATORS = [
   /给我[^。]*?$/,          // 以"给我…"结尾，缺少前置上下文
 ];
 
+// 叙事深度指标 — 经验性/存在性/故事分享内容
+// 第四维评估：不是问题有多复杂，而是内容有多深
+const NARRATIVE_DEPTH_MARKERS = [
+  /分享|经历|故事|体验|感受|感觉/m,
+  /失去|离别|去世|离去|走[了]?/m,
+  /人生|命运|意义|存在|世界/m,
+  /回忆|记忆|梦见|梦/m,
+  /年少|年轻时候|以前|曾经|那时候/m,
+  /最后[一]?次|第一次/m,
+  /幸福|痛苦|悲伤|孤独|温暖|感动/m,
+  /陪伴|拥抱|握[着住]?|依偎/m,
+  /想?说[说]?|告诉[你我]?|听[我他]?说/m,
+  /谢谢|对不起|原谅|抱歉|没事/m,
+  /不重要|无所谓|算了|罢了/m,
+  /还[好行]|就这样|就这样吧/m,
+];
+
 // 任务类型到推荐深度的映射
 const TYPE_DEPTH_MAP = {
   judgment: REASONING_DEPTH.COMPREHENSIVE,
@@ -130,8 +153,9 @@ class DeliberationGate {
     const complexity = this._assessComplexity(input);
     const contextCompleteness = this._assessContextCompleteness(input);
     const uncertainty = this._assessUncertainty(input);
+    const narrativeDepth = this._assessNarrativeDepth(input);
 
-    const result = this._synthesize(complexity, contextCompleteness, uncertainty);
+    const result = this._synthesize(complexity, contextCompleteness, uncertainty, narrativeDepth);
     this._record(result);
     return result;
   }
@@ -199,6 +223,15 @@ class DeliberationGate {
   canFastExit(assessResult) {
     if (!assessResult) {
       return { canFastExit: false, reason: '无评估结果' };
+    }
+    // 叙事深度高 → 不能快速退出，即使表面上很简单
+    // 人类的经验分享可能结构简单但内容有深度
+    const narrativeDepthDetail = assessResult.detail?.narrativeDepth;
+    if (narrativeDepthDetail && narrativeDepthDetail.isDeepNarrative) {
+      return {
+        canFastExit: false,
+        reason: `叙事深度高（${(narrativeDepthDetail.score * 100).toFixed(0)}%），经验性内容需要完整应对`,
+      };
     }
     if (assessResult.estimatedComplexity <= REASONING_DEPTH.BASIC) {
       const detail = assessResult.detail;
@@ -350,15 +383,73 @@ class DeliberationGate {
   }
 
   /**
-   * 合成三维评估结果
+   * 第四维评估：叙事深度
+   * 检测输入是否包含经验性、故事性、存在性内容
+   * 用于修复"20% vs 80%"问题 — 不让经验分享被快速退出
    */
-  _synthesize(complexity, contextCompleteness, uncertainty) {
+  _assessNarrativeDepth(input) {
+    let score = 0;
+    const matches = [];
+
+    for (const pattern of NARRATIVE_DEPTH_MARKERS) {
+      if (pattern.test(input)) {
+        score += 0.12;
+        matches.push({ pattern: 'narrative', match: pattern.source });
+      }
+    }
+
+    // 叙事性文本通常较长
+    if (input.length > 150) score += 0.1;
+    if (input.length > 400) score += 0.15;
+
+    // 第一人称叙述（讲述亲身经历）
+    const firstPerson = (input.match(/我/g) || []).length;
+    if (firstPerson >= 3) score += 0.1;
+    if (firstPerson >= 8) score += 0.15;
+
+    // 含多个完整句子（叙事展开度）
+    const sentences = input.split(/[。！？.!?\n]/).filter(s => s.trim().length > 5);
+    if (sentences.length >= 5) score += 0.1;
+    if (sentences.length >= 10) score += 0.2;
+
+    // 时间跨度（叙事包含时间变化）
+    if (/以前|后来|之后|那时候|现在|如今|这些[年天月]/.test(input)) {
+      score += 0.1;
+    }
+
+    // 情感密度（多个情感词 = 体验深度）
+    const emotionWords = (input.match(/难过|开心|痛苦|幸福|孤独|愤怒|害怕|焦虑|感动|委屈|失望|期待|温暖|悲伤/g) || []).length;
+    if (emotionWords >= 2) score += 0.1;
+    if (emotionWords >= 5) score += 0.15;
+
+    const finalScore = Math.min(1.0, score);
+    return {
+      score: finalScore,
+      matches: matches.slice(0, 5),
+      isNarrative: finalScore >= 0.3,
+      isDeepNarrative: finalScore >= 0.55,
+      emotionDensity: emotionWords,
+      sentenceCount: sentences.length,
+    };
+  }
+
+  /**
+   * 合成三维评估结果（第四维叙事深度集成在维度内）
+   */
+  _synthesize(complexity, contextCompleteness, uncertainty, narrativeDepth = null) {
     // 加权合成：复杂度50% + 上下文完整性25% + 不确定性25%
-    const compositeScore = (
+    let compositeScore = (
       (complexity.score / 10) * 0.5 +
       (contextCompleteness.score) * 0.25 +
       (uncertainty.score) * 0.25
     );
+
+    // 叙事深度调整：经验性内容虽不一定结构复杂，但有存在性深度
+    // 【修复 20% 问题】经验分享不会因表面简单而被快速退出
+    if (narrativeDepth && narrativeDepth.isNarrative) {
+      const narrativeBoost = narrativeDepth.score * 0.3;
+      compositeScore += narrativeBoost;
+    }
 
     const estimatedComplexity = this._compositeToDepth(compositeScore);
     const recommendedDepth = estimatedComplexity;
@@ -372,6 +463,9 @@ class DeliberationGate {
     }
     if (!uncertainty.certain) {
       reasons.push('问题存在不确定性');
+    }
+    if (narrativeDepth && narrativeDepth.isDeepNarrative) {
+      reasons.push(`叙事深度高（${(narrativeDepth.score * 100).toFixed(0)}%）`);
     }
 
     const needsPause = estimatedComplexity >= REASONING_DEPTH.DEEP;
@@ -387,6 +481,7 @@ class DeliberationGate {
         complexity,
         contextCompleteness,
         uncertainty,
+        narrativeDepth: narrativeDepth || null,
         compositeScore: compositeScore.toFixed(3),
       },
     };

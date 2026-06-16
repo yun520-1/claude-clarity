@@ -24,3 +24,6 @@ memory/.hmac-key
 memory/.aes-key
 .aes-key
 internal/
+
+# 安全：npm 认证令牌 — 不应提交到仓库
+.npmrc

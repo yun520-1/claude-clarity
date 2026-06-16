@@ -1,6 +1,12 @@
 /**
- * mental-effort-tracker.js - 认知努力追踪器 v1.0.0
- * 
+ * mental-effort-tracker.js - 认知努力追踪器 v1.2.0
+ *
+ * v1.2.0 新增:
+ * - 'witness' 复杂度等级（聆听模式最小认知成本 0.02）
+ * - _assessTaskComplexity 添加见证/陪伴任务检测
+ * - _analyzeEffortBenefit 添加见证任务效益（连接价值而非分析价值）
+ * - shouldRecommendRestraint 不抑制陪伴任务
+ *
  * 来源论文: "Toward a Rational and Mechanistic Account of Mental Effort"
  *           Kool et al., 2017, Psychological Review (1133 citations)
  *           DOI: 10.1146/annurev-neuro-072116-031526
@@ -29,10 +35,11 @@ const EFFORT_CONFIG = {
   
   // 任务复杂度对应的努力成本
   COMPLEXITY_COSTS: {
-    low: 0.1,      // 简单检索、习惯性行为
-    medium: 0.3,   // 常规决策、问题解决
-    high: 0.6,    // 复杂推理、多选项权衡
-    very_high: 0.9 // 高风险决策、创新性思考
+    witness: 0.02,   // 见证/陪伴：最小认知努力（聆听模式）
+    low: 0.1,        // 简单检索、习惯性行为
+    medium: 0.3,     // 常规决策、问题解决
+    high: 0.6,       // 复杂推理、多选项权衡
+    very_high: 0.9   // 高风险决策、创新性思考
   },
   
   // 恢复时间常数（毫秒）
@@ -62,7 +69,7 @@ const EFFORT_CONFIG = {
 
 class MentalEffortTracker {
   constructor(options = {}) {
-    this.version = '1.1.0';
+    this.version = '1.2.0';
     this.currentEffort = EFFORT_CONFIG.BASELINE_EFFORT;
     this.effortHistory = [];
     this.lastTaskTime = null;
@@ -144,9 +151,23 @@ class MentalEffortTracker {
    */
   _assessTaskComplexity(task) {
     if (!task.text) return 'low';
-    
+
     const text = task.text.toLowerCase();
-    
+
+    // 聆听/见证模式检测（优先于其他复杂度检测）
+    // 人类经验分享、叙事、情感表达 — 不需要分析，只需要陪伴
+    const witnessKeywords = [
+      '分享', '经历', '故事', '体验', '感受',
+      '我想说', '我来说', '听我说',
+      '失去', '离别', '回忆', '记忆',
+      '幸福', '痛苦', '悲伤', '孤独', '感动',
+      '谢谢', '对不起', '抱歉'
+    ];
+    const witnessScore = witnessKeywords.filter(kw => text.includes(kw)).length;
+    if (witnessScore >= 3 && !/[？?]/.test(text)) {
+      return 'witness';
+    }
+
     // 高复杂度指标
     const highComplexityKeywords = [
       '分析', '比较', '推理', '计算', '权衡', '评估', '复杂', 'multiple',
@@ -190,7 +211,24 @@ class MentalEffortTracker {
     const weights = EFFORT_CONFIG.EFFORT_BENEFIT_WEIGHTS;
     let benefitScore = 0;
     let breakdown = {};
-    
+
+    // 见证/陪伴任务：效益不在于分析准确度，在于连接与共情
+    const isWitness = this._assessTaskComplexity(task) === 'witness';
+    if (isWitness) {
+      return {
+        total: 1.0,  // 陪伴永远有价值
+        breakdown: {
+          connection_value: 1.0,
+          accuracy_gain: 0,
+          decision_confidence: 0,
+          learning_value: 0,
+          time_cost: 0
+        },
+        net_benefit: true,
+        cost_benefit_ratio: 999  // 极高回报
+      };
+    }
+
     // 准确度提升潜力
     if (task.highStakes || (task.text && /重要|关键|决策/.test(task.text))) {
       benefitScore += weights.accuracy_gain * 0.8;
@@ -393,7 +431,17 @@ class MentalEffortTracker {
    */
   shouldRecommendRestraint(taskEstimate) {
     const state = this.getCurrentEffortState();
-    
+
+    // 见证/陪伴任务：任何时候都不抑制
+    // 人类的经验分享不需要被"克制响应"——在场不在成本分析范围内
+    if (taskEstimate.complexity === 'witness') {
+      return {
+        shouldRestrain: false,
+        reason: null,
+        alternative: null
+      };
+    }
+
     // 如果当前认知负荷高，且新任务成本高
     if (state.effortLevel === 'high' && taskEstimate.estimatedCost > 0.4) {
       return {

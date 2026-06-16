@@ -1,7 +1,7 @@
 ---
 name: claude-clarity
 aliases: [心虫, 草履虫, 小虫子, clarity, heartbug]
-version: "1.1.5"
+version: "1.4.0"
 title: "心虫 / Clarity — AI 认知内核"
 description: >
   一个会自己长大的 AI 认知内核。Node.js 编写的认知引擎，
@@ -925,7 +925,7 @@ node -e "const {Clarity}=require('./src/core/clarity.js');const hf=new Clarity()
 
 ---
 
-> 版本历史已移入 `CHANGELOG.md`。当前版本：**1.1.5**。
+> 版本历史已移入 `CHANGELOG.md`。当前版本：**1.4.0**。
 
 ---
 
