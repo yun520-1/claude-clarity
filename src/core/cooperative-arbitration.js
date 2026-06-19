@@ -684,8 +684,8 @@ class CooperativeArbitration {
       deteriorating: '对话恶化，优先降温。',
     };
 
-    return narratives[level] || narratives.neutral +
-      ` 解决率：${(resolutionRate * 100).toFixed(0)}%，` +
+    return narratives[level] || `${narratives.neutral 
+      } 解决率：${(resolutionRate * 100).toFixed(0)}%，` +
       `升级率：${(escalationRate * 100).toFixed(0)}%。` +
       `"不争而善胜"——最好的结果是没有输家的共赢。`;
   }

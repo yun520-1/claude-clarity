@@ -153,7 +153,7 @@ const ERROR_PATTERN_MAP = [
 function truncateOutput(output) {
   if (!output || typeof output !== 'string') return '';
   if (output.length <= MAX_OUTPUT_SIZE) return output;
-  return output.substring(0, MAX_OUTPUT_SIZE) + '\n... [输出已截断]';
+  return `${output.substring(0, MAX_OUTPUT_SIZE)  }\n... [输出已截断]`;
 }
 
 /**
@@ -239,7 +239,7 @@ function deleteTempFile(filePath) {
  * 等待指定毫秒数
  */
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => { setTimeout(resolve, ms); });
 }
 
 /**
@@ -308,7 +308,7 @@ function executeProcess(command, args, options = {}) {
       clearTimeout(timer);
       resolve({
         stdout,
-        stderr: stderr + '\n进程错误: ' + error.message,
+        stderr: `${stderr  }\n进程错误: ${  error.message}`,
         exitCode: -1,
         killed,
         duration: Date.now() - startTime,
@@ -585,7 +585,7 @@ class CodeExecutor {
     // 执行
     let lastResult = null;
     // 首次重试策略使用未知类型的默认值（实际错误类型在循环中动态检测）
-    let strategy = getRetryStrategy('unknown');
+    const strategy = getRetryStrategy('unknown');
     const maxRetries = options.retryCount ?? Math.min(strategy.maxRetries, this.retryCount);
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -962,15 +962,15 @@ class CodeExecutor {
 
     return {
       total,
-      successRate: (successCount / total * 100).toFixed(1) + '%',
-      avgDuration: (totalDuration / total).toFixed(0) + 'ms',
+      successRate: `${(successCount / total * 100).toFixed(1)  }%`,
+      avgDuration: `${(totalDuration / total).toFixed(0)  }ms`,
       byLanguage: Object.fromEntries(
         Object.entries(byLanguage).map(([lang, stats]) => [
           lang,
           {
             total: stats.total,
-            successRate: (stats.success / stats.total * 100).toFixed(1) + '%',
-            avgDuration: (stats.totalDuration / stats.total).toFixed(0) + 'ms'
+            successRate: `${(stats.success / stats.total * 100).toFixed(1)  }%`,
+            avgDuration: `${(stats.totalDuration / stats.total).toFixed(0)  }ms`
           }
         ])
       )

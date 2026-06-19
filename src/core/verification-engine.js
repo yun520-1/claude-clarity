@@ -123,7 +123,7 @@ const verificationEngine = {
   // 生成缓存key
   _cacheKey(content, type) {
     const hash = content.length > 200
-      ? content.substring(0, 50) + ':' + content.length + ':' + (content.match(/^name:\s*(.+)$/m) || ['', ''])[1]
+      ? `${content.substring(0, 50)  }:${  content.length  }:${  (content.match(/^name:\s*(.+)$/m) || ['', ''])[1]}`
       : content;
     return `${type}::${hash}`;
   },
@@ -262,7 +262,7 @@ const verificationEngine = {
       info: 0.5
     };
     let penalty = 0;
-    let maxPenalty = 100;
+    const maxPenalty = 100;
     for (const [sev, count] of Object.entries({
       critical: (bySeverity.critical || []).length,
       major: (bySeverity.major || []).length,
@@ -312,7 +312,7 @@ const verificationEngine = {
       verified: results.issues.length === 0,
       needsUserReview: results.issues.some(i => i.includes('未核实') || i.includes('[critical]')),
       summary: results.issues.length === 0
-        ? '✅ 验证通过（评分: ' + score + '/100）'
+        ? `✅ 验证通过（评分: ${  score  }/100）`
         : `❌ ${results.issues.length} 个问题（评分: ${score}/100，严重: ${severityStats.critical}，重要: ${severityStats.major}，轻微: ${severityStats.minor}）`
     };
   },

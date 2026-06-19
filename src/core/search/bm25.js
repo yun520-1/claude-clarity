@@ -602,7 +602,7 @@ class BM25Engine extends EventEmitter {
       }
       
       // 原子写入
-      const tempPath = this.indexPath + '.tmp';
+      const tempPath = `${this.indexPath  }.tmp`;
       fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), 'utf8');
       fs.renameSync(tempPath, this.indexPath);
       

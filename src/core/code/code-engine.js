@@ -1448,7 +1448,7 @@ class CodeEngine {
       if (['i', 'j', 'k', 'idx', '_', 'tmp', 'temp', 'result', 'data', 'err', 'error'].includes(name)) continue;
 
       // 计算引用次数（排除定义本身）
-      const regex = new RegExp('\\b' + name + '\\b', 'g');
+      const regex = new RegExp(`\\b${  name  }\\b`, 'g');
       let count = 0;
       let refMatch;
       while ((refMatch = regex.exec(cleanCode)) !== null) {
@@ -2054,7 +2054,7 @@ class CodeEngine {
 
     // 尝试 index 文件
     for (const ext of extensions) {
-      const indexFile = path.join(resolved, 'index' + ext);
+      const indexFile = path.join(resolved, `index${  ext}`);
       if (fs.existsSync(indexFile)) {
         return path.relative('.', indexFile);
       }
@@ -2293,7 +2293,7 @@ class CodeEngine {
     const destMatch = code.match(/(?:const|let|var)\s+\{([^}]+)\}\s*=\s*(\w+)/);
     if (destMatch) {
       const [full, props, src] = destMatch;
-      const fixedCode = full + ' ?? {}';
+      const fixedCode = `${full  } ?? {}`;
       return {
         originalCode: code,
         fixedCode,
@@ -2359,7 +2359,7 @@ class CodeEngine {
     const match = code.match(/(\w+(?:\([^)]*\))?)\s*[;]/);
     if (match) {
       const call = match[1];
-      const fixedCode = code.replace(call + ';', `await ${call};`);
+      const fixedCode = code.replace(`${call  };`, `await ${call};`);
       return {
         originalCode: code,
         fixedCode,
@@ -2370,7 +2370,7 @@ class CodeEngine {
     }
     return {
       originalCode: code,
-      fixedCode: code + '.catch(err => console.error(err))',
+      fixedCode: `${code  }.catch(err => console.error(err))`,
       explanation: '链式添加 .catch() 处理 Promise 拒绝情况',
       type: 'add-catch',
       confidence: 0.8
@@ -2867,9 +2867,9 @@ class CodeEngine {
     const lines = getLines(cleanCode);
 
     // 1. 嵌套循环 O(n²) 检测（基于花括号深度追踪真实嵌套）
-    let depthMap = new Map(); // lineNum -> nestingDepth
+    const depthMap = new Map(); // lineNum -> nestingDepth
     let curDepth = 0;
-    let loopDepths = []; // { line, depth }
+    const loopDepths = []; // { line, depth }
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       curDepth += (line.match(/\{/g) || []).length;

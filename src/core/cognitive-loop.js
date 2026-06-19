@@ -158,7 +158,7 @@ class CognitiveLoop {
   async phaseCognition(input, context, retrievalResult) {
     const startTime = Date.now();
     
-    let analysis = {
+    const analysis = {
       intent: null,
       entities: [],
       reasoning: null,
@@ -210,7 +210,7 @@ class CognitiveLoop {
   async phaseControl(input, context, cognitionResult) {
     const startTime = Date.now();
     
-    let decision = {
+    const decision = {
       approved: true,
       requiresReview: false,
       modifications: [],

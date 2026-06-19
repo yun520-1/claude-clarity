@@ -129,7 +129,7 @@ class CodeRefactor {
     try {
       const fs = require('fs');
       fs.mkdirSync(path.dirname(this.historyFile), { recursive: true });
-      const tmp = this.historyFile + '.tmp.' + Date.now();
+      const tmp = `${this.historyFile  }.tmp.${  Date.now()}`;
       fs.writeFileSync(tmp, JSON.stringify(this.history, null, 2), 'utf8');
       fs.renameSync(tmp, this.historyFile);
     } catch (e) { /* 历史记录写入失败不影响主流程 */ }
@@ -445,7 +445,7 @@ class CodeRefactor {
         name: '条件过于复杂',
         severity: 'medium',
         line: lineNo,
-        code: match[1].slice(0, 60) + '...',
+        code: `${match[1].slice(0, 60)  }...`,
         message: `条件表达式 ${condLen} 字符过长，包含多个逻辑运算符`,
         pattern: null,
         suggestion: '将复杂条件拆分为多个命名布尔变量（如 isExpired, isEligible）',
@@ -571,7 +571,7 @@ class CodeRefactor {
     let result = code;
     for (const v of vars) {
       // 检查该变量是否被重新赋值
-      const reassignPattern = new RegExp('\\b' + v.name + '\\s*=(?!=)', 'g');
+      const reassignPattern = new RegExp(`\\b${  v.name  }\\s*=(?!=)`, 'g');
       let reassignCount = 0;
       let rm;
       while ((rm = reassignPattern.exec(code)) !== null) {
@@ -805,14 +805,14 @@ class CodeRefactor {
       const line = lines[i];
       // 跳过已用模板字面量的行和注释行
       if (/^\s*\/\//.test(line) || /^\s*\*/.test(line)) {
-        result += line + '\n';
+        result += `${line  }\n`;
         continue;
       }
 
       // 检测字符串拼接模式：至少包含一个字符串+变量+字符串的模式
       const templateCandidate = line.match(/(['"])((?:[^'"]|\\.)*)\1\s*\+\s*(\w[\w.]*)\s*\+\s*(['"])((?:[^'"]|\\.)*)\4/);
       if (!templateCandidate) {
-        result += line + '\n';
+        result += `${line  }\n`;
         continue;
       }
 
@@ -824,7 +824,7 @@ class CodeRefactor {
       transformed = transformed.replace(concatChain, (matchChain) => {
         // 将 "a" + b + "c" 转换成 `a${b}c`
         const parts = [];
-        let remaining = matchChain;
+        const remaining = matchChain;
         const partPattern = /(['"])((?:(?!\1).)*)\1|(\w[\w.]*(?:\s*\([^)]*\))?)\s*/g;
         let partMatch;
         while ((partMatch = partPattern.exec(remaining)) !== null) {
@@ -870,7 +870,7 @@ class CodeRefactor {
           after: transformed.trim(),
         });
       }
-      result += transformed + '\n';
+      result += `${transformed  }\n`;
     }
 
     return {
@@ -1013,7 +1013,7 @@ class CodeRefactor {
       transformCount: this.history.length,
       transformTypes: Object.keys(history.stats.byType).length,
       successRate: history.stats.total > 0
-        ? Math.round((history.stats.successCount / history.stats.total) * 100) + '%'
+        ? `${Math.round((history.stats.successCount / history.stats.total) * 100)  }%`
         : 'N/A',
       availableTransformers: Object.keys(REFACTORING_PATTERNS).length,
     };

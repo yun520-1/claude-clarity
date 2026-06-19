@@ -60,7 +60,7 @@ function matchArchetype(motifs, options = {}) {
   // Score each archetype
   const scores = archetypes.map(arch => {
     let keywordScore = 0;
-    let matchedKeywords = [];
+    const matchedKeywords = [];
 
     for (const kw of arch.keywords || []) {
       const kwl = kw.toLowerCase();

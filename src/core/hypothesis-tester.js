@@ -328,7 +328,7 @@ const hypothesisTester = {
     // 检查日期声明
     const yearMatch = claim.text.match(/(?:19|20)(\d{2})/);
     if (yearMatch) {
-      const year = parseInt('20' + (yearMatch[1] < 50 ? yearMatch[1] : yearMatch[1])); // 简单年份解析
+      const year = parseInt(`20${  yearMatch[1] < 50 ? yearMatch[1] : yearMatch[1]}`); // 简单年份解析
       const currentYear = new Date(referenceDate).getFullYear();
       const age = currentYear - year;
 

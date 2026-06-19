@@ -184,7 +184,7 @@ const EmpathyAssessment = {
    */
   generateReport(result) {
     let report = '💙 共情能力评估报告\n\n';
-    report += '═'.repeat(40) + '\n\n';
+    report += `${'═'.repeat(40)  }\n\n`;
     
     report += `总分：${result.totalScore}/100 (${result.level})\n\n`;
     
@@ -204,7 +204,7 @@ const EmpathyAssessment = {
     report += '\n';
     report += `${result.interpretation}\n\n`;
     
-    report += '═'.repeat(40) + '\n';
+    report += `${'═'.repeat(40)  }\n`;
     report += '注：基于简化版 IRI 量表 (5 题快速版)\n';
     report += `评估时间：${result.timestamp}\n`;
     

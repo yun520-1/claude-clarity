@@ -166,7 +166,7 @@ const BigFivePersonality = {
     const profile = this.getProfile();
     
     let report = '🧠 大五人格档案\n\n';
-    report += '═'.repeat(40) + '\n\n';
+    report += `${'═'.repeat(40)  }\n\n`;
     
     Object.entries(profile).forEach(([key, p]) => {
       const bar = '█'.repeat(Math.round(p.score)) + '░'.repeat(10 - Math.round(p.score));
@@ -174,7 +174,7 @@ const BigFivePersonality = {
       report += `   ${p.description}\n\n`;
     });
     
-    report += '═'.repeat(40) + '\n';
+    report += `${'═'.repeat(40)  }\n`;
     report += '注：分数基于对话行为动态调整\n';
     
     return report;

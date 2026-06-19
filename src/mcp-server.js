@@ -461,16 +461,16 @@ function startStdioTransport() {
 
         // 某些通知不需要响应
         if (response !== null) {
-          process.stdout.write(JSON.stringify(response) + '\n');
+          process.stdout.write(`${JSON.stringify(response)  }\n`);
         }
       } catch (e) {
         // 解析失败的 JSON，返回解析错误
         console.error(`[Clarity MCP] JSON 解析错误: ${e.message}`);
-        process.stdout.write(JSON.stringify({
+        process.stdout.write(`${JSON.stringify({
           jsonrpc: '2.0',
           id: null,
           error: { code: -32700, message: `解析错误: ${e.message}` },
-        }) + '\n');
+        })  }\n`);
       }
     }
   });

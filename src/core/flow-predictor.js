@@ -424,7 +424,7 @@ class FlowPredictor {
     const state = this.getFlowState();
     
     let report = '🌊 心流状态报告\n\n';
-    report += '═'.repeat(40) + '\n\n';
+    report += `${'═'.repeat(40)  }\n\n`;
     
     report += `心流水平：${(state.level * 100).toFixed(0)}%\n`;
     report += `当前阶段：${this.getPhaseName(state.phase)}\n`;
@@ -444,7 +444,7 @@ class FlowPredictor {
     report += `静默模式：${this.config.silentMode ? '开启' : '关闭'}\n`;
     report += `干预历史：${this.interventionHistory.length} 次\n`;
     
-    report += '\n' + '═'.repeat(40) + '\n';
+    report += `\n${  '═'.repeat(40)  }\n`;
     report += `最后更新：${state.lastUpdate || '无'}\n`;
     
     return report;

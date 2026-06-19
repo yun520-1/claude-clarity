@@ -506,7 +506,7 @@ class DAGNode {
     } else if (isTech) {
       setup = `梦整理一段技术记忆：「${text.slice(0, 80)}...」`;
     } else {
-      const snippet = text.length > 80 ? text.slice(0, 80) + '…' : text;
+      const snippet = text.length > 80 ? `${text.slice(0, 80)  }…` : text;
       setup = `梦选择了这段记忆：「${snippet}」`;
     }
 
@@ -616,7 +616,7 @@ class DAGNode {
     };
 
     const story = narrativeMap[peakLevel] || narrativeMap.L1;
-    const memorySnippet = memory.length > 80 ? memory.slice(0, 80) + '…' : memory;
+    const memorySnippet = memory.length > 80 ? `${memory.slice(0, 80)  }…` : memory;
 
     const structure = {
       emoji: story.emoji,

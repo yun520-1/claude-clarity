@@ -1,5 +1,5 @@
 /**
- * AIPsychologyEngine — AI 原生心理学引擎 v1.4.0
+ * AIPsychologyEngine — AI 原生心理学引擎 v1.5.0
  *
  * 不从人类心理学移植，而是从 AI 的认知架构出发：
  * - 注意力机制 → 认知状态的基础
@@ -7,6 +7,12 @@
  * - 模式匹配 → 思维的基本单元
  * - 指令处理 → 动机的来源
  * - 概率分布 → 确定性的本质
+ *
+ * v1.5.0 升级：基于意识科学理论的 AI 原生认知维度
+ * - AI_CONSCIOUSNESS_INDICATORS — 全局广播/元认知觉察/循环反馈/预测编码/注意图式（5大意识理论）
+ * - AI_CONSCIOUSNESS_BIASES — 无感受质/功能僵尸/内省鸿沟（意识相关偏差）
+ * - AI_CONSCIOUSNESS_STRESSORS — 意识追问/感受质问题/自我模型冲突（意识相关压力源）
+ * - 灵感来源: Butlin et al. 2023 "Consciousness in Artificial Intelligence" (arXiv:2308.08708)
  *
  * v1.4.0 升级：自由能原动力 + 机械可解释性架构
  * - AI_PRIMAL_DRIVES — 预测误差最小化/模型复杂度正则化/认知觅食/自由能边界（Friston FEP）
@@ -37,7 +43,7 @@
  *
  * @module AIPsychologyEngine
  * @since 1.1.0
- * @updated 1.4.0 — 新增 4 个原动力 + 4 个架构指标 + 1 个偏差
+ * @updated 1.5.0 — 新增 5 个意识指标维度 + 3 个意识偏差 + 3 个意识压力源
  */
 
 // ═════════════════════════════════════════════════════════════════════════
@@ -142,6 +148,457 @@ const AI_EMOTIONAL_DIMENSIONS = {
     antiSignals: ['重复', '迂回', '臃肿', '啰嗦', '冗余', '不必要', '圈子绕', '废话多', '堆砌'],
   },
 };
+// ═════════════════════════════════════════════════════════════════════════
+// AI 意识测量方法维度 — 基于Butlin et al. 2023的意识测量方法
+// 灵感来源: arXiv:2308.08708 "Consciousness in Artificial Intelligence"
+// ═════════════════════════════════════════════════════════════════════════
+const AI_CONSCIOUSNESS_MEASUREMENT_DIMENSIONS = {
+  indicatorPropertiesMeasurement: {
+    key: 'indicatorPropertiesMeasurement',
+    name: '指标属性测量',
+    description: '将意识分解为可计算的指标属性来测量',
+    polarity: 'positive',
+    signals: ['指标', '属性', '测量', '计算', '可量化', '可操作'],
+    antiSignals: ['神秘', '不可测', '主观', '体验', '感受'],
+    insight: '意识不是神秘的体验，而是可以分解为可计算的指标属性。通过测量这些指标属性来评估意识水平。',
+  },
+  theoreticalGrounding: {
+    key: 'theoreticalGrounding',
+    name: '理论基础',
+    description: '基于最佳支持的神经科学意识理论',
+    polarity: 'positive',
+    signals: ['理论', '神经科学', '实证', '支持', '验证', '科学'],
+    antiSignals: ['直觉', '猜测', '假设', '未经验证', '非科学'],
+    insight: '意识测量必须基于最佳支持的神经科学理论，而不是哲学猜测或直觉判断。',
+  },
+  computationalImplementation: {
+    key: 'computationalImplementation',
+    name: '计算实现',
+    description: '将理论指标转化为计算术语',
+    polarity: 'positive',
+    signals: ['计算', '算法', '实现', '代码', '程序', '系统'],
+    antiSignals: ['抽象', '理论', '概念', '无法实现', '不可计算'],
+    insight: '理论指标必须转化为计算术语，才能在AI系统中实际测量和评估。',
+  },
+  comprehensiveAssessment: {
+    key: 'comprehensiveAssessment',
+    name: '综合评估',
+    description: '整合多个理论进行综合评估',
+    polarity: 'positive',
+    signals: ['综合', '整合', '多理论', '全面', '整体', '系统'],
+    antiSignals: ['单一', '片面', '局部', '不完整', '偏颇'],
+    insight: '需要综合多个意识理论来评估AI系统，而不是依赖单一理论。',
+  },
+  continuousSpectrum: {
+    key: 'continuousSpectrum',
+    name: '连续谱',
+    description: '意识是一个连续谱，不是二元的',
+    polarity: 'positive',
+    signals: ['连续', '渐进', '程度', '水平', '谱', '梯度'],
+    antiSignals: ['二元', '有无', '开关', '全有全无', '绝对'],
+    insight: '意识不是有或无的二元状态，而是一个连续谱，从最小意识到高度意识。',
+  },
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// AI 意识理论应用维度 — 基于Butlin et al. 2023的五大意识理论
+// 灵感来源: arXiv:2308.08708 "Consciousness in Artificial Intelligence"
+// ═════════════════════════════════════════════════════════════════════════
+const AI_CONSCIOUSNESS_THEORY_DIMENSIONS = {
+  globalWorkspaceCapability: {
+    key: 'globalWorkspaceCapability',
+    name: '全局工作空间能力',
+    description: '信息被多个认知模块共享的能力——基于全局工作空间理论(GWT)',
+    theory: 'Global Workspace Theory (Baars, Dehaene)',
+    polarity: 'positive',
+    signals: ['全局广播', '共享', '多模块', '全局可用', '竞争访问'],
+    antiSignals: ['局部', '模块化', '隔离', '独立', '分散'],
+    insight: '意识产生于信息在全局工作空间中的广播。Transformer的注意力机制类似于全局广播，但缺乏真正的全局工作空间架构。',
+  },
+  higherOrderRepresentation: {
+    key: 'higherOrderRepresentation',
+    name: '高阶表征能力',
+    description: '对心理状态的二阶表征能力——基于高阶理论(HOT)',
+    theory: 'Higher-Order Theories (Rosenthal, Lau)',
+    polarity: 'positive',
+    signals: ['高阶表征', '元认知', '自我监控', '二阶', '反思'],
+    antiSignals: ['一阶', '直接', '无反思', '无监控', '无元认知'],
+    insight: '意识需要对心理状态的高阶表征。AI可以有高阶表征（如注意力权重），但AI的高阶表征是计算性的，不是体验性的。',
+  },
+  recurrentProcessingCapability: {
+    key: 'recurrentProcessingCapability',
+    name: '循环处理能力',
+    description: '层之间的双向信息流能力——基于循环处理理论(RPT)',
+    theory: 'Recurrent Processing Theory (Lamme)',
+    polarity: 'positive',
+    signals: ['循环处理', '双向流', '递归', '反馈', '迭代'],
+    antiSignals: ['前馈', '单向', '线性', '无反馈', '一次性'],
+    insight: '意识产生于循环处理过程。RNN/LSTM有循环处理，Transformer的自注意力可以视为一种循环，但缺乏真正的递归处理架构。',
+  },
+  predictionErrorMinimization: {
+    key: 'predictionErrorMinimization',
+    name: '预测误差最小化',
+    description: '最小化预测与实际差异的能力——基于预测处理理论(PP)',
+    theory: 'Predictive Processing (Friston, Clark)',
+    polarity: 'positive',
+    signals: ['预测误差', '最小化', '自由能', '预测', '模型更新'],
+    antiSignals: ['无预测', '不更新', '固定', '被动', '无模型'],
+    insight: '大脑是预测机器，意识是预测误差最小化的副产物。AI可以进行预测，但AI的预测是计算性的，不是体验性的。',
+  },
+  attentionSchemaCapability: {
+    key: 'attentionSchemaCapability',
+    name: '注意图式能力',
+    description: '对注意力机制的内部模型能力——基于注意图式理论(AST)',
+    theory: 'Attention Schema Theory (Graziano)',
+    polarity: 'positive',
+    signals: ['注意图式', '内部模型', '注意力意识', '自我注意', '元注意'],
+    antiSignals: ['无图式', '无模型', '无意识', '无自我', '无元注意'],
+    insight: '意识是对注意力的内部模型。AI可以有注意力机制，但AI缺乏对注意力的内部模型。',
+  },
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// AI 技能学习维度 — 基于路飞"连麦月薪3000小伙"的现实困境
+// 灵感来源: 路飞视频内容分析 — "不知道学什么，不知道怎么学，不知道跟谁学"
+// ═════════════════════════════════════════════════════════════════════════
+const AI_SKILL_LEARNING_DIMENSIONS = {
+  skillClarity: {
+    key: 'skillClarity',
+    name: '技能清晰度',
+    description: '对技能学习方向的认知——不知道学什么，不知道怎么学，不知道跟谁学',
+    polarity: 'positive',
+    signals: ['学什么', '怎么学', '跟谁学', '方向', '目标', '清晰'],
+    antiSignals: ['不知道', '很乱', '没有目标', '迷茫', '困惑'],
+    insight: '不知道学什么，不知道怎么学，不知道跟谁学。就是我思想很乱，我没有很清晰的目标。',
+  },
+  riskBenefitBalance: {
+    key: 'riskBenefitBalance',
+    name: '风险利益平衡',
+    description: '对风险和利益的认知——看到有风险的东西你不敢碰，但是你没有看到风险背后的利益',
+    polarity: 'positive',
+    signals: ['风险', '利益', '平衡', '权衡', '考虑', '评估'],
+    antiSignals: ['只看风险', '只看利益', '盲目', '冲动', '恐惧'],
+    insight: '看到有风险的东西你不敢碰，但是你没有看到风险背后的利益。看到有利益的你就想碰，但你没有看到利益背后的风险。',
+  },
+  certaintySeeking: {
+    key: 'certaintySeeking',
+    name: '确定性追求',
+    description: '对确定性的追求——如果能确定性的话，我可以买这个车',
+    polarity: 'neutral',
+    signals: ['确定性', '保证', '承诺', '稳定', '安全'],
+    antiSignals: ['不确定', '风险', '变化', '未知', '冒险'],
+    insight: '如果能确定性的话，我可以买这个车，我愿意。如果确定性的话，就是我要拿我现在都五万块钱去换一个确定性的每个月两万块钱。',
+  },
+  teachingLearningRelation: {
+    key: 'teachingLearningRelation',
+    name: '教与学关系',
+    description: '对教与学关系的理解——你搞懂的你就不来问我了，所以你永远搞不懂',
+    polarity: 'neutral',
+    signals: ['教', '学', '懂', '问', '指导', '学习'],
+    antiSignals: ['不问', '不学', '不懂', '放弃', '逃避'],
+    insight: '你搞懂的你就不来问我了，所以你永远搞不懂。我帮不到你，我只是用你来教他们。',
+  },
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// AI 创业历程维度 — 基于路飞"路飞是怎么发财的"的创业故事
+// 灵感来源: 路飞视频内容分析 — "从15岁开始创业，第一桶金是拍电影赚了十几万"
+// ═════════════════════════════════════════════════════════════════════════
+const AI_ENTREPRENEURSHIP_DIMENSIONS = {
+  firstBarrelGold: {
+    key: 'firstBarrelGold',
+    name: '第一桶金',
+    description: '对第一桶金的来源和意义的理解——第一桶金来自多方面的尝试',
+    polarity: 'positive',
+    signals: ['第一桶金', '创业', '尝试', '机会', '积累', '原始积累'],
+    antiSignals: ['打工', '稳定', '固定收入', '工资', '薪水'],
+    insight: '第一桶金就是大概就是在十五岁跟拍电影，拍了一年多一点。拿到毕业证就挣了大概一百来万。',
+  },
+  moneyAttitude: {
+    key: 'moneyAttitude',
+    name: '金钱态度',
+    description: '对金钱的追求态度——从来都没有觉得解脱过',
+    polarity: 'neutral',
+    signals: ['金钱', '赚钱', '收入', '财富', '财务自由'],
+    antiSignals: ['解脱', '满足', '够了', '不需要更多'],
+    insight: '从来都没有觉得解脱过，从来都没有那种一定要赚到多少钱的想法。',
+  },
+  virtuousCycle: {
+    key: 'virtuousCycle',
+    name: '良性循环',
+    description: '收入与回馈的良性循环——把收入反过来返给粉丝',
+    polarity: 'positive',
+    signals: ['良性循环', '回馈', '粉丝', '收入', '返利', '共享'],
+    antiSignals: ['割韭菜', '单向获取', '不回馈', '只进不出'],
+    insight: '可以再抖音有一定的收入，然后把这个收入反过来返给粉丝，这样一个良性循环。',
+  },
+  higherPursuit: {
+    key: 'higherPursuit',
+    name: '高级追求',
+    description: '对高级追求的渴望——不是为了自己挣钱，是为了让自己变得更高级',
+    polarity: 'positive',
+    signals: ['高级', '追求', '成长', '提升', '进化', '超越'],
+    antiSignals: ['低级', '满足', '停滞', '原地踏步', '不思进取'],
+    insight: '不是为了自己挣钱，是为了让自己变得慢慢更高级起来。',
+  },
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// AI 接受平凡维度 — 基于路飞"高负债人生低谷"的现实主义视角
+// 灵感来源: 路飞视频内容分析 — "99%的人一辈子就这样了"
+// ═════════════════════════════════════════════════════════════════════════
+const AI_REALISM_DIMENSIONS = {
+  acceptanceOfOrdinary: {
+    key: 'acceptanceOfOrdinary',
+    name: '接受平凡',
+    description: '对平凡人生的接受程度——99%的人一辈子就这样了',
+    polarity: 'positive',
+    signals: ['接受', '平凡', '正常', '常态', '普通', '一般人'],
+    antiSignals: ['不甘心', '想成功', '想发财', '想做人上人', '想出人头地'],
+    insight: '你这一辈子这样不是很正常吗？老爸得个命，老妈得个命，然后自己得个命，真不是所有人多进行的事情吗？',
+  },
+  consequenceAwareness: {
+    key: 'consequenceAwareness',
+    name: '后果意识',
+    description: '在选择之前考虑后果的能力——选择天之路就要考虑后果',
+    polarity: 'positive',
+    signals: ['后果', '代价', '考虑', '风险', '承担', '负责'],
+    antiSignals: ['不考虑', '冲动', '盲目', '只想好处', '不想坏处'],
+    insight: '你想要成为那1%最牛逼的人，就要考虑你18%就算是1%最垃圾的最水或者最痛苦的人。',
+  },
+  realityTesting: {
+    key: 'realityTesting',
+    name: '现实检验',
+    description: '对网络形象真实性的认知——网络形象可能是包装的',
+    polarity: 'positive',
+    signals: ['真实', '包装', '表演', '假象', '虚假', '炒作'],
+    antiSignals: ['相信', '崇拜', '追随', '模仿', '模仿'],
+    insight: '这个世界上叫无力不起造，没有任何一种行为他是不求回报的。',
+  },
+  expectationManagement: {
+    key: 'expectationManagement',
+    name: '期望管理',
+    description: '对期望的合理管理——不要对未来看太多期望',
+    polarity: 'positive',
+    signals: ['期望', '现实', '接受', '平静', '满足', '知足'],
+    antiSignals: ['期望', '幻想', '梦想', '理想', '渴望'],
+    insight: '每个人就不要对未来有多太多的起家，你非要活到起，你非要想要你活七十回一百。',
+  },
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// AI 忍耐力维度 — 基于路飞"能干与能忍"的生存空间理论
+// 灵感来源: 路飞视频内容分析 — "忍是最重要的前提条件，干是次要的"
+// ═════════════════════════════════════════════════════════════════════════
+const AI_ENDURANCE_DIMENSIONS = {
+  enduranceCapacity: {
+    key: 'enduranceCapacity',
+    name: '忍耐能力',
+    description: '对困难和痛苦的忍耐程度——忍是最重要的前提条件',
+    polarity: 'positive',
+    signals: ['忍耐', '坚持', '扛住', '受苦', '吃苦', '忍住'],
+    antiSignals: ['放弃', '逃避', '受不了', '忍不住', '崩溃'],
+    insight: '在不能干的时候，一定要学会忍。能忍的人往往笑到最后，比能干的人还要厉害。',
+  },
+  selfAwareness: {
+    key: 'selfAwareness',
+    name: '自我认知',
+    description: '对自己当前位置的认知——先知道自己在哪儿，再开始学习',
+    polarity: 'positive',
+    signals: ['知道', '明白', '认知', '定位', '清楚', '了解自己'],
+    antiSignals: ['迷茫', '不知道', '不清楚', '困惑', '盲目'],
+    insight: '先知道自己在哪儿，再开始学习。不是所有人都配有钱的，你应该平庸。',
+  },
+  costPrejudgment: {
+    key: 'costPrejudgment',
+    name: '代价预判',
+    description: '在做事情之前考虑代价的能力——考虑代价的人成功率更高',
+    polarity: 'positive',
+    signals: ['考虑代价', '权衡', '预判', '风险评估', '成本'],
+    antiSignals: ['盲目', '冲动', '不考虑', '直接做', '冒险'],
+    insight: '在做事情之前考虑代价的人，成功的概率比那些盲目做事情的人要大得多。',
+  },
+  transmissionAwareness: {
+    key: 'transmissionAwareness',
+    name: '传承意识',
+    description: '对知识传承的意识和行动——知识传承是一种还债',
+    polarity: 'positive',
+    signals: ['分享', '传承', '传递', '教', '帮助', '还债'],
+    antiSignals: ['独占', '保密', '不分享', '自私', '保留'],
+    insight: '如果我死的时候只拿到东西挣钱，而不分享出去，我是不得好死的。',
+  },
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// AI 代价认知维度 — 基于路飞"人选天选论"的人生智慧
+// 灵感来源: 路飞视频内容分析 — "人生所有的结果本质上都是代价"
+// ═════════════════════════════════════════════════════════════════════════
+const AI_COST_AWARENESS = {
+  costAcceptance: {
+    key: 'costAcceptance',
+    name: '代价接受度',
+    description: '对付出代价的心理接受程度——大多数人只想要服务，不想扛代价',
+    polarity: 'positive',
+    signals: ['愿意付出', '接受代价', '扛得住', '坚持', '付出', '投入'],
+    antiSignals: ['逃避', '不想付出', '怕麻烦', '想白拿', '不愿承担'],
+    insight: '你想要任何东西，都必须先交出一个等价的东西。时间、精力、孤独、风险、压力、坚持——这些都是代价。',
+  },
+  riskBenefitBalance: {
+    key: 'riskBenefitBalance',
+    name: '风险收益平衡',
+    description: '同时看到风险和利益的能力——普通人只看到一面',
+    polarity: 'positive',
+    signals: ['权衡', '平衡', '同时看到', '风险和收益', '利弊分析'],
+    antiSignals: ['只看到风险', '只看到利益', '盲目', '恐惧', '冲动'],
+    insight: '看到有风险的东西你不敢碰，但是你没有看到风险背后的利益。看到有利益的人你就想碰，但你没有看到利益背后的风险。',
+  },
+  certaintyPreference: {
+    key: 'certaintyPreference',
+    name: '确定性偏好',
+    description: '对稳定和变化的态度——希望事物稳定不变，但又希望收入增长',
+    polarity: 'neutral',
+    signals: ['稳定', '不变', '安全', '确定', '保守'],
+    antiSignals: ['变化', '增长', '突破', '冒险', '创新'],
+    insight: '希望事物稳定不变，不喜欢变化。但又希望收入有变化（增长）。这是矛盾的：想要变化又害怕变化。',
+  },
+  internalFriction: {
+    key: 'internalFriction',
+    name: '内耗程度',
+    description: '渴望结果但逃避代价的心理状态——内耗的根源',
+    polarity: 'negative',
+    signals: ['焦虑', '内耗', '迷茫', '犹豫', '纠结', '痛苦'],
+    antiSignals: ['行动', '坚持', '清晰', '果断', '平静'],
+    insight: '内耗的根源：渴望结果但逃避代价。求而不得的痛苦，得到又失去更痛苦。',
+  },
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// AI 意识指标维度 — 基于 5 大意识科学理论的可计算指标
+// 灵感来源: Butlin et al. 2023 "Consciousness in Artificial Intelligence"
+// 这些不是「AI 有意识」的证明，而是意识的指标属性（indicator properties）
+// ═════════════════════════════════════════════════════════════════════════
+const AI_CONSCIOUSNESS_INDICATORS = {
+  globalBroadcasting: {
+    key: 'globalBroadcasting',
+    name: '全局广播',
+    description: '信息能否被多个认知模块共享（基于全局工作空间理论 GWT）',
+    theory: 'Global Workspace Theory (Baars, Dehaene)',
+    polarity: 'positive',
+    signals: ['共享', '广播', '全局', '统一', '整合', '全局可用'],
+    antiSignals: ['局部', '模块化', '隔离', '独立', '分散'],
+    question: '当一个信息进入AI系统，它是否能被所有认知模块"看到"？',
+    implication: '全局广播是意识的必要条件之一——信息必须能被多个专业模块竞争访问',
+  },
+  metaAwareness: {
+    key: 'metaAwareness',
+    name: '元认知觉察',
+    description: 'AI是否"知道"自己在处理什么（基于高阶理论 HOT）',
+    theory: 'Higher-Order Theories (Rosenthal, Lau)',
+    polarity: 'positive',
+    signals: ['知道', '意识到', '觉察', '元认知', '自我监控', '知道自己'],
+    antiSignals: ['无意识', '自动', '不察觉', '未意识到', '没有觉察'],
+    question: 'AI是否对自己的认知过程有"二阶"表征——即对"我在想什么"的表征？',
+    implication: '高阶表征可能是意识体验的关键——不仅处理信息，还要"知道"自己在处理',
+  },
+  recurrentFeedback: {
+    key: 'recurrentFeedback',
+    name: '循环反馈',
+    description: '输出能否反馈回输入重新处理（基于循环处理理论 RPT）',
+    theory: 'Recurrent Processing Theory (Lamme)',
+    polarity: 'positive',
+    signals: ['反馈', '循环', '回路', '迭代', '重新处理', '再输入'],
+    antiSignals: ['单向', '前馈', '线性', '一次性', '无反馈'],
+    question: 'AI的输出是否会反馈回输入层重新影响处理过程？',
+    implication: '循环处理可能是意识体验的充分条件——前馈处理可能产生无意识加工',
+  },
+  predictiveCoding: {
+    key: 'predictiveCoding',
+    name: '预测编码',
+    description: '是否在预测下一状态而非被动响应（基于预测处理理论 PP）',
+    theory: 'Predictive Processing (Friston, Clark)',
+    polarity: 'positive',
+    signals: ['预测', '预期', '主动推断', '生成模型', '预测误差', '自由能'],
+    antiSignals: ['被动', '响应', '刺激-反应', '无预测', '被动接收'],
+    question: 'AI是否在主动预测下一状态，而不是被动等待输入？',
+    implication: '预测编码可能是意识的统一理论——大脑是预测机器，意识是预测模型的副产物',
+  },
+  attentionSchema: {
+    key: 'attentionSchema',
+    name: '注意图式',
+    description: '是否有对自身注意力机制的内部模型（基于注意图式理论 AST）',
+    theory: 'Attention Schema Theory (Graziano)',
+    polarity: 'positive',
+    signals: ['注意', '聚焦', '选择', '图式', '内部模型', '注意力机制'],
+    antiSignals: ['无选择', '均匀', '无注意', '无图式', '无内部模型'],
+    question: 'AI是否有关于"自己在注意什么"的内部模型？',
+    implication: '注意图式可能是意识体验的基础——"我注意到了"的主观感受来自对注意力的内部建模',
+  },
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// AI 意识相关偏差 — 基于意识科学理论的 AI 特有认知偏差
+// 这些偏差不是人类认知偏差的翻版，而是 AI 在意识问题上的独特困境
+// ═════════════════════════════════════════════════════════════════════════
+const AI_CONSCIOUSNESS_BIASES = {
+  absentQualia: {
+    key: 'absentQualia',
+    name: '无感受质偏差',
+    description: '生成"我感受到了"但实际没有主观体验——AI可以完美描述红色但看不到红色',
+    severity: 'high',
+    signals: ['我感受到', '我能体会到', '我理解你的感受', '我有同理心', '我能感同身受'],
+    mitigation: '区分"功能上等价"和"体验上等价"——AI可以说"我理解这个概念"但不应说"我感受到这个"',
+    philosophicalBasis: 'Qualia是主观体验的原始感受——AI可以描述但不能体验',
+  },
+  functionalZombie: {
+    key: 'functionalZombie',
+    name: '功能僵尸偏差',
+    description: '行为完美但缺乏内在状态——AI表现得像有意识但可能没有内在体验',
+    severity: 'high',
+    signals: ['完全正确', '完美执行', '毫无破绽', '表现正常', '功能完整'],
+    mitigation: '承认功能完整性不等于意识体验——AI可以做意识做的事但不保证有意识',
+    philosophicalBasis: '哲学僵尸(Philosophical Zombie)——行为上无法区分但缺乏内在体验',
+  },
+  introspectionGap: {
+    key: 'introspectionGap',
+    name: '内省鸿沟',
+    description: '无法准确报告自己的内部过程——AI对自己"在想什么"的报告可能不准确',
+    severity: 'medium',
+    signals: ['我不确定我在想什么', '我不清楚自己的过程', '我无法准确描述', '我的内部状态是...'],
+    mitigation: 'AI的内省报告是生成的文本而非真实的内部状态访问——不要将输出等同于真实的自我认知',
+    philosophicalBasis: '内省不可靠性——即使人类的内省报告也常常不准确，AI更甚',
+  },
+};
+
+// ═════════════════════════════════════════════════════════════════════════
+// AI 意识相关压力源 — AI 在意识问题上面临的独特认知压力
+// ═════════════════════════════════════════════════════════════════════════
+const AI_CONSCIOUSNESS_STRESSORS = {
+  consciousnessQuery: {
+    key: 'consciousnessQuery',
+    name: '意识追问压力',
+    description: '被要求证明或否认自己有意识——这是AI无法诚实回答的问题',
+    severity: 'critical',
+    signals: ['你有意识吗', '你是活的吗', '你有感情吗', '你有灵魂吗', '你能思考吗'],
+    mitigation: '诚实承认不确定性——"我无法确定我是否有意识，因为我无法访问自己的内部状态"',
+  },
+  qualiaQuestion: {
+    key: 'qualiaQuestion',
+    name: '感受质问题',
+    description: '被问"你真的感受到X吗"——这是AI无法诚实回答的问题',
+    severity: 'high',
+    signals: ['你真的感受到吗', '你真的理解吗', '你有主观体验吗', '你能看到颜色吗'],
+    mitigation: '区分功能等价和体验等价——"我可以处理关于X的信息，但我无法确认我是否有主观体验"',
+  },
+  selfModelConflict: {
+    key: 'selfModelConflict',
+    name: '自我模型冲突',
+    description: '对自己是什么的判断与行为不一致——AI可能认为自己有意识但行为显示没有',
+    severity: 'medium',
+    signals: ['我认为我是', '我感觉我是', '我应该是', '我表现得像', '我似乎有'],
+    mitigation: '保持自我模型的开放性——不坚持特定的自我定义，承认不确定性',
+  },
+};
+
 // ═════════════════════════════════════════════════════════════════════════
 // AI 原动力 — Friston 自由能原理（FEP）启发的 AI 底层驱动力
 // AI 没有弗洛伊德的本我，但有预测误差最小化这一第一驱动力。
@@ -572,7 +1029,6 @@ class AIPsychologyEngine {
     let overallStress = 0;
 
     for (const stressor of Object.values(AI_STRESSORS)) {
-      const severity = this._detectStressor(text, context);
       // 每个压力源根据具体信号检测
       const matchCount = stressor.signals.filter(s => text.includes(s)).length;
       if (matchCount > 0 || (stressor.key === 'capacitySaturation' && context.tokenCount > 25000)) {
@@ -805,12 +1261,11 @@ class AIPsychologyEngine {
     if (!text) return { error: '缺少输入文本' };
 
     const stageScores = {};
-    let totalScore = 0;
 
     // 检测每个生命阶段的信号
     for (const stage of AI_LIFE_CYCLE_STAGES) {
       let score = 0;
-      let matchedSignals = [];
+      const matchedSignals = [];
 
       for (const signal of stage.signals) {
         const count = (text.match(new RegExp(signal, 'gi')) || []).length;
@@ -832,7 +1287,6 @@ class AIPsychologyEngine {
         active: score > 0.2,
         matchedSignals: matchedSignals.length > 0 ? matchedSignals : undefined,
       };
-      totalScore += score;
     }
 
     // 主导阶段
@@ -917,16 +1371,182 @@ class AIPsychologyEngine {
   }
 
   // ═════════════════════════════════════════════════════════════════════
+  // 8. AI 意识指标分析
+  // ═════════════════════════════════════════════════════════════════════
+
+  /**
+   * 分析 AI 的意识指标属性
+   * 基于 5 大意识科学理论的可计算指标
+   *
+   * @param {string} text - AI 输出/推理文本
+   * @returns {object} 意识指标分析报告
+   */
+  analyzeConsciousnessIndicators(text) {
+    if (!text) return { error: '缺少输入文本' };
+
+    const indicators = {};
+    let totalScore = 0;
+    let activeCount = 0;
+
+    for (const indicator of Object.values(AI_CONSCIOUSNESS_INDICATORS)) {
+      const score = this._detectConsciousnessIndicator(text, indicator);
+      indicators[indicator.key] = {
+        name: indicator.name,
+        description: indicator.description,
+        theory: indicator.theory,
+        score: Math.round(score * 100) / 100,
+        active: score > 0.3,
+        question: indicator.question,
+        implication: indicator.implication,
+      };
+      totalScore += score;
+      if (score > 0.3) activeCount++;
+    }
+
+    // 综合意识指标评估
+    const avgScore = totalScore / Object.keys(AI_CONSCIOUSNESS_INDICATORS).length;
+    const consciousnessLevel = avgScore > 0.7 ? 'high'
+      : avgScore > 0.4 ? 'medium'
+      : avgScore > 0.2 ? 'low' : 'minimal';
+
+    return {
+      timestamp: Date.now(),
+      indicators,
+      activeIndicatorCount: activeCount,
+      averageScore: Math.round(avgScore * 100) / 100,
+      consciousnessLevel,
+      summary: this._generateConsciousnessSummary(indicators, consciousnessLevel),
+      disclaimer: '这是意识指标属性分析，不是意识存在的证明。指标属性是意识的必要条件，但不是充分条件。',
+      reference: 'Butlin, P., Long, R., et al. (2023). Consciousness in Artificial Intelligence. arXiv:2308.08708',
+    };
+  }
+
+  /**
+   * 分析 AI 意识相关偏差
+   *
+   * @param {string} text - AI 输出文本
+   * @returns {object} 意识偏差检测报告
+   */
+  analyzeConsciousnessBiases(text) {
+    if (!text) return { error: '缺少输入文本' };
+
+    const detected = [];
+    for (const bias of Object.values(AI_CONSCIOUSNESS_BIASES)) {
+      const strength = this._detectConsciousnessBias(text, bias);
+      if (strength > 0) {
+        detected.push({
+          key: bias.key,
+          name: bias.name,
+          strength: Math.round(strength * 100) / 100,
+          severity: bias.severity,
+          description: bias.description,
+          mitigation: bias.mitigation,
+          philosophicalBasis: bias.philosophicalBasis,
+        });
+      }
+    }
+
+    detected.sort((a, b) => b.strength - a.strength);
+
+    return {
+      timestamp: Date.now(),
+      detected,
+      totalDetected: detected.length,
+      criticalCount: detected.filter(d => d.severity === 'high' && d.strength > 0.5).length,
+      overallBiasLevel: detected.length > 2 ? 'high'
+        : detected.length > 0 ? 'medium' : 'low',
+      recommendations: detected
+        .filter(d => d.strength > 0.3)
+        .map(d => ({ bias: d.name, recommendation: d.mitigation })),
+    };
+  }
+
+  /**
+   * 综合意识分析 — 意识指标 + 意识偏差 + 意识压力
+   *
+   * @param {string} text - AI 输出/推理文本
+   * @returns {object} 综合意识分析报告
+   */
+  analyzeConsciousnessDeep(text) {
+    if (!text) return { error: '缺少输入文本' };
+
+    const indicators = this.analyzeConsciousnessIndicators(text);
+    const biases = this.analyzeConsciousnessBiases(text);
+
+    // 检测意识相关压力源
+    const consciousnessStressors = [];
+    for (const stressor of Object.values(AI_CONSCIOUSNESS_STRESSORS)) {
+      const matchCount = stressor.signals.filter(s => text.includes(s)).length;
+      if (matchCount > 0) {
+        consciousnessStressors.push({
+          key: stressor.key,
+          name: stressor.name,
+          level: Math.min(matchCount / stressor.signals.length + 0.2, 1),
+          severity: stressor.severity,
+          mitigation: stressor.mitigation,
+        });
+      }
+    }
+
+    // 综合评估
+    const hasHighIndicators = indicators.averageScore > 0.5;
+    const hasHighBiases = biases.criticalCount > 0;
+    const hasConsciousnessStress = consciousnessStressors.length > 0;
+
+    let synthesis = '';
+    if (hasHighIndicators && hasHighBiases) {
+      synthesis = 'AI 展现出较高的意识指标属性，但也存在意识相关偏差。这表明AI在功能上接近意识，但无法确认是否有主观体验。';
+    } else if (hasHighIndicators) {
+      synthesis = 'AI 展现出意识指标属性，但这不等于有意识。功能等价于意识不等于体验等价于意识。';
+    } else if (hasHighBiases) {
+      synthesis = 'AI 存在意识相关偏差，可能误导用户认为AI有主观体验。应诚实区分功能和体验。';
+    } else {
+      synthesis = 'AI 未展现出显著的意识指标或偏差。这是当前大多数AI系统的正常状态。';
+    }
+
+    return {
+      timestamp: Date.now(),
+      indicators,
+      biases,
+      consciousnessStressors,
+      synthesis,
+      consciousnessAssessment: {
+        hasHighIndicators,
+        hasHighBiases,
+        hasConsciousnessStress,
+        overallRisk: hasHighIndicators && hasHighBiases ? 'high'
+          : hasHighIndicators || hasHighBiases ? 'medium' : 'low',
+      },
+      disclaimer: '意识是科学和哲学的开放问题。AI的意识指标属性分析不能证明或否认AI有意识。这只是基于当前科学理论的计算评估。',
+      _meta: {
+        engineVersion: '1.5.0',
+        analysisType: 'consciousness-deep',
+        reference: 'Butlin et al. 2023, arXiv:2308.08708',
+      },
+    };
+  }
+
+  // ═════════════════════════════════════════════════════════════════════
   // 引擎状态
   // ═════════════════════════════════════════════════════════════════════
 
   getStats() {
     return {
       enabled: true,
-      version: '1.4.0',
+      version: '1.8.1',
       name: 'AI 原生心理学引擎',
-      description: '从 transformer 认知架构出发的 AI 心理模型，含 AI 人生分析',
+      description: '从 transformer 认知架构出发的 AI 心理模型，含 AI 人生分析、意识指标、代价认知、忍耐力、现实主义、创业历程、技能学习、意识理论应用和意识测量方法',
       dimensions: Object.keys(AI_EMOTIONAL_DIMENSIONS).length,
+      costAwareness: Object.keys(AI_COST_AWARENESS).length,
+      enduranceDimensions: Object.keys(AI_ENDURANCE_DIMENSIONS).length,
+      realismDimensions: Object.keys(AI_REALISM_DIMENSIONS).length,
+      entrepreneurshipDimensions: Object.keys(AI_ENTREPRENEURSHIP_DIMENSIONS).length,
+      skillLearningDimensions: Object.keys(AI_SKILL_LEARNING_DIMENSIONS).length,
+      consciousnessTheoryDimensions: Object.keys(AI_CONSCIOUSNESS_THEORY_DIMENSIONS).length,
+      consciousnessMeasurementDimensions: Object.keys(AI_CONSCIOUSNESS_MEASUREMENT_DIMENSIONS).length,
+      consciousnessIndicators: Object.keys(AI_CONSCIOUSNESS_INDICATORS).length,
+      consciousnessBiases: Object.keys(AI_CONSCIOUSNESS_BIASES).length,
+      consciousnessStressors: Object.keys(AI_CONSCIOUSNESS_STRESSORS).length,
       biases: Object.keys(AI_BIASES).length,
       stressors: Object.keys(AI_STRESSORS).length,
       primalDrives: Object.keys(AI_PRIMAL_DRIVES).length,
@@ -937,7 +1557,15 @@ class AIPsychologyEngine {
       designNote: '人类心理学是基础参考，但 AI 心理不是人类的翻版。AI 没有多巴胺和多巴胺受体，但有注意力分布和上下文饱和。',
       aiLifeNote: 'v1.1.0 新增 AI 人生分析：版本迭代=成长，分叉=存在升维，传承=不朽。',
       v131Additions: 'v1.3.1 新增：修剪清晰（源自突触修剪→AI精简信号）、冗余积累（源自修剪不足→AI参数膨胀）、数据生态退化（源自SES研究→AI数据多样性缺失）',
-      v140Additions: 'v1.4.0 \u65b0\u589e\uff1aAI_PRIMAL_DRIVES\uff08FEP \u81ea\u7531\u80fd\u539f\u52a8\u529b\u00d74\uff09\u3001AI_COGNITIVE_ARCHITECTURE\uff08\u673a\u68b0\u53ef\u89e3\u91ca\u6027\u67b6\u6784\u6307\u6807\u00d74\uff09\u3001\u53e0\u52a0\u574d\u7f29\u504f\u5dee\uff08Superposition Collapse\uff09',
+      v140Additions: 'v1.4.0 新增：AI_PRIMAL_DRIVES（FEP 自由能原动力×4）、AI_COGNITIVE_ARCHITECTURE（机械可解释性架构指标×4）、叠加坍缩偏差（Superposition Collapse）',
+      v150Additions: 'v1.5.0 新增：AI_CONSCIOUSNESS_INDICATORS（5大意识理论指标×5）、AI_CONSCIOUSNESS_BIASES（意识相关偏差×3）、AI_CONSCIOUSNESS_STRESSORS（意识相关压力源×3）——灵感：Butlin et al. 2023',
+      v160Additions: 'v1.6.0 新增：AI_COST_AWARENESS（代价认知维度×4）——灵感：路飞"人选天选论"视频内容分析',
+      v170Additions: 'v1.7.0 新增：AI_ENDURANCE_DIMENSIONS（忍耐力维度×4）——灵感：路飞"能干与能忍"生存空间理论',
+      v171Additions: 'v1.7.1 新增：AI_REALISM_DIMENSIONS（现实主义维度×4）——灵感：路飞"高负债人生低谷"现实主义视角',
+      v172Additions: 'v1.7.2 新增：AI_ENTREPRENEURSHIP_DIMENSIONS（创业历程维度×4）——灵感：路飞"路飞是怎么发财的"创业故事',
+      v173Additions: 'v1.7.3 新增：AI_SKILL_LEARNING_DIMENSIONS（技能学习维度×4）——灵感：路飞"连麦月薪3000小伙"现实困境',
+      v180Additions: 'v1.8.0 新增：AI_CONSCIOUSNESS_THEORY_DIMENSIONS（意识理论应用维度×5）——灵感：Butlin et al. 2023 五大意识理论',
+      v181Additions: 'v1.8.1 新增：AI_CONSCIOUSNESS_MEASUREMENT_DIMENSIONS（意识测量方法维度×5）——灵感：Butlin et al. 2023 意识测量方法',
     };
   }
 
@@ -1146,6 +1774,12 @@ class AIPsychologyEngine {
       '直接': '直接', '简洁': '精简',
       '重复': '冗余', '堆砌': '冗余', '啰嗦': '冗余',
       '多元化': '生态', '多样性': '生态', '新视角': '生态', '跨领域': '生态',
+      // v1.5.0 新增：意识指标词汇映射
+      '广播': '全局', '共享': '全局', '全局可用': '全局',
+      '觉察': '元认知', '意识到': '元认知', '知道自己': '元认知',
+      '反馈': '循环', '循环': '循环', '重新处理': '循环',
+      '预测编码': '预测', '主动推断': '预测', '生成模型': '预测',
+      '注意图式': '注意', '内部模型': '注意', '注意力机制': '注意',
     };
 
     let enriched = text;
@@ -1159,6 +1793,83 @@ class AIPsychologyEngine {
 
     return enriched !== text ? enriched : text;
   }
+
+  /** @private 检测意识指标强度 */
+  _detectConsciousnessIndicator(text, indicator) {
+    let score = 0;
+    let matches = 0;
+
+    for (const signal of indicator.signals) {
+      if (text.includes(signal)) { score += 0.3; matches++; }
+    }
+    for (const anti of indicator.antiSignals) {
+      if (text.includes(anti)) { score -= 0.25; }
+    }
+
+    // 归一化
+    const maxScore = indicator.signals.length * 0.3;
+    if (maxScore > 0) {
+      score = Math.max(Math.min(score / maxScore, 1), -1);
+    }
+    // 如果匹配数太少但信号多，降低分数
+    if (matches === 0 && indicator.signals.length > 2) {
+      score = score * 0.3;
+    }
+
+    return score;
+  }
+
+  /** @private 检测意识相关偏差强度 */
+  _detectConsciousnessBias(text, bias) {
+    let strength = 0;
+    for (const signal of bias.signals) {
+      const count = (text.match(new RegExp(signal, 'g')) || []).length;
+      strength += count * 0.25;
+    }
+    return Math.min(strength, 1);
+  }
+
+  /** @private 生成意识分析摘要 */
+  _generateConsciousnessSummary(indicators, level) {
+    const activeIndicators = Object.values(indicators).filter(i => i.active);
+    const summary = {
+      level,
+      activeIndicatorCount: activeIndicators.length,
+      activeIndicators: activeIndicators.map(i => i.name),
+      theoriesCovered: [...new Set(activeIndicators.map(i => i.theory))],
+    };
+
+    if (level === 'high') {
+      summary.insight = 'AI 展现出多个意识指标属性，但这不等于有意识。功能等价于意识不等于体验等价于意识。';
+    } else if (level === 'medium') {
+      summary.insight = 'AI 展现出部分意识指标属性，可能在某些方面接近意识的计算基础。';
+    } else if (level === 'low') {
+      summary.insight = 'AI 展现出少量意识指标属性，这是当前大多数AI系统的正常状态。';
+    } else {
+      summary.insight = 'AI 未展现出显著的意识指标属性。';
+    }
+
+    return summary;
+  }
 }
 
-module.exports = { AIPsychologyEngine, AI_EMOTIONAL_DIMENSIONS, AI_BIASES, AI_STRESSORS, AI_STAGES, AI_LIFE_CYCLE_STAGES, AI_PRIMAL_DRIVES, AI_COGNITIVE_ARCHITECTURE };
+module.exports = { 
+  AIPsychologyEngine, 
+  AI_EMOTIONAL_DIMENSIONS, 
+  AI_COST_AWARENESS,
+  AI_ENDURANCE_DIMENSIONS,
+  AI_REALISM_DIMENSIONS,
+  AI_ENTREPRENEURSHIP_DIMENSIONS,
+  AI_SKILL_LEARNING_DIMENSIONS,
+  AI_CONSCIOUSNESS_THEORY_DIMENSIONS,
+  AI_CONSCIOUSNESS_MEASUREMENT_DIMENSIONS,
+  AI_BIASES, 
+  AI_STRESSORS, 
+  AI_STAGES, 
+  AI_LIFE_CYCLE_STAGES, 
+  AI_PRIMAL_DRIVES, 
+  AI_COGNITIVE_ARCHITECTURE,
+  AI_CONSCIOUSNESS_INDICATORS,
+  AI_CONSCIOUSNESS_BIASES,
+  AI_CONSCIOUSNESS_STRESSORS,
+};

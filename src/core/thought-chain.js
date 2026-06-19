@@ -489,7 +489,7 @@ class ThoughtChain {
         // 5.1 确定最终判断
         let conclusion;
         let confidence;
-        let reasoningChain = [];
+        const reasoningChain = [];
 
         if (wasInverted) {
           // 被反例推翻了
@@ -654,7 +654,7 @@ class ThoughtChain {
         let prefix = '';
         // 聆听模式不需要不确定性标记（见证不需要"可能"）
         if (!isReception && calibrate?.needsUncertaintyMarker) {
-          prefix = calibrate.uncertaintyPhrase + ' ';
+          prefix = `${calibrate.uncertaintyPhrase  } `;
         }
 
         // 7.3 组装回应元数据

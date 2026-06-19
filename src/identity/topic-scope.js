@@ -195,7 +195,7 @@ class TopicScope {
    * 诊断：打印当前状态
    */
   diagnose(label = '') {
-    console.log(`\n=== TopicScope 诊断${label ? ' — ' + label : ''} ===`);
+    console.log(`\n=== TopicScope 诊断${label ? ` — ${  label}` : ''} ===`);
     console.log(`当前话题: ${this._current}`);
     console.log(`话题栈: [${this._stack.join(' → ')}]`);
     console.log(`当前上下文:`, JSON.stringify(this._context));

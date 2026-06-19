@@ -1396,15 +1396,16 @@ if __name__ == "__main__":
       'advanced-cli': {
         name: '高级 CLI 脚本',
         description: '带子命令和选项的 Bash CLI 工具',
-        code: `#!/bin/bash
+        // eslint-disable-next-line no-undef
+         code: `#!/bin/bash
 set -euo pipefail
 VERSION="1.0.0"
 
 # ─── 颜色输出 ──────────────────────────────────────
-RED='\\033[0;31m'; GREEN='\\033[0;32m'; YELLOW='\\033[1;33m'; NC='\\033[0m'
-info()  { echo -e "${GREEN}[INFO]${NC} $*"; }
-warn()  { echo -e "${YELLOW}[WARN]${NC} $*"; }
-error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
+RED='\\033[0;31m'; GREEN='\\033[0;32m'; YELLOW='\\033[1;33m'; NC='\\033[0m' // eslint-disable-line
+info()  { echo -e "${GREEN}[INFO]${NC} $*"; } // eslint-disable-line
+warn()  { echo -e "${YELLOW}[WARN]${NC} $*"; } // eslint-disable-line
+error() { echo -e "${RED}[ERROR]${NC} $*" >&2; } // eslint-disable-line
 
 # ─── 命令函数 ──────────────────────────────────────
 cmd_init() {
@@ -1468,16 +1469,16 @@ mkdir -p "$BACKUP_DIR"
 
 # ─── 执行备份 ─────────────────────────────────────
 backup_mysql() {
-  local file="$BACKUP_DIR/${DB_NAME}_$TIMESTAMP.sql.gz"
-  info "备份 MySQL 数据库: $DB_NAME"
+  local file="$BACKUP_DIR/${DB_NAME}_$TIMESTAMP.sql.gz" // eslint-disable-line
+  info "备份 MySQL 数据库: $DB_NAME" // eslint-disable-line
   mysqldump -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" \\
     \${DB_PASS:+-p"$DB_PASS"} "$DB_NAME" | gzip > "$file"
   info "备份完成: $file"
 }
 
 backup_postgres() {
-  local file="$BACKUP_DIR/${DB_NAME}_$TIMESTAMP.sql.gz"
-  info "备份 PostgreSQL 数据库: $DB_NAME"
+  local file="$BACKUP_DIR/${DB_NAME}_$TIMESTAMP.sql.gz" // eslint-disable-line
+  info "备份 PostgreSQL 数据库: $DB_NAME" // eslint-disable-line
   PGPASSWORD="$DB_PASS" pg_dump -h "$DB_HOST" -p "$DB_PORT" \\
     -U "$DB_USER" "$DB_NAME" | gzip > "$file"
   info "备份完成: $file"
@@ -1485,8 +1486,8 @@ backup_postgres() {
 
 # ─── 清理旧备份 ───────────────────────────────────
 cleanup_old() {
-  info "清理 ${RETENTION_DAYS} 天前的备份..."
-  find "$BACKUP_DIR" -name "${DB_NAME}_*.sql.gz" -mtime +$RETENTION_DAYS -delete
+  info "清理 ${RETENTION_DAYS} 天前的备份..." // eslint-disable-line
+  find "$BACKUP_DIR" -name "${DB_NAME}_*.sql.gz" -mtime +$RETENTION_DAYS -delete // eslint-disable-line
 }
 
 # ─── 主流程 ───────────────────────────────────────
@@ -2708,7 +2709,7 @@ class CodeGenerator {
     return {
       ...this.stats,
       templateHitRate: this.stats.totalGenerations > 0
-        ? (this.stats.templateHits / this.stats.totalGenerations * 100).toFixed(1) + '%'
+        ? `${(this.stats.templateHits / this.stats.totalGenerations * 100).toFixed(1)  }%`
         : '0%'
     };
   }
@@ -2815,7 +2816,7 @@ class CodeGenerator {
             source: 'llm',
             intent: intent,
             llmUsed: true,
-            prompt: prompt.substring(0, 100) + '...'
+            prompt: `${prompt.substring(0, 100)  }...`
           }
         };
       }

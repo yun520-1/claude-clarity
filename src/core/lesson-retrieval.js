@@ -80,7 +80,7 @@ class LessonRetrievalEngine {
     const queryTerms = this._tokenize(query);
     if (queryTerms.length === 0) return 0;
 
-    const lessonText = ((lesson.content || '') + ' ' + (lesson.context || '') + ' ' + (lesson.trigger || '') + ' ' + (lesson.type || '')).toLowerCase();
+    const lessonText = (`${lesson.content || ''  } ${  lesson.context || ''  } ${  lesson.trigger || ''  } ${  lesson.type || ''}`).toLowerCase();
     const lessonTerms = this._tokenize(lessonText);
     if (lessonTerms.length === 0) return 0;
 
@@ -129,20 +129,20 @@ class LessonRetrievalEngine {
    * 从查询中提取 2-3 gram 与教训内容匹配
    */
   _ngramScore(query, lesson) {
-    const text = ((lesson.content || '') + ' ' + (lesson.context || '')).toLowerCase();
+    const text = (`${lesson.content || ''  } ${  lesson.context || ''}`).toLowerCase();
     const q = query.toLowerCase();
     let score = 0;
 
     // Bigram 匹配
     const qWords = this._tokenize(q);
     for (let i = 0; i < qWords.length - 1; i++) {
-      const bigram = qWords[i] + ' ' + qWords[i + 1];
+      const bigram = `${qWords[i]  } ${  qWords[i + 1]}`;
       if (text.includes(bigram)) score += 0.3;
     }
 
     // Trigram 匹配（更高权重）
     for (let i = 0; i < qWords.length - 2; i++) {
-      const trigram = qWords[i] + ' ' + qWords[i + 1] + ' ' + qWords[i + 2];
+      const trigram = `${qWords[i]  } ${  qWords[i + 1]  } ${  qWords[i + 2]}`;
       if (text.includes(trigram)) score += 0.5;
     }
 
@@ -184,7 +184,7 @@ class LessonRetrievalEngine {
     return lessonBank.lessons.filter(l => {
       const lessonTags = (l.tags || l.type ? [l.type] : []);
       // 也搜索 content 中的 #tag 模式
-      const contentTags = ((l.content || '') + ' ' + (l.context || '')).match(/#\w+/g) || [];
+      const contentTags = (`${l.content || ''  } ${  l.context || ''}`).match(/#\w+/g) || [];
       const allTags = [...lessonTags, ...contentTags].map(t => t.replace(/^#/, '').toLowerCase());
       return lowerTags.some(t => allTags.includes(t));
     });
@@ -352,7 +352,7 @@ class LessonRetrievalEngine {
     this._ensureLoaded();
 
     // 1. TF-IDF 加权匹配
-    let results = this.keywordSearch(context, lessonBank.lessons);
+    const results = this.keywordSearch(context, lessonBank.lessons);
 
     // 2. 如果不够，扩展上下文用 n-gram 补充
     if (results.length < limit) {

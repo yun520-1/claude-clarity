@@ -117,31 +117,31 @@
   "FocusAgent": {
     "weight": 1,
     "accuracy": 1,
-    "tasks": 1,
-    "successes": 1
+    "tasks": 2,
+    "successes": 2
   },
   "MoodAgent": {
     "weight": 1,
     "accuracy": 1,
-    "tasks": 1,
-    "successes": 1
+    "tasks": 2,
+    "successes": 2
   },
   "ContextAgent": {
     "weight": 1,
     "accuracy": 1,
-    "tasks": 1,
-    "successes": 1
+    "tasks": 2,
+    "successes": 2
   },
   "SelfAgent": {
     "weight": 1,
     "accuracy": 1,
-    "tasks": 1,
-    "successes": 1
+    "tasks": 2,
+    "successes": 2
   },
   "DecisionAgent": {
     "weight": 1,
     "accuracy": 1,
-    "tasks": 1,
-    "successes": 1
+    "tasks": 2,
+    "successes": 2
   }
 }

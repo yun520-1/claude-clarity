@@ -71,7 +71,7 @@ class WordByWordGenerator {
   }
 
   delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => { setTimeout(resolve, ms); });
   }
 
   selectFirstWord(thoughtVector) {

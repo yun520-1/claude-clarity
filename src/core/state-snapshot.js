@@ -255,8 +255,8 @@ class StateSnapshot {
       .filter(f => f.endsWith('.json') && !f.startsWith('.wal_'));
     
     let totalSize = 0;
-    let timestamps = [];
-    let labelCounts = {};
+    const timestamps = [];
+    const labelCounts = {};
     let rollbackCount = 0;
     let corruptedCount = 0;
 
@@ -379,7 +379,7 @@ class StateSnapshot {
       return `{object:${Object.keys(value).length} keys}`;
     }
     if (typeof value === 'string') {
-      return value.length > 80 ? value.slice(0, 80) + '...' : value;
+      return value.length > 80 ? `${value.slice(0, 80)  }...` : value;
     }
     return String(value);
   }

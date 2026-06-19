@@ -111,7 +111,7 @@ class IntentLayer {
    * 指数退避延迟
    */
   async sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => { setTimeout(resolve, ms); });
   }
 
   /**
@@ -380,7 +380,7 @@ class IntentLayer {
   inferDeepMotivation(surface, emotional, contextual) {
     let motivation = '';
     let confidence = 0.5;
-    let suggestions = [];
+    const suggestions = [];
 
     if (emotional.needs_support || emotional.intensity > 0.6) {
       motivation = '用户除了表面需求外，还需要情感支持';

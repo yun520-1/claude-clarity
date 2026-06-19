@@ -158,7 +158,7 @@ class LessonBank {
   }
 
   _patternToKey(pattern) {
-    return 'lesson_' + pattern.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 40);
+    return `lesson_${  pattern.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '_').substring(0, 40)}`;
   }
 
   /**

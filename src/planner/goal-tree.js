@@ -95,7 +95,7 @@ class GoalTree {
         fs.mkdirSync(dir, { recursive: true });
       }
       // 原子写入：先写 tmp 再 rename
-      const tmp = this.dataPath + '.tmp';
+      const tmp = `${this.dataPath  }.tmp`;
       fs.writeFileSync(tmp, JSON.stringify(this._tree, null, 2), 'utf8');
       fs.renameSync(tmp, this.dataPath);
     } catch (e) {

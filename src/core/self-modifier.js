@@ -135,7 +135,7 @@ class SelfModifier {
     );
 
     if (!functionPattern.test(originalCode)) {
-      return originalCode + '\n\n// New function: ' + functionName + '\n// ' + newBehavior;
+      return `${originalCode  }\n\n// New function: ${  functionName  }\n// ${  newBehavior}`;
     }
 
     const enhancement = this.generateEnhancement(functionName, newBehavior);
@@ -192,7 +192,7 @@ class SelfModifier {
       unifiedDiff: this.generateUnifiedDiff(original, modified, filename)
     };
 
-    let lineNum = 0;
+    const lineNum = 0;
     const maxLines = Math.max(originalLines.length, modifiedLines.length);
     
     for (let i = 0; i < maxLines; i++) {
@@ -301,13 +301,13 @@ class SelfModifier {
       if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
       }
-      const logEntry = JSON.stringify({
+      const logEntry = `${JSON.stringify({
         timestamp: new Date().toISOString(),
         event: entry.event,
         file: entry.file,
         source: 'self-modifier',
         details: entry.details || {}
-      }) + '\n';
+      })  }\n`;
       fs.appendFileSync(this.auditLogPath, logEntry);
     } catch (e) {
       // 审计日志不可中断主逻辑
@@ -577,7 +577,7 @@ ${diff}
   applyPatchToContent(content, patchContent) {
     const lines = content.split('\n');
     const patchLines = patchContent.split('\n');
-    let result = [...lines];
+    const result = [...lines];
     let offset = 0;
 
     for (const line of patchLines) {

@@ -889,7 +889,7 @@ console.log(JSON.stringify({ output: _hf_output, result: typeof result !== 'unde
    */
   async _verifyPythonLogic(code, expectedOutput, result) {
     // 包装代码以捕获输出（先替换 stdout，再插入用户代码）
-    let wrappedCode = `
+    const wrappedCode = `
 import sys
 from io import StringIO
 
@@ -1030,7 +1030,7 @@ print(_hf_output)
       result.steps.push({
         step: 'generate_test',
         status: 'completed',
-        code: result.testCode.substring(0, 100) + '...'
+        code: `${result.testCode.substring(0, 100)  }...`
       });
     } catch (e) {
       result.errors.push(`测试生成失败: ${e.message}`);
@@ -1064,7 +1064,7 @@ print(_hf_output)
       result.steps.push({
         step: 'generate_implementation',
         status: 'completed',
-        code: result.implCode.substring(0, 100) + '...'
+        code: `${result.implCode.substring(0, 100)  }...`
       });
     } catch (e) {
       result.errors.push(`实现生成失败: ${e.message}`);
@@ -1206,13 +1206,13 @@ print(_hf_output)
     // 添加错误处理增强
     const enhanceTemplates = {
       js: (code, errMsg) => {
-        return '// 重构版本\n' + code + '\n\n// 错误处理增强\nprocess.on("unhandledRejection", (err) => {\n  console.error("未处理的错误:", err);\n});';
+        return `// 重构版本\n${  code  }\n\n// 错误处理增强\nprocess.on("unhandledRejection", (err) => {\n  console.error("未处理的错误:", err);\n});`;
       },
       python: (code, errMsg) => {
-        return '# 重构版本\n' + code + '\n\n# 错误处理增强\nimport traceback\ntry:\n    pass\nexcept Exception as e:\n    traceback.print_exc()';
+        return `# 重构版本\n${  code  }\n\n# 错误处理增强\nimport traceback\ntry:\n    pass\nexcept Exception as e:\n    traceback.print_exc()`;
       },
       shell: (code, errMsg) => {
-        return '#!/bin/bash\n# 重构版本\n' + code + '\n\n# 错误处理增强\ntrap \'echo "Error: $?"\' ERR';
+        return `#!/bin/bash\n# 重构版本\n${  code  }\n\n# 错误处理增强\ntrap 'echo "Error: $?"' ERR`;
       }
     };
 
@@ -1576,7 +1576,7 @@ print(_hf_output)
       ...this.stats,
       cacheSize: _resultCache.size,
       cacheHitRate: this.stats.totalVerifications > 0
-        ? ((_cacheHits / this.stats.totalVerifications) * 100).toFixed(1) + '%'
+        ? `${((_cacheHits / this.stats.totalVerifications) * 100).toFixed(1)  }%`
         : '0%'
     };
   }
@@ -1658,11 +1658,11 @@ print(_hf_output)
       lines.push({ id, type: probe.type, hit: probe.count > 0 });
     }
     const lineRate = coverageData.coverage.lineCount > 0
-      ? (coverageData.coverage.lineCount / coverageData.coverage.totalLines * 100).toFixed(1) + '%'
+      ? `${(coverageData.coverage.lineCount / coverageData.coverage.totalLines * 100).toFixed(1)  }%`
       : '0%';
     const branchProbes = lines.filter(l => l.type === 'branch');
     const branchRate = branchProbes.length > 0
-      ? (branchProbes.filter(l => l.hit).length / branchProbes.length * 100).toFixed(1) + '%'
+      ? `${(branchProbes.filter(l => l.hit).length / branchProbes.length * 100).toFixed(1)  }%`
       : 'N/A';
     return {
       lineRate,

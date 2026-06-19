@@ -503,14 +503,7 @@ class MetaJudgment {
    */
   getRelatedJudgments(topic, limit = 5) {
     if (!MeaningfulMemory) return [];
-    
-    try {
-      // This would search memory for related judgment context
-      // Implementation depends on having an instance
-      return [];
-    } catch (e) {
-      return [];
-    }
+    return [];
   }
 
   /**

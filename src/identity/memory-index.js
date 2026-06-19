@@ -251,7 +251,7 @@ class MemoryIndex {
       });
     }
 
-    lines.push('\n' + '='.repeat(56));
+    lines.push(`\n${  '='.repeat(56)}`);
 
     return lines.join('\n');
   }

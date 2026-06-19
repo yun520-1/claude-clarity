@@ -149,16 +149,16 @@ function _formatForFeishu(result, input) {
   const compact = (obj, depth = 0) => {
     if (depth > 4 || !obj || typeof obj !== 'object') return obj;
     if (Array.isArray(obj)) {
-      if (obj.length > 5) return [...obj.slice(0, 5), '...共' + obj.length + '项'];
+      if (obj.length > 5) return [...obj.slice(0, 5), `...共${  obj.length  }项`];
       return obj.map(v => compact(v, depth + 1));
     }
     const out = {};
     for (const [k, v] of Object.entries(obj)) {
       if (v === null || v === undefined) continue;
       if (typeof v === 'string' && v.length > 400) {
-        out[k] = v.slice(0, 400) + '...';
+        out[k] = `${v.slice(0, 400)  }...`;
       } else if (Array.isArray(v) && v.length > 5) {
-        out[k] = [...v.slice(0, 5), '...共' + v.length + '项'];
+        out[k] = [...v.slice(0, 5), `...共${  v.length  }项`];
       } else if (typeof v === 'object' && v !== null) {
         out[k] = compact(v, depth + 1);
       } else {
@@ -340,12 +340,25 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
     add('constitutional', () => new (_ConstitutionalEngine().ConstitutionalEngine)());
 
     // ─── 事实检查器（已移除，保留空壳路由）───────────────────────────
-    add('truth', () => ({
-      checkStatement: async () => null,
-      checkNumbers: () => null,
-      checkSources: async () => null,
-      getStats: () => ({ type: 'fact-checker', active: false }),
-    }));
+    add('truth', () => {
+      try {
+        const FactChecker = require('./fact-checker.js');
+        const checker = new FactChecker();
+        return {
+          checkStatement: (statement) => checker.checkStatement(statement),
+          checkNumbers: (text) => checker.checkNumbers(text),
+          checkSources: (text) => checker.checkSources(text),
+          getStats: () => checker.getStats(),
+        };
+      } catch (e) {
+        return {
+          checkStatement: async () => null,
+          checkNumbers: () => null,
+          checkSources: async () => null,
+          getStats: () => ({ type: 'fact-checker', active: false }),
+        };
+      }
+    });
 
     // ─── 行为追踪（behavior-tracker + pattern-detector）───────────────
     add('behavior', () => {
@@ -702,7 +715,12 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
     if (this._thoughtChainApi) {
       this._modules.thoughtChain = this._thoughtChainApi;
     }
+    // 注意：_registerModules() 会重置 _modules，所以需要在之后重新注册
     this._registerModules();
+    // 重新注册 thoughtChainApi 到 _modules
+    if (this._thoughtChainApi) {
+      this._modules.thoughtChain = this._thoughtChainApi;
+    }
 
     this.started = true;
   }
@@ -827,8 +845,8 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
           // Planning 模块需要 strategySelector/replanTrigger 依赖
           if (subsystem === 'adaptivePlanner') {
             const baseDir = entry.path.replace('adaptive-planner.js', '');
-            this['strategySelector'] = new (require(baseDir + 'strategy-selector.js'))();
-            this['replanTrigger'] = new (require(baseDir + 'replan-trigger.js'))();
+            this['strategySelector'] = new (require(`${baseDir  }strategy-selector.js`))();
+            this['replanTrigger'] = new (require(`${baseDir  }replan-trigger.js`))();
             mod = new Ctor({ strategySelector: this.strategySelector, replanTrigger: this.replanTrigger });
           } else if (subsystem === 'strategyAdapter') {
             const ec = require('../learning/experience-collector.js').ExperienceCollector;
@@ -1387,7 +1405,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
         themes: data.dreamResult?.results?.synthesize?.themes || [],
         peakLevel: data.dreamResult?.results?.synthesize?.narrative_structure?.layer || 'L1',
       };
-      fs.appendFileSync(filePath, JSON.stringify(entry, null, 0) + '\n', 'utf8');
+      fs.appendFileSync(filePath, `${JSON.stringify(entry, null, 0)  }\n`, 'utf8');
       try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }
       return { success: true, id: entry.id };
     } catch (e) {
@@ -1636,7 +1654,7 @@ if (require.main === module) {
 
   const t0 = Date.now();
   hf.healthCheck().then(health => {
-    console.log(`[Clarity] ${VERSION} health check (${Date.now() - t0}ms):`);
+    console.log(`[Clarity] ${_VERSION().VERSION} health check (${Date.now() - t0}ms):`);
     // Run dispatch smoke tests
     const tests = [
       ['truth.checkStatement', '这个方案一定是对的'],

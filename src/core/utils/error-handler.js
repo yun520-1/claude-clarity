@@ -136,9 +136,9 @@ class ErrorHandler {
 
       const logEntry = `[${errorInfo.timestamp}] ${safeMessage}\n` +
         `  Operation: ${errorInfo.operation}\n` +
-        `  Context: ${JSON.stringify(safeContext)}\n` +
-        (safeStack ? `  Stack: ${safeStack}\n` : '') +
-        '---\n';
+        `  Context: ${JSON.stringify(safeContext)}\n${ 
+        safeStack ? `  Stack: ${safeStack}\n` : '' 
+        }---\n`;
 
       fs.appendFileSync(this.logFile, logEntry);
     } catch (e) {
@@ -231,7 +231,7 @@ class ErrorHandler {
   }
 
   sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => { setTimeout(resolve, ms); });
   }
 
   /**
@@ -273,7 +273,7 @@ class ErrorHandler {
       const maxAgeMs = maxAgeDays * 24 * 60 * 60 * 1000;
 
       if (ageMs > maxAgeMs) {
-        const backupFile = this.logFile + '.old';
+        const backupFile = `${this.logFile  }.old`;
         fs.renameSync(this.logFile, backupFile);
         console.log(`[ErrorHandler] Rotated old log to ${backupFile}`);
       }

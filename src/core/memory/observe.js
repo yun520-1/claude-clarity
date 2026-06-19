@@ -277,7 +277,7 @@ class Observe {
           this.meaningfulMemory.remember({
             key: narrative.key,
             value: narrative.content,
-            type: 'narrative_' + type,
+            type: `narrative_${  type}`,
             reason: narrative.reason,
             source: 'observe-consolidate',
             relatedTo: narrative.relatedTo,
@@ -428,7 +428,7 @@ class Observe {
       this.meaningfulMemory.remember({
         key: `observe_${observation.type}_${observation.id}`,
         value: observation.content,
-        type: 'observation_' + observation.type,
+        type: `observation_${  observation.type}`,
         reason: `观察事件：${observation.type}`,
         source: 'auto-observe',
       });

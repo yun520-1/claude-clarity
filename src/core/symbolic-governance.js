@@ -124,8 +124,8 @@ class SymbolicGovernance {
   checkConstraints(input, cognitionResult = {}) {
     const decisions = [];
     let approved = true;
-    let modifications = [];
-    let violatedRules = [];
+    const modifications = [];
+    const violatedRules = [];
 
     for (const rule of this.rules) {
       const match = rule.pattern.test(input);

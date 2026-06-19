@@ -583,7 +583,7 @@ class MindWanderer {
     const normalizedEntropy = maxEntropy > 0 ? entropy / maxEntropy : 0;
     
     // 连接多样性
-    let uniqueConnections = new Set();
+    const uniqueConnections = new Set();
     for (const idea of this.wildIdeas.ideas) {
       for (const conn of (idea.connections || [])) {
         uniqueConnections.add(`${conn.concept}->${conn.connection}`);

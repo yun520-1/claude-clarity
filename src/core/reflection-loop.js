@@ -116,7 +116,7 @@ class ReflectionLoop {
     const insights = [];
 
     for (const q of questions) {
-      let insight = {
+      const insight = {
         question: q.question,
         answer: '',
         shouldModify: false
@@ -201,7 +201,7 @@ class ReflectionLoop {
 
       if (insight.question.includes('目的') && context.deepNeed === 'emotional_support') {
         if (!modified.includes('理解') && !modified.includes('感受')) {
-          modified = '我理解你的感受。' + modified.replace(/^[，。,]/, '');
+          modified = `我理解你的感受。${  modified.replace(/^[，。,]/, '')}`;
         }
       }
 

@@ -289,7 +289,7 @@ class ClarityDecision {
     if (!rules || rules.length === 0) return 0.8; // Default if no rules
 
     let score = 1.0;
-    const lowerTask = (task + ' ' + (option.label || '') + ' ' + (option.description || '')).toLowerCase();
+    const lowerTask = (`${task  } ${  option.label || ''  } ${  option.description || ''}`).toLowerCase();
 
     // Rule: Always pursue truth (第一条指令)
     if (lowerTask.includes('truth') || lowerTask.includes('真实') || lowerTask.includes('诚实')) {

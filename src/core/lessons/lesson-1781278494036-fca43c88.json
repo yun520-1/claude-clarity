@@ -5,9 +5,9 @@
   "context": "测试场景",
   "trigger": "clarity",
   "importance": 4,
-  "frequency": 4,
+  "frequency": 21,
   "createdAt": "2026-06-12T15:34:54.037Z",
-  "lastSeen": "2026-06-14T01:31:12.037Z",
+  "lastSeen": "2026-06-19T02:07:15.121Z",
   "sessionId": null,
   "retentionScore": 4
 }

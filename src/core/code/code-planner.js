@@ -442,7 +442,7 @@ class CodePlanner {
     let fileIdCounter = 1;
 
     // 入口文件
-    const entryFile = `${template.base ? template.base + '/' : ''}${template.layers.entry}`;
+    const entryFile = `${template.base ? `${template.base  }/` : ''}${template.layers.entry}`;
     files.push({
       id: fileIdCounter++,
       path: entryFile,
@@ -803,7 +803,7 @@ class CodePlanner {
       // 如果没有找到模式，使用默认模板生成内容
       if (content === null) {
         content = this._generateFileTemplate(filePlan, multiFilePlan);
-        missingPatterns.push('template:' + filePlan.layer);
+        missingPatterns.push(`template:${  filePlan.layer}`);
       }
 
       files.push({
@@ -1895,7 +1895,7 @@ module.exports = db;
   decompose(task) {
     const { problem, taskType, language } = task;
     const steps = [];
-    let stepIdCounter = 1;
+    const stepIdCounter = 1;
 
     // 基础步骤识别（提取文件路径）
     const baseSteps = this._extractBaseSteps(problem, taskType);

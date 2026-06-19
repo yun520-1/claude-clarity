@@ -323,7 +323,7 @@ class KeyedLock {
         await this._locks.get(key);
       } catch (e) {
         // 锁已释放，继续执行
-        process.stderr.write('[utils] Lock release error for key "' + key + '": ' + e.message + '\n');
+        process.stderr.write(`[utils] Lock release error for key "${  key  }": ${  e.message  }\n`);
       }
     }
 
@@ -404,7 +404,7 @@ function atomicWriteJson(filePath, data) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
-  const tempPath = filePath + '.tmp.' + Date.now() + '.' + crypto.randomBytes(4).toString('hex');
+  const tempPath = `${filePath  }.tmp.${  Date.now()  }.${  crypto.randomBytes(4).toString('hex')}`;
   fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), 'utf8');
   fs.renameSync(tempPath, filePath);
 }

@@ -56,7 +56,7 @@ class WriteAheadLog {
       hash: this._hashEntry(this._seq, opType, data, ts),
     };
 
-    const line = JSON.stringify(entry) + '\n';
+    const line = `${JSON.stringify(entry)  }\n`;
     await fs.appendFile(this._logPath, line);
     this._pending.push(entry);
     return entry.seq;
@@ -110,7 +110,7 @@ class WriteAheadLog {
         const h = this._hashEntry(p.seq, p.type, p.data, p.ts);
         return JSON.stringify({ seq: p.seq, type: p.type, data: p.data, ts: p.ts, hash: h });
       });
-      await fs.writeFile(this._logPath, newLines.join('\n') + '\n');
+      await fs.writeFile(this._logPath, `${newLines.join('\n')  }\n`);
     } catch { /* WAL 文件为空或损坏，合理降级：已提交数据不受影响 */ }
   }
 }

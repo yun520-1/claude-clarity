@@ -579,9 +579,9 @@ class PhilosophyEngine {
     return {
       relevantKeywords: hits,
       keywordMatchRatio: keywords.length > 0 ? hits.length / keywords.length : 0,
-      summary: `从${school.name}的视角来看，` + (hits.length > 0
+      summary: `从${school.name}的视角来看，${  hits.length > 0
         ? `问题直接涉及${hits.slice(0, 3).join('、')}等核心关切`
-        : `可以为问题提供${school.description}层面的思考`),
+        : `可以为问题提供${school.description}层面的思考`}`,
     };
   }
 

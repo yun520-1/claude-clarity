@@ -44,7 +44,7 @@ function recordDialogue(deps, role, content, meta = {}) {
         ...meta,
       },
     };
-    fs.appendFileSync(filePath, JSON.stringify(entry, null, 0) + '\n', 'utf8');
+    fs.appendFileSync(filePath, `${JSON.stringify(entry, null, 0)  }\n`, 'utf8');
     try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }
     return { success: true, id: entry.id, ts: entry.ts };
   } catch (e) {

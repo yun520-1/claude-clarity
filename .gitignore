@@ -27,3 +27,6 @@ internal/
 
 # 安全：npm 认证令牌 — 不应提交到仓库
 .npmrc
+
+# 测试覆盖率报告（由 npx jest --coverage 生成）
+coverage/

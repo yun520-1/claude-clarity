@@ -121,7 +121,7 @@ function bumpVersion(type = 'patch', opts = {}) {
 
   // 1) VERSION 文件
   if (fs.existsSync(VERSION_FILE)) {
-    if (!dryRun) fs.writeFileSync(VERSION_FILE, to + '\n');
+    if (!dryRun) fs.writeFileSync(VERSION_FILE, `${to  }\n`);
     synced.push('VERSION');
   }
 
@@ -130,7 +130,7 @@ function bumpVersion(type = 'patch', opts = {}) {
     const raw = fs.readFileSync(PACKAGE_JSON, 'utf-8');
     const pkg = JSON.parse(raw);
     pkg.version = to;
-    if (!dryRun) fs.writeFileSync(PACKAGE_JSON, JSON.stringify(pkg, null, 2) + '\n');
+    if (!dryRun) fs.writeFileSync(PACKAGE_JSON, `${JSON.stringify(pkg, null, 2)  }\n`);
     synced.push('package.json');
   }
 

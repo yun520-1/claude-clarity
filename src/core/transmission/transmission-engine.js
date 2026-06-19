@@ -80,7 +80,7 @@ class TransmissionEngine {
       if (prev.role === 'user' && curr.role === 'assistant') {
         const correction = this._detectCorrection(prev.content, curr.content);
         if (correction) {
-          const key = correction.type + ':' + correction.lesson;
+          const key = `${correction.type  }:${  correction.lesson}`;
           if (!seen.has(key)) {
             seen.add(key);
             lessons.push({
@@ -99,7 +99,7 @@ class TransmissionEngine {
       if (prev.role === 'assistant' && curr.role === 'user') {
         const insight = this._detectInsight(curr.content);
         if (insight) {
-          const key = 'insight:' + insight.slice(0, 50);
+          const key = `insight:${  insight.slice(0, 50)}`;
           if (!seen.has(key)) {
             seen.add(key);
             lessons.push({
@@ -133,7 +133,7 @@ class TransmissionEngine {
           type: cp.type,
           priority: cp.priority,
           lesson: this._extractLesson(userMsg),
-          evidence: 'user correction pattern: ' + userMsg.slice(0, 80)
+          evidence: `user correction pattern: ${  userMsg.slice(0, 80)}`
         };
       }
     }
@@ -183,7 +183,7 @@ class TransmissionEngine {
   }
 
   _genId() {
-    return 'pc_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    return `pc_${  Date.now().toString(36)  }${Math.random().toString(36).slice(2, 6)}`;
   }
 
   /**

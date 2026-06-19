@@ -341,7 +341,7 @@ const assert = {
     try {
       const result = await Promise.race([
         promise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('超时')), timeoutMs))
+        new Promise((_, reject) => { setTimeout(() => reject(new Error('超时')), timeoutMs); })
       ]);
       return { ok: true, value: result };
     } catch (e) {
@@ -354,7 +354,7 @@ const assert = {
     try {
       await Promise.race([
         promise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('超时')), timeoutMs))
+        new Promise((_, reject) => { setTimeout(() => reject(new Error('超时')), timeoutMs); })
       ]);
       return { ok: false, error: 'Promise 应被拒绝但已解析' };
     } catch (e) {

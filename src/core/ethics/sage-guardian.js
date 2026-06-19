@@ -166,7 +166,7 @@ class SAGEGuardian {
       'improve'
     ];
 
-    const content = (proposal.description + ' ' + JSON.stringify(diff)).toLowerCase();
+    const content = (`${proposal.description  } ${  JSON.stringify(diff)}`).toLowerCase();
     const hasPositive = positiveIndicators.some(ind => content.includes(ind));
 
     if (!hasPositive) {
@@ -353,7 +353,7 @@ class SAGEGuardian {
     }
 
     // 使用 JSON Lines 格式（每行一个 JSON）
-    const logLine = JSON.stringify(logEntry) + '\n';
+    const logLine = `${JSON.stringify(logEntry)  }\n`;
     
     try {
       fs.appendFileSync(this.logFile, logLine);

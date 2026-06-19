@@ -278,7 +278,7 @@ class WorkflowSwitch {
     const workflow = this.getCurrentWorkflow();
     
     let report = '🔄 工作流状态报告\n\n';
-    report += '═'.repeat(40) + '\n\n';
+    report += `${'═'.repeat(40)  }\n\n`;
     
     report += `当前工作流：${workflow.name}\n`;
     report += `可用工作流：${this.availableWorkflows.join(', ')}\n\n`;
@@ -295,7 +295,7 @@ class WorkflowSwitch {
     report += `自动切换：${this.config.autoSwitch ? '开启' : '关闭'}\n`;
     report += `置信度阈值：${this.config.confidenceThreshold}\n`;
     
-    report += '\n' + '═'.repeat(40) + '\n';
+    report += `\n${  '═'.repeat(40)  }\n`;
     
     return report;
   }

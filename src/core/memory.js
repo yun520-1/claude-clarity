@@ -62,7 +62,7 @@ let _learnedDirty  = false;
 let _ephemeralDirty = false;
 
 // Access counters for EPHEMERAL write optimization
-let _ephemeralAccessCount = {}; // { id: count }
+const _ephemeralAccessCount = {}; // { id: count }
 
 // ─── [A07] 访问控制 ──────────────────────────────────────────────────────────
 // Session context: 每个调用方必须设置session才能操作记忆
@@ -157,7 +157,7 @@ function _getOrCreateAesKey() {
       return _aesKey;
     } catch (e) {
       // corrupted, regenerate
-      process.stderr.write('[memory] AES key file corrupted, regenerating: ' + e.message + '\n');
+      process.stderr.write(`[memory] AES key file corrupted, regenerating: ${  e.message  }\n`);
     }
   }
 
@@ -243,7 +243,7 @@ function atomicWriteJson(filePath, data) {
     fs.mkdirSync(dir, { recursive: true });
     try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
   }
-  const tempPath = filePath + '.tmp.' + Date.now() + '.' + crypto.randomBytes(4).toString('hex');
+  const tempPath = `${filePath  }.tmp.${  Date.now()  }.${  crypto.randomBytes(4).toString('hex')}`;
   fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), 'utf8');
   try { fs.chmodSync(tempPath, 0o600); } catch (e) { /* best effort */ }
   try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }

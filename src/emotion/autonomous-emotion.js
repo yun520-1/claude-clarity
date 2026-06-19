@@ -438,6 +438,8 @@ class AutonomousEmotion {
     }
 
     // 当前最强情感
+    const activeEmotions = Array.from(this.emotions.values())
+      .sort((a, b) => b.intensity - a.intensity);
     const active = activeEmotions.slice(-5).reverse();
     if (active.length > 0) {
       stats.dominantEmotion = { id: active[0].id, name: active[0].name };

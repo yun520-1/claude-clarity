@@ -113,7 +113,7 @@ class TrimStrategy {
     const dropped = Math.max(0, nonSystemMsgs.length - this.keepLatest);
     
     // 优先保留最新的消息
-    let compacted = [...systemMsgs];
+    const compacted = [...systemMsgs];
     let accumulatedTokens = tokenizer.estimateMessages(systemMsgs);
     
     // 从最新往最旧加，确保不超过限制
@@ -238,8 +238,8 @@ class SummarizeStrategy {
     };
 
     // 构建压缩后消息
-    let compacted = [...systemMsgs, summaryMsg, ...recentMsgs];
-    let tokenCount = tokenizer.estimateMessages(compacted);
+    const compacted = [...systemMsgs, summaryMsg, ...recentMsgs];
+    const tokenCount = tokenizer.estimateMessages(compacted);
 
     // 如果还是超限，用 trim
     if (tokenCount > maxTokens) {
@@ -522,8 +522,8 @@ class AutoCompactionEngine {
     if (stats.compactions > 0) {
       lines.push(`  平均压缩效率:         ${(stats.averageCompressionEfficiency * 100).toFixed(1)}%`);
       lines.push(`  历史最高连续压缩:     ${stats.maxConsecutiveCompactions} 次`);
-      lines.push(`  最近压缩比率趋势:     [${stats.compressionRatios.map(r => (r * 100).toFixed(0) + '%').join(' → ')}]`);
-      lines.push(`  最近压缩效率趋势:     [${stats.compressionEfficiency.map(e => (e * 100).toFixed(0) + '%').join(' → ')}]`);
+      lines.push(`  最近压缩比率趋势:     [${stats.compressionRatios.map(r => `${(r * 100).toFixed(0)  }%`).join(' → ')}]`);
+      lines.push(`  最近压缩效率趋势:     [${stats.compressionEfficiency.map(e => `${(e * 100).toFixed(0)  }%`).join(' → ')}]`);
     }
     lines.push(`  当前策略:             ${this.config.strategy}`);
     lines.push(`  上下文限制:           ${this.config.maxContextTokens.toLocaleString()} tokens`);

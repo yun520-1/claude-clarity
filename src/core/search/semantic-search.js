@@ -56,7 +56,7 @@ class SemanticSearch {
 
     if (!SemanticSearch.isModuleAvailable()) {
       this._loadError = '@xenova/transformers 未安装';
-      console.warn('[SemanticSearch] ' + this._loadError + '，语义搜索降级为空');
+      console.warn(`[SemanticSearch] ${  this._loadError  }，语义搜索降级为空`);
       return false;
     }
 
@@ -81,7 +81,7 @@ class SemanticSearch {
         }
         console.warn(`[SemanticSearch] 模型加载失败 (尝试 ${attempt}/${this.maxRetries}): ${e.message}`);
         if (attempt < this.maxRetries) {
-          await new Promise(r => setTimeout(r, 1000));
+          await new Promise(r => { setTimeout(r, 1000); });
         }
       }
     }

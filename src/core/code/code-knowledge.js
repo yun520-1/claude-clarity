@@ -1472,7 +1472,7 @@ class CodeKnowledge {
 
   // 内部工具：原子写入 JSON
   _atomicWriteJson(filePath, data) {
-    const tmp = filePath + '.tmp.' + Date.now() + '.json';
+    const tmp = `${filePath  }.tmp.${  Date.now()  }.json`;
     fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
     fs.renameSync(tmp, filePath);
   }

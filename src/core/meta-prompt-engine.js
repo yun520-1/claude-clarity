@@ -313,7 +313,7 @@ class MetaPromptEngine {
     // 如果反馈提到"不完整"，尝试补充结构
     if (/不完整|缺少|遗漏/.test(fb)) {
       if (!/①|②|③/.test(refined)) {
-        refined = refined + '\n\n补充说明：针对上述内容，补充关键要点。';
+        refined = `${refined  }\n\n补充说明：针对上述内容，补充关键要点。`;
       }
     }
 
@@ -326,12 +326,12 @@ class MetaPromptEngine {
 
     // 如果反馈提到"深度"或"具体"，扩展内容
     if (/深度|具体|详细/.test(fb) && out.length < 500) {
-      refined = refined + '\n\n进一步说明：需要更深入的分析和具体案例支撑。';
+      refined = `${refined  }\n\n进一步说明：需要更深入的分析和具体案例支撑。`;
     }
 
     // 如果反馈提到"逻辑"，检查并补充过渡
     if (/逻辑|连贯|衔接/.test(fb)) {
-      refined = refined + '\n\n因此，基于以上分析，可以得出结论。';
+      refined = `${refined  }\n\n因此，基于以上分析，可以得出结论。`;
     }
 
     // 收敛标记：如果反馈中包含"良好"|"不错"|"可以"等正面词，不做修改

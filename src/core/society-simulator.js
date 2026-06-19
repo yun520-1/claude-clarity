@@ -41,7 +41,7 @@ class AIAgent {
   }
 
   decide(action, opponentHistory) {
-    const { cooperation, reciprocity, forgiveness } = this.genes;
+    const { cooperation, reciprocity, forgiveness, punishment } = this.genes;
     
     const recentMoves = opponentHistory.slice(-3);
     const opponentCooperationRate = recentMoves.filter(m => m === 'cooperate').length / Math.max(1, recentMoves.length);

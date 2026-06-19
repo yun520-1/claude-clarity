@@ -804,7 +804,7 @@ class BlindSpotBreaker {
     }
     
     if (reframing.questions.length > 0) {
-      suggestions.push('建议追问：' + reframing.questions.map(q => q.question).join('；'));
+      suggestions.push(`建议追问：${  reframing.questions.map(q => q.question).join('；')}`);
     }
     
     // 如果是养育问题，添加养育反思建议
@@ -813,7 +813,7 @@ class BlindSpotBreaker {
       suggestions.push('【养育反思】');
       suggestions.push('在处理孩子的问题前，先问自己：');
       for (const q of parentingReflection.reflectionQuestions.slice(0, 2)) {
-        suggestions.push('  • ' + q.question);
+        suggestions.push(`  • ${  q.question}`);
       }
       suggestions.push('');
       suggestions.push(parentingReflection.finalInsight);

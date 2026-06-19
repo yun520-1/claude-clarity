@@ -92,7 +92,7 @@ class MentalEffortTracker {
     const baseCost = EFFORT_CONFIG.COMPLEXITY_COSTS[complexity];
     
     // 调整因子
-    let adjustmentFactors = {
+    const adjustmentFactors = {
       novelty: 1.0,      // 新颖性调整
       stakes: 1.0,       // 风险调整
       timePressure: 1.0, // 时间压力调整
@@ -210,7 +210,7 @@ class MentalEffortTracker {
   _analyzeEffortBenefit(task, cost) {
     const weights = EFFORT_CONFIG.EFFORT_BENEFIT_WEIGHTS;
     let benefitScore = 0;
-    let breakdown = {};
+    const breakdown = {};
 
     // 见证/陪伴任务：效益不在于分析准确度，在于连接与共情
     const isWitness = this._assessTaskComplexity(task) === 'witness';

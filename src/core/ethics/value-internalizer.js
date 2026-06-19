@@ -78,7 +78,7 @@ class ValueInternalizer {
     };
 
     let score = 0;
-    let matchedValues = [];
+    const matchedValues = [];
 
     for (const [value, indicators] of Object.entries(positiveIndicators)) {
       for (const indicator of indicators) {

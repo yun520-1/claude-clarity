@@ -58,11 +58,11 @@ class Reflector {
   log(message, data = null) {
     const timestamp = new Date().toISOString();
     // 统一使用 JSON Lines 格式（每行一个 JSON）
-    const entry = JSON.stringify({
+    const entry = `${JSON.stringify({
       timestamp,
       message,
       ...(data ? { data } : {})
-    }) + '\n';
+    })  }\n`;
     fs.appendFileSync(this.logFile, entry);
     try { fs.chmodSync(this.logFile, 0o600); } catch (e) { /* best effort */ }
   }
@@ -144,7 +144,7 @@ class Reflector {
 
     const completed = achievements.filter(a => a.status === 'completed').length;
     const total = achievements.length;
-    const rate = ((completed / total) * 100).toFixed(0) + '%';
+    const rate = `${((completed / total) * 100).toFixed(0)  }%`;
 
     return {
       completed: completed,
@@ -180,10 +180,10 @@ class Reflector {
       : '5.0';
 
     return {
-      effectiveness: effectiveness + '/10',
+      effectiveness: `${effectiveness  }/10`,
       positive: positive,
       negative: negative,
-      summary: `响应有效性评分 ${effective}/10，积极反馈${positive}次，消极反馈${negative}次`
+      summary: `响应有效性评分 ${effectiveness}/10，积极反馈${positive}次，消极反馈${negative}次`
     };
   }
 
@@ -223,7 +223,7 @@ class Reflector {
     const overall = (emotionScore * 0.3 + taskScore * 0.3 + feedbackScore * 0.4).toFixed(1);
     
     return {
-      score: overall + '/10',
+      score: `${overall  }/10`,
       flowState: overall >= 7 ? '已入流' : overall >= 5 ? '进行中' : '未入流'
     };
   }
@@ -304,7 +304,7 @@ class Reflector {
    * 打印报告到控制台
    */
   printReport(report) {
-    return;
+    
   }
 
   /**

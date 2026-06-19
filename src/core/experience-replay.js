@@ -280,7 +280,7 @@ class ExperienceReplay {
    * 打印建议
    */
   printSuggestions(result) {
-    return;
+    
   }
 
   /**

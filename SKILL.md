@@ -925,7 +925,7 @@ node -e "const {Clarity}=require('./src/core/clarity.js');const hf=new Clarity()
 
 ---
 
-> 版本历史已移入 `CHANGELOG.md`。当前版本：**1.4.0**。
+> 版本历史已移入 `CHANGELOG.md`。当前版本：**1.5.0**。
 
 ---
 

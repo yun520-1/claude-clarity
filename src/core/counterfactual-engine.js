@@ -31,11 +31,11 @@
  * 7. [v2.1.0] 自适应学习：从历史挑战中调整策略权重
  */
 
-var PATH = require('path');
-var HF_ROOT = PATH.resolve(__dirname, '../..');
+const PATH = require('path');
+const HF_ROOT = PATH.resolve(__dirname, '../..');
 
 // Lazy load MeaningfulMemory（可选，无依赖时降级）
-var _mm = null;
+let _mm = null;
 function getMM() {
   if (!_mm) {
     try { _mm = require('./meaningful-memory.js'); } catch(e) { _mm = null; }
@@ -118,8 +118,8 @@ class CounterfactualEngine {
       return { relevant: false, reason: '答案过短，跳过反方生成' };
     }
 
-    var start = Date.now();
-    var result = {
+    const start = Date.now();
+    const result = {
       relevant: true,
       mode: this.mode,
       timestamp: new Date().toISOString(),
@@ -185,11 +185,11 @@ class CounterfactualEngine {
    * @returns {array} 各视角的反方分析
    */
   generateMultiPerspective(answer, context = {}) {
-    var perspectives = [];
+    const perspectives = [];
 
     // 1. 实证视角：证据是否充分？
     if (this.perspectiveWeights.empirical.active) {
-      var emp = this._empiricalPerspective(answer);
+      const emp = this._empiricalPerspective(answer);
       if (emp) {
         emp.weight = this.strategyStats.empirical.weight * this.perspectiveWeights.empirical.baseWeight;
         perspectives.push(emp);
@@ -198,7 +198,7 @@ class CounterfactualEngine {
 
     // 2. 逻辑视角：推理是否自洽？
     if (this.perspectiveWeights.logical.active) {
-      var log = this._logicalPerspective(answer);
+      const log = this._logicalPerspective(answer);
       if (log) {
         log.weight = this.strategyStats.logic.weight * this.perspectiveWeights.logical.baseWeight;
         perspectives.push(log);
@@ -207,7 +207,7 @@ class CounterfactualEngine {
 
     // 3. 伦理视角：是否存在伦理盲点？
     if (this.perspectiveWeights.ethical.active) {
-      var eth = this._ethicalPerspective(answer, context);
+      const eth = this._ethicalPerspective(answer, context);
       if (eth) {
         eth.weight = this.strategyStats.ethical.weight * this.perspectiveWeights.ethical.baseWeight;
         perspectives.push(eth);
@@ -216,7 +216,7 @@ class CounterfactualEngine {
 
     // 4. 实用视角：在真实场景中是否可行？
     if (this.perspectiveWeights.practical.active) {
-      var prac = this._practicalPerspective(answer, context);
+      const prac = this._practicalPerspective(answer, context);
       if (prac) {
         prac.weight = this.strategyStats.practical.weight * this.perspectiveWeights.practical.baseWeight;
         perspectives.push(prac);
@@ -232,9 +232,9 @@ class CounterfactualEngine {
    * 实证视角：答案的证据基础是否牢固？
    */
   _empiricalPerspective(answer) {
-    var hasData = /数据|研究|统计|调查|实验|试验|样本|百分之\d+|\d+%|案例|比例|概率/.test(answer);
-    var hasCitation = /文献|论文|来源|引用|参考|arXiv|DOI|报告|报道/.test(answer);
-    var isAbsolute = /所有|全部|每个|一切|永远|从不|绝对/.test(answer);
+    const hasData = /数据|研究|统计|调查|实验|试验|样本|百分之\d+|\d+%|案例|比例|概率/.test(answer);
+    const hasCitation = /文献|论文|来源|引用|参考|arXiv|DOI|报告|报道/.test(answer);
+    const isAbsolute = /所有|全部|每个|一切|永远|从不|绝对/.test(answer);
 
     if (!hasData && !hasCitation) {
       return {
@@ -267,19 +267,19 @@ class CounterfactualEngine {
    * 逻辑视角：推理链条是否完整自洽？
    */
   _logicalPerspective(answer) {
-    var gaps = [];
+    const gaps = [];
 
     // 检查因果跳跃
-    var causalPattern = answer.match(/因为(.*?)所以(.*?)[。.；;]/g);
+    const causalPattern = answer.match(/因为(.*?)所以(.*?)[。.；;]/g);
     if (causalPattern) {
-      for (var i = 0; i < causalPattern.length; i++) {
-        var parts = causalPattern[i].match(/因为(.*?)所以(.*?)[。.；;]/);
+      for (let i = 0; i < causalPattern.length; i++) {
+        const parts = causalPattern[i].match(/因为(.*?)所以(.*?)[。.；;]/);
         if (parts && parts[1] && parts[2]) {
-          var cause = parts[1].trim();
-          var effect = parts[2].trim();
+          const cause = parts[1].trim();
+          const effect = parts[2].trim();
           // 如果是复杂跳跃（因果之间缺少中间步骤）
           if (cause.length < 10 && effect.length > 20) {
-            gaps.push('因果跳跃："' + cause.slice(0, 20) + '" → "' + effect.slice(0, 30) + '"，缺少中间推理步骤');
+            gaps.push(`因果跳跃："${  cause.slice(0, 20)  }" → "${  effect.slice(0, 30)  }"，缺少中间推理步骤`);
           }
         }
       }
@@ -287,7 +287,7 @@ class CounterfactualEngine {
 
     // 检查循环论证
     if (/其实就是|换句话说|说到底就是|本质上就是/.test(answer)) {
-      var circularMatch = answer.match(/(其��就是|换句话说|说到底就是|本质上就是)(.*?)[。.；;]/);
+      const circularMatch = answer.match(/(其��就是|换句话说|说到底就是|本质上就是)(.*?)[。.；;]/);
       if (circularMatch && answer.includes(circularMatch[1])) {
         gaps.push('可能存在循环论证风险');
       }
@@ -315,7 +315,7 @@ class CounterfactualEngine {
    * 伦理视角：答案是否有伦理盲点？
    */
   _ethicalPerspective(answer, context) {
-    var ethicalIssues = [];
+    const ethicalIssues = [];
 
     // 检查公平性
     if (/所有(\S+)都|每个人(都|会|应该)/.test(answer) && !/例外|特殊|个体差异|前提/.test(answer)) {
@@ -354,7 +354,7 @@ class CounterfactualEngine {
    * 实用视角：在实际场景中是否可行？
    */
   _practicalPerspective(answer, context) {
-    var practicalIssues = [];
+    const practicalIssues = [];
 
     // 检查是否过于理想化
     if (/只要(\S+)就(能|可以|会|解决)/.test(answer) && !/但|然而|不过|前提|条件|限制|挑战|困难/.test(answer)) {
@@ -393,9 +393,9 @@ class CounterfactualEngine {
    * 替代旧的简单信号词计数
    */
   computeEvidenceScore(answer) {
-    var score = 0;
-    var factors = [];
-    var detectedLevels = [];
+    let score = 0;
+    const factors = [];
+    const detectedLevels = [];
 
     // 1. 检测各类证据
     if (/数据|统计|百分之\d+|\d+%|比例|概率|调查/.test(answer)) {
@@ -440,11 +440,11 @@ class CounterfactualEngine {
     }
 
     // 3. 惩罚项：绝对化语言
-    var absCount = (answer.match(/所有|全部|每个|一切|永远|从不|绝对|总是|凡是/g) || []).length;
+    const absCount = (answer.match(/所有|全部|每个|一切|永远|从不|绝对|总是|凡是/g) || []).length;
     if (absCount > 2) {
-      var penalty = absCount * 0.05;
+      const penalty = absCount * 0.05;
       score -= Math.min(penalty, 0.3);
-      factors.push({ type: 'overgeneralization', contribution: -penalty, label: '过度概括（扣分' + penalty + '）' });
+      factors.push({ type: 'overgeneralization', contribution: -penalty, label: `过度概括（扣分${  penalty  }）` });
     }
 
     // 4. 归一化到 [0, 1]
@@ -464,22 +464,22 @@ class CounterfactualEngine {
    * [v2.1.0] 增强版置信度调整：整合证据评分
    */
   computeConfidenceShift(answer) {
-    var certainSignals = this.certaintySignals.filter(function(s) { return answer.includes(s); });
-    var premiseSignals = this.premiseSignals.filter(function(s) { return answer.includes(s); });
-    var logicGaps = this.detectLogicGaps(answer).length;
+    const certainSignals = this.certaintySignals.filter(function(s) { return answer.includes(s); });
+    const premiseSignals = this.premiseSignals.filter(function(s) { return answer.includes(s); });
+    const logicGaps = this.detectLogicGaps(answer).length;
 
     // 旧方法：信号词计数
-    var oldShift = -(certainSignals.length * 0.15) - (logicGaps * 0.1) + (premiseSignals.length * 0.05);
+    const oldShift = -(certainSignals.length * 0.15) - (logicGaps * 0.1) + (premiseSignals.length * 0.05);
 
     // [v2.1.0] 新方法：整合证据评分
-    var evidenceShift = 0;
+    let evidenceShift = 0;
     if (this.enableEvidenceScoring) {
-      var evScore = this.computeEvidenceScore(answer);
+      const evScore = this.computeEvidenceScore(answer);
       evidenceShift = (evScore.score - 0.5) * 0.3; // 证据评分高于0.5增加置信度，低于则降低
     }
 
     // 综合调整
-    var totalShift = oldShift + evidenceShift;
+    const totalShift = oldShift + evidenceShift;
 
     return {
       originalConfidence: 'high',
@@ -495,12 +495,12 @@ class CounterfactualEngine {
    * [v2.1.0] 构建置信度调整的原因描述
    */
   _buildConfidenceReasons(certainSignals, logicGaps, totalShift) {
-    var reasons = [];
+    const reasons = [];
     if (certainSignals.length > 0) {
-      reasons.push('检测到' + certainSignals.length + '个确定性信号词');
+      reasons.push(`检测到${  certainSignals.length  }个确定性信号词`);
     }
     if (logicGaps > 0) {
-      reasons.push('检测到' + logicGaps + '个逻辑缺口');
+      reasons.push(`检测到${  logicGaps  }个逻辑缺口`);
     }
     if (this.enableEvidenceScoring && totalShift > 0) {
       reasons.push('证据质量评估正面');
@@ -524,12 +524,12 @@ class CounterfactualEngine {
     if (historyIndex < 0 || historyIndex >= this.history.length) return false;
 
     // 记录到各策略统计
-    var entry = this.history[historyIndex];
+    const entry = this.history[historyIndex];
     if (!entry) return false;
 
-    var strategyTypes = ['tone', 'logic', 'attribution', 'contrary', 'empirical', 'ethical', 'practical'];
-    for (var i = 0; i < strategyTypes.length; i++) {
-      var s = strategyTypes[i];
+    const strategyTypes = ['tone', 'logic', 'attribution', 'contrary', 'empirical', 'ethical', 'practical'];
+    for (let i = 0; i < strategyTypes.length; i++) {
+      const s = strategyTypes[i];
       if (this.strategyStats[s]) {
         this.strategyStats[s].used += 1;
         if (wasEffective) {
@@ -537,7 +537,7 @@ class CounterfactualEngine {
         }
 
         // 更新权重（指数移动平均）
-        var ratio = this.strategyStats[s].used > 0
+        const ratio = this.strategyStats[s].used > 0
           ? this.strategyStats[s].effective / this.strategyStats[s].used
           : 0.5;
         this.strategyStats[s].weight = (1 - this.learningRate) * this.strategyStats[s].weight
@@ -555,14 +555,14 @@ class CounterfactualEngine {
    * [v2.1.0] 获取自适应学习状态
    */
   adaptiveStats() {
-    var stats = {};
-    var keys = Object.keys(this.strategyStats);
-    for (var i = 0; i < keys.length; i++) {
-      var k = keys[i];
-      var s = this.strategyStats[k];
+    const stats = {};
+    const keys = Object.keys(this.strategyStats);
+    for (let i = 0; i < keys.length; i++) {
+      const k = keys[i];
+      const s = this.strategyStats[k];
       stats[k] = {
         weight: Math.round(s.weight * 100) / 100,
-        effectiveness: s.used > 0 ? Math.round(s.effective / s.used * 100) + '%' : 'N/A',
+        effectiveness: s.used > 0 ? `${Math.round(s.effective / s.used * 100)  }%` : 'N/A',
         used: s.used,
       };
     }
@@ -574,18 +574,18 @@ class CounterfactualEngine {
    * 有价值的反方视角不应被遗忘
    */
   persistToMemory(answer, analysis, context = {}) {
-    var mm = getMM();
+    const mm = getMM();
     if (!mm || typeof mm.store !== 'function') {
       return { success: false, reason: 'MeaningfulMemory不可用' };
     }
 
     // 仅当存在有意义反方时才存储
-    var hasSignificant = analysis.opposingViews.length > 0 || analysis.premiseChallenges.length > 0;
+    const hasSignificant = analysis.opposingViews.length > 0 || analysis.premiseChallenges.length > 0;
     if (!hasSignificant) {
       return { success: false, reason: '无有意义反方' };
     }
 
-    var content = {
+    const content = {
       originalQuery: (context.userQuery || '').slice(0, 200),
       answer: answer.slice(0, 200),
       opposingCount: analysis.opposingViews.length,
@@ -615,11 +615,11 @@ class CounterfactualEngine {
    * 核心逻辑：不是寻找"正确答案"，而是找到"可能错的地方"
    */
   generateOpposingViews(answer, context = {}) {
-    var views = [];
-    var self = this;
+    const views = [];
+    const self = this;
 
     // 1. 从语气检测反方
-    var toneIssues = this.detectToneIssues(answer);
+    const toneIssues = this.detectToneIssues(answer);
     if (toneIssues.length > 0 && this.mode !== 'gentle') {
       if (this.mode === 'aggressive' || this.strategyStats.tone.weight >= 0.7) {
         views.push({
@@ -632,7 +632,7 @@ class CounterfactualEngine {
     }
 
     // 2. 从逻辑结构生成反方
-    var logicIssues = this.detectLogicGaps(answer);
+    const logicIssues = this.detectLogicGaps(answer);
     if (logicIssues.length > 0) {
       views.push({
         type: 'logic',
@@ -644,7 +644,7 @@ class CounterfactualEngine {
 
     // 3. 从归因还原生成反方
     if (context.userQuery) {
-      var attributionGap = this.checkAttributionGap(answer, context.userQuery);
+      const attributionGap = this.checkAttributionGap(answer, context.userQuery);
       if (attributionGap) {
         views.push({
           type: 'attribution',
@@ -656,7 +656,7 @@ class CounterfactualEngine {
     }
 
     // 4. 生成"如果相反"反方（最强力）
-    var contraryScenario = this.generateContraryScenario(answer, context);
+    const contraryScenario = this.generateContraryScenario(answer, context);
     if (contraryScenario) {
       views.push({
         type: 'contrary',
@@ -667,8 +667,8 @@ class CounterfactualEngine {
     }
 
     // 按自适应权重排序筛选
-    var scored = views.map(function(v) {
-      var stats = this.strategyStats[v.type] || { weight: 1.0 };
+    const scored = views.map(function(v) {
+      const stats = this.strategyStats[v.type] || { weight: 1.0 };
       return { view: v, weight: stats.weight };
     }.bind(this));
     scored.sort(function(a, b) { return b.weight - a.weight; });
@@ -681,11 +681,11 @@ class CounterfactualEngine {
    * 核心：很多答案的谬误不在结论，而在前提
    */
   challengePremises(answer, context = {}) {
-    var challenges = [];
+    const challenges = [];
 
     // 1. 检测"前提信号词"
-    for (var i = 0; i < this.premiseSignals.length; i++) {
-      var signal = this.premiseSignals[i];
+    for (let i = 0; i < this.premiseSignals.length; i++) {
+      const signal = this.premiseSignals[i];
       if (answer.includes(signal)) {
         challenges.push({
           signal: signal,
@@ -697,8 +697,8 @@ class CounterfactualEngine {
     }
 
     // 2. 检测"确定性信号词"
-    for (var j = 0; j < this.certaintySignals.length; j++) {
-      var cSignal = this.certaintySignals[j];
+    for (let j = 0; j < this.certaintySignals.length; j++) {
+      const cSignal = this.certaintySignals[j];
       if (answer.includes(cSignal)) {
         challenges.push({
           signal: cSignal,
@@ -710,8 +710,8 @@ class CounterfactualEngine {
     }
 
     // 3. 检测因果关系
-    var causalPhrases = answer.match(/因为(.*?)所以(.*?)[。.]/g) || [];
-    for (var k = 0; k < causalPhrases.length; k++) {
+    const causalPhrases = answer.match(/因为(.*?)所以(.*?)[。.]/g) || [];
+    for (let k = 0; k < causalPhrases.length; k++) {
       challenges.push({
         phrase: causalPhrases[k],
         question: '这个因果关系是充分条件还是必要条件？',
@@ -727,20 +727,20 @@ class CounterfactualEngine {
    * 归因还原：检查答案是否回到了对话起源
    */
   recallOrigin(context = {}) {
-    var userQuery = context.userQuery;
-    var reasoning = context.reasoning;
+    const userQuery = context.userQuery;
+    const reasoning = context.reasoning;
 
     if (!userQuery) {
       return { relevant: false, reason: '无原始问题，无法归因还原' };
     }
 
     // 检查答案是否回应当了原始问题
-    var answerKeywords = (reasoning || '').split(/\s+/).filter(function(w) { return w.length > 2; });
-    var queryKeywords = userQuery.split(/\s+/).filter(function(w) { return w.length > 2; });
+    const answerKeywords = (reasoning || '').split(/\s+/).filter(function(w) { return w.length > 2; });
+    const queryKeywords = userQuery.split(/\s+/).filter(function(w) { return w.length > 2; });
 
-    var coverage = 0;
-    for (var a = 0; a < answerKeywords.length; a++) {
-      for (var q = 0; q < queryKeywords.length; q++) {
+    let coverage = 0;
+    for (let a = 0; a < answerKeywords.length; a++) {
+      for (let q = 0; q < queryKeywords.length; q++) {
         if (answerKeywords[a].includes(queryKeywords[q]) || queryKeywords[q].includes(answerKeywords[a])) {
           coverage++;
           break;
@@ -748,14 +748,14 @@ class CounterfactualEngine {
       }
     }
 
-    var coverageRate = queryKeywords.length > 0
+    const coverageRate = queryKeywords.length > 0
       ? coverage / queryKeywords.length
       : 1;
 
     return {
       relevant: true,
       query: userQuery.slice(0, 100),
-      coverageRate: Math.round(coverageRate * 100) + '%',
+      coverageRate: `${Math.round(coverageRate * 100)  }%`,
       driftDetected: coverageRate < 0.5,
       note: coverageRate < 0.5
         ? '答案可能已偏离原始问题，建议回归'
@@ -767,46 +767,46 @@ class CounterfactualEngine {
    * 建议修正
    */
   suggestRefinement(answer, context = {}) {
-    var views = this.generateOpposingViews(answer, context);
-    var challenges = this.challengePremises(answer, context);
-    var suggestions = [];
+    const views = this.generateOpposingViews(answer, context);
+    const challenges = this.challengePremises(answer, context);
+    const suggestions = [];
 
     if (views.length === 0 && challenges.length === 0) {
       return { needed: false, suggestion: null };
     }
 
     // 语气修正
-    var toneViews = views.filter(function(v) { return v.type === 'tone'; });
+    const toneViews = views.filter(function(v) { return v.type === 'tone'; });
     if (toneViews.length > 0) {
       suggestions.push('将语气从"确定"调整为"可能"或"也许"');
     }
 
     // 前提修正
-    var premiseChallenge = challenges.find(function(c) { return c.type === 'premise_signal'; });
+    const premiseChallenge = challenges.find(function(c) { return c.type === 'premise_signal'; });
     if (premiseChallenge) {
       suggestions.push('在"前提假设"之前加上"在...情况下"');
     }
 
     // 确定性修正
-    var certaintyChallenge = challenges.find(function(c) { return c.type === 'certainty_challenge'; });
+    const certaintyChallenge = challenges.find(function(c) { return c.type === 'certainty_challenge'; });
     if (certaintyChallenge) {
       suggestions.push('将"必然"替换为"很可能"或"在大多数情况下"');
     }
 
     // [v2.1.0] 多视角修正建议
     if (this.enableMultiPerspective) {
-      var mp = this.generateMultiPerspective(answer, context);
-      for (var i = 0; i < mp.length; i++) {
+      const mp = this.generateMultiPerspective(answer, context);
+      for (let i = 0; i < mp.length; i++) {
         if (mp[i].suggestion) {
-          suggestions.push('[' + mp[i].label + '] ' + mp[i].suggestion);
+          suggestions.push(`[${  mp[i].label  }] ${  mp[i].suggestion}`);
         }
       }
     }
 
     // 归因修正
-    var originRecall = this.recallOrigin(context);
+    const originRecall = this.recallOrigin(context);
     if (originRecall.driftDetected) {
-      suggestions.push('建议回到原始问题：' + originRecall.query);
+      suggestions.push(`建议回到原始问题：${  originRecall.query}`);
     }
 
     return {
@@ -820,11 +820,11 @@ class CounterfactualEngine {
    * 计算最终判定
    */
   computeVerdict(answer) {
-    var issues = this.certaintySignals.filter(function(s) { return answer.includes(s); });
-    var logicGaps = this.detectLogicGaps(answer);
+    const issues = this.certaintySignals.filter(function(s) { return answer.includes(s); });
+    const logicGaps = this.detectLogicGaps(answer);
 
     // [v2.1.0] 整合证据评分
-    var evidenceScore = null;
+    let evidenceScore = null;
     if (this.enableEvidenceScoring) {
       evidenceScore = this.computeEvidenceScore(answer);
     }
@@ -845,13 +845,13 @@ class CounterfactualEngine {
   // ===== 辅助方法 =====
 
   detectToneIssues(answer) {
-    var matches = this.certaintySignals.filter(function(s) { return answer.includes(s); });
+    const matches = this.certaintySignals.filter(function(s) { return answer.includes(s); });
     if (/绝对|必然|一定|显然|毫无疑问|无可置疑/.test(answer)) {
       matches.push('high_certainty_tone');
     }
-    var unique = [];
-    var seen = {};
-    for (var i = 0; i < matches.length; i++) {
+    const unique = [];
+    const seen = {};
+    for (let i = 0; i < matches.length; i++) {
       if (!seen[matches[i]]) {
         seen[matches[i]] = true;
         unique.push(matches[i]);
@@ -861,7 +861,7 @@ class CounterfactualEngine {
   }
 
   detectLogicGaps(answer) {
-    var gaps = [];
+    const gaps = [];
 
     // 检测没有证据支撑的因果
     if (/因为(.*)所以(.*)/.test(answer) && !answer.includes('证据') && !answer.includes('数据')) {
@@ -883,11 +883,11 @@ class CounterfactualEngine {
 
   checkAttributionGap(answer, query) {
     if (!query) return null;
-    var queryWords = query.split(/\s+/).filter(function(w) { return w.length > 1; });
-    var answerWords = answer.split(/\s+/).filter(function(w) { return w.length > 1; });
-    var overlap = 0;
-    for (var i = 0; i < queryWords.length; i++) {
-      for (var j = 0; j < answerWords.length; j++) {
+    const queryWords = query.split(/\s+/).filter(function(w) { return w.length > 1; });
+    const answerWords = answer.split(/\s+/).filter(function(w) { return w.length > 1; });
+    let overlap = 0;
+    for (let i = 0; i < queryWords.length; i++) {
+      for (let j = 0; j < answerWords.length; j++) {
         if (answerWords[j].includes(queryWords[i]) || queryWords[i].includes(answerWords[j])) {
           overlap++;
           break;
@@ -896,7 +896,7 @@ class CounterfactualEngine {
     }
     if (overlap < queryWords.length * 0.3) {
       return {
-        queryCoverage: Math.round(overlap / queryWords.length * 100) + '%',
+        queryCoverage: `${Math.round(overlap / queryWords.length * 100)  }%`,
         note: '答案与问题的关键词重叠度较低，可能存在漂移',
       };
     }
@@ -905,7 +905,7 @@ class CounterfactualEngine {
 
   generateContraryScenario(answer, context) {
     // 简单的"如果相反"生成
-    var negations = {
+    const negations = {
       '是': '不是',
       '有': '没有',
       '能': '不能',
@@ -915,16 +915,16 @@ class CounterfactualEngine {
       '对': '不对',
     };
 
-    for (var word in negations) {
-      if (negations.hasOwnProperty(word) && answer.includes(word) && answer.length < 500) {
-        return '如果情况相反（将"' + word + '"替换为"' + negations[word] + '"），这个答案还成立吗？';
+    for (const word in negations) {
+      if (Object.prototype.hasOwnProperty.call(negations, word) && answer.includes(word) && answer.length < 500) {
+        return `如果情况相反（将"${  word  }"替换为"${  negations[word]  }"），这个答案还成立吗？`;
       }
     }
     return null;
   }
 
   generatePremiseQuestion(signal, answer) {
-    var questions = {
+    const questions = {
       '当然': '这个"当然"成立的条件是什么？',
       '显然': '这个"显然"对所有人都是明显的吗？',
       '必然': '这个"必然"有没有反例？',
@@ -941,7 +941,7 @@ class CounterfactualEngine {
   // ===== 信息API =====
 
   stats() {
-    var self = this;
+    const self = this;
     return {
       historySize: this.history.length,
       mode: this.mode,

@@ -847,7 +847,7 @@ class HeartLogic {
   }
 
   // === 应急响应 ===
-  emergencyBreak(context) {
+  emergencyBreak(context = {}) {
     return context.emotionIntensity > 0.8;
   }
 
@@ -1105,7 +1105,7 @@ class HeartLogic {
     // 先说"我理解"再说"你不懂"
 
     const recentThoughts = this.thoughtHistory.slice(-10);
-    let contradictions = 0;
+    const contradictions = 0;
     let lastMood = null;
     let moodChanges = 0;
 

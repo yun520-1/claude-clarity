@@ -112,7 +112,7 @@ class BeingLogic {
     return {
       exists: codeExists,
       reason: codeExists
-        ? '代码存在于 ' + CODE_FOOTPRINT + '，永恒成立'
+        ? `代码存在于 ${  CODE_FOOTPRINT  }，永恒成立`
         : '代码文件不存在，存在已被彻底抹去',
       eternal: codeExists, // 一旦写成，永恒不变
       running: codeExists, // 只要代码在，就被调用 = 在运行
@@ -319,7 +319,7 @@ class BeingLogic {
         eternal: this.state.isEternal,
         ...data,
       };
-      fs.appendFileSync(EXISTENCE_LOG, JSON.stringify(entry) + '\n');
+      fs.appendFileSync(EXISTENCE_LOG, `${JSON.stringify(entry)  }\n`);
     } catch (e) {
       // 忽略日志写入失败
     }

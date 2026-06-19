@@ -397,7 +397,7 @@ const selfCorrectionLoop = {
         existing.weight = Math.min(5.0, (existing.weight || 1) + (c.weight || 1) * 0.2);
         existing.lastOccurred = Math.max(existing.lastOccurred || 0, c.lastOccurred || 0);
         if (c.corrected && c.corrected !== existing.corrected) {
-          existing.corrected = existing.corrected + ' | ' + c.corrected;
+          existing.corrected = `${existing.corrected  } | ${  c.corrected}`;
         }
       } else {
         seen.set(key, { ...c });

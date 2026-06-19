@@ -160,23 +160,23 @@ class ConfidenceCalibrator {
     const uncertainty = 1 - base;
 
     return {
-      mostLikely: Math.round(base * 100) + '%',
+      mostLikely: `${Math.round(base * 100)  }%`,
       alternatives: [
         {
           scenario: '主流观点',
-          confidence: Math.round(base * 100) + '%',
+          confidence: `${Math.round(base * 100)  }%`,
         },
         {
           scenario: '替代解释',
-          confidence: Math.round((uncertainty * 0.6) * 100) + '%',
+          confidence: `${Math.round((uncertainty * 0.6) * 100)  }%`,
         },
         {
           scenario: '相反可能',
-          confidence: Math.round((uncertainty * 0.3) * 100) + '%',
+          confidence: `${Math.round((uncertainty * 0.3) * 100)  }%`,
         },
         {
           scenario: '未知/其他',
-          confidence: Math.round((uncertainty * 0.1) * 100) + '%',
+          confidence: `${Math.round((uncertainty * 0.1) * 100)  }%`,
         },
       ],
       note: '不确定时，给出概率分布而非单一答案',
@@ -300,7 +300,7 @@ class ConfidenceCalibrator {
       const phrases = this.getCalibrationPhrases(level);
       const phrase = phrases[Math.floor(Math.random() * phrases.length)];
       if (!calibrated.includes(phrase)) {
-        calibrated = calibrated.trim() + '（' + phrase + '）';
+        calibrated = `${calibrated.trim()  }（${  phrase  }）`;
       }
     }
 

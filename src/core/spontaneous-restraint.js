@@ -152,7 +152,7 @@ class SpontaneousRestraint {
       // 如果检测到自动反射，触发暂停而不是继续
       if (reflexResult.action === 'pause') {
         result.interventionLevel = 'minimal';
-        result.restraintReason = reflexResult.note + ' — 检测到自动反射，第一遍未通过';
+        result.restraintReason = `${reflexResult.note  } — 检测到自动反射，第一遍未通过`;
         this._record('auto-reflex-pause', userMessage);
         return result;
       }
@@ -214,7 +214,7 @@ class SpontaneousRestraint {
       );
       if (!hasRestraint) {
         result.shouldExpand = false;
-        result.expandReason = '响应已足够长（>' + this.lengthGate + '字），克制扩展冲动';
+        result.expandReason = `响应已足够长（>${  this.lengthGate  }字），克制扩展冲动`;
         result.reasons.push('长度门控触发');
       }
     }
@@ -230,7 +230,7 @@ class SpontaneousRestraint {
     // 6. 根据aggressiveness调整
     if (this.aggressiveness < 0.5 && result.interventionLevel === 'full') {
       result.interventionLevel = 'minimal';
-      result.reasons.push('aggressiveness<' + this.aggressiveness + '，降低干预等级');
+      result.reasons.push(`aggressiveness<${  this.aggressiveness  }，降低干预等级`);
     }
 
     // 7. 计算最小有效响应
@@ -325,7 +325,7 @@ class SpontaneousRestraint {
     return {
       form: chosen,
       category,
-      note: '最小干预：' + chosen,
+      note: `最小干预：${  chosen}`,
     };
   }
 
@@ -451,7 +451,7 @@ class SpontaneousRestraint {
     if (totalLength > this.lengthGate * 1.5) {
       return {
         restrain: true,
-        reason: '当前响应长度(' + totalLength + ')已超过门控(' + this.lengthGate * 1.5 + ')',
+        reason: `当前响应长度(${  totalLength  })已超过门控(${  this.lengthGate * 1.5  })`,
         alternative: '建议以"如果需要更多细节请告诉我"结尾，而非继续扩展',
       };
     }

@@ -196,7 +196,7 @@ class IntentionTracker {
     }
     
     let report = '📋 目标追踪报告\n\n';
-    report += '═'.repeat(40) + '\n\n';
+    report += `${'═'.repeat(40)  }\n\n`;
     report += `主要目标：${this.primaryGoal.description}\n`;
     report += `设定时间：${this.primaryGoal.setAt}\n\n`;
     
@@ -211,7 +211,7 @@ class IntentionTracker {
     
     report += `偏离次数：${this.deviationHistory.length} 次\n`;
     report += `干预次数：${this.nudgeConfig.nudgeCount}/${this.nudgeConfig.maxNudgesPerSession}\n`;
-    report += '\n' + '═'.repeat(40) + '\n';
+    report += `\n${  '═'.repeat(40)  }\n`;
     
     return report;
   }

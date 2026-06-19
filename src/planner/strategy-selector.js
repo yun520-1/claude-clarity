@@ -84,7 +84,7 @@ class StrategySelector {
    */
   _selectBasedOnTask(taskType, environment, context) {
     // 危险操作使用保守策略
-    if (this._isDangerousOperation(task, context)) {
+    if (this._isDangerousOperation(taskType, context)) {
       return 'conservative';
     }
 

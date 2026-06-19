@@ -60,7 +60,7 @@ class AuditLogger {
   _rotate() {
     try {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const rotatedPath = this._logPath + '.' + timestamp;
+      const rotatedPath = `${this._logPath  }.${  timestamp}`;
       fs.renameSync(this._logPath, rotatedPath);
     } catch (e) {
       console.warn(`[AuditLogger] 轮转失败: ${e.message}`);
@@ -80,7 +80,7 @@ class AuditLogger {
       d: details,
       h: this._hash(eventType + JSON.stringify(details) + Date.now()),
     };
-    this._stream.write(JSON.stringify(entry) + '\n');
+    this._stream.write(`${JSON.stringify(entry)  }\n`);
   }
 
   /**

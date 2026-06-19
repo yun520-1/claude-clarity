@@ -129,7 +129,7 @@ function runModuleCheck(item) {
     return {
       id: item.id, label: item.label, path: item.path,
       status: ok ? 'PASS' : 'FAIL',
-      detail: ok ? `loaded (${loadMs}ms${modVersion ? ', v' + modVersion : ''}${fromCache ? ', cached' : ', fresh'})` : 'export not found',
+      detail: ok ? `loaded (${loadMs}ms${modVersion ? `, v${  modVersion}` : ''}${fromCache ? ', cached' : ', fresh'})` : 'export not found',
       loadMs: parseFloat(loadMs) || 0,
       modVersion,
       fromCache,

@@ -687,9 +687,9 @@ class DebateAnalyzer {
     const topItem = items[0];
     switch (type) {
       case 'agreement':
-        return topItem.claim.slice(0, 60) + '...';
+        return `${topItem.claim.slice(0, 60)  }...`;
       case 'disagreement':
-        return topItem.claim.slice(0, 60) + ' → ' + topItem.correction.slice(0, 30);
+        return `${topItem.claim.slice(0, 60)  } → ${  topItem.correction.slice(0, 30)}`;
       case 'insight':
         return topItem.observation.slice(0, 80);
       default:

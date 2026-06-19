@@ -440,7 +440,7 @@ function patternMatches(lowerText, lowerPattern) {
   // 1. 纯 ASCII pattern (含空格/标点的英文短语)
   if (/^[\x00-\x7F]+$/.test(lowerPattern)) {
     const escaped = lowerPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp('\\b' + escaped + '\\b', 'i');
+    const regex = new RegExp(`\\b${  escaped  }\\b`, 'i');
     return regex.test(lowerText);
   }
 
@@ -1432,7 +1432,7 @@ function classifyEmotionIntensity(text) {
   const capsRatio = (text.match(/[A-Z]/g) || []).length / Math.max(lower.length, 1);
   
   let level = 'low';
-  let signals = [];
+  const signals = [];
   
   if (exclamationCount >= 2) {
     level = 'high';
@@ -1631,7 +1631,7 @@ function generatePerspectiveShift(text, context = {}) {
  * - 每个话题的store/context完全隔离
  */
 let _topicScopeInstance = null;
-let _topicScopeManager = null;
+const _topicScopeManager = null;
 
 function _getTopicScope() {
   if (!_topicScopeInstance) {

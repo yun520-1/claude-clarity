@@ -99,7 +99,7 @@ class LessonStorage {
     // 合并上下文：如果不同则拼接
     let mergedContext = existing.context;
     if (incoming.context && incoming.context !== existing.context) {
-      mergedContext = existing.context + ' | ' + incoming.context;
+      mergedContext = `${existing.context  } | ${  incoming.context}`;
     }
 
     // 合并触发器

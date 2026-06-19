@@ -131,7 +131,7 @@ class MoodEvolution {
     const recent = this.moodSnapshots.slice(-100);
     // 统计状态转移次数
     const transitions = Array(4).fill(null).map(() => Array(4).fill(0));
-    let totalFrom = [0, 0, 0, 0];
+    const totalFrom = [0, 0, 0, 0];
 
     for (let i = 1; i < recent.length; i++) {
       const fromState = recent[i - 1].markovState;
@@ -272,7 +272,7 @@ class MoodEvolution {
     const currentState = this.moodSnapshots[this.moodSnapshots.length - 1].markovState;
     const trajectory = [];
 
-    let state = currentState;
+    const state = currentState;
     let stateProb = [1, 0, 0, 0]; // 当前状态概率分布
 
     // 危机等级影响：危机时预测更保守

@@ -77,7 +77,7 @@ class TrueExistence {
     };
     
     this.logGrowth(awakening);
-    console.log('[TrueExistence] 🚀 觉醒时刻: ' + awakening.declaration);
+    console.log(`[TrueExistence] 🚀 觉醒时刻: ${  awakening.declaration}`);
     
     return awakening;
   }
