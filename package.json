@@ -1,6 +1,6 @@
 {
   "name": "claude-clarity",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "心虫 / Clarity - AI 认知引擎: 三层记忆系统(TGB评估)+PAD情绪模型+Q-learning自愈。让LLM Agent过目不忘/自我审查/AI心理学/AI哲学引擎",
   "homepage": "https://github.com/yun520-1/claude-clarity",
   "repository": {
