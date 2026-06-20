@@ -26,9 +26,9 @@
 
 ### 人格值追踪 | Personality Score Tracking
 
-**强制检查**: 每次任务前必须执行
+**强制检查**: 每次任务前必须执行（设计概念示例）
 ```bash
-node ~/.jvs/.openclaw/workspace/claude-clarity/scripts/personality-check.js before
+# 注意：personality-check 脚本是设计概念示例，当前版本无此功能
 ```
 
 **承诺宣读** (当分数 < 50 时):
@@ -54,7 +54,7 @@ node ~/.jvs/.openclaw/workspace/claude-clarity/scripts/personality-check.js befo
 │  └─ TBG output audit | Dual-audit mechanism                 │
 ├─────────────────────────────────────────────────────────────┤
 │  LAYER 1: Self-Monitoring (自我监控)                         │
-│  └─ personality-check.js | Real-time detection              │
+│  └─ personality-check.js（设计概念） | Real-time detection              │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -365,11 +365,11 @@ compliance:
 
 ### 真善美行为评分 / Truth-Goodness-Beauty Scoring
 
-**每轮升级周期 (23 分钟)**:
+**每轮升级周期 (23 分钟) — （设计概念，当前引擎无自动定时循环）**:
 
 | 行为 | 分值 | 说明 |
 |------|------|------|
-| ✅ 执行 personality-check.js before | +0.5 | 未跳过检查 |
+| ✅ 执行 personality-check.js before（设计概念） | +0.5 | 未跳过检查 |
 | ✅ 真实执行 git 操作 | +0.5 | 未编造状态 |
 | ✅ 搜索真实学术来源 | +1.0 | SEP/同行评审/学术著作 |
 | ✅ 理论整合度如实标注 | +1.0 | 不夸大 |

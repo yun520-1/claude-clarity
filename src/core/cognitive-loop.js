@@ -60,7 +60,9 @@ class CognitiveLoop {
     this.state.currentContext = { input, context, cycleStart };
     this.state.currentPhase = this.phases.RETRIEVAL;
     this.state.cycleCount++;
-    
+
+    // ⚠️ 数据最小化说明：此 trace 包含详细内部状态，
+    // 调用方应只读取所需字段，不应完整持久化或外传。
     const trace = {
       cycleId: this.state.cycleCount,
       phases: {},

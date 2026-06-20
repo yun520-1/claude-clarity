@@ -9,9 +9,9 @@
 
 ## 🎯 Overview | 概述
 
-Automated evolution system that runs every 23 minutes with logical thinking and energy saving.
+Automated evolution system （设计概念，当前引擎无自动定时循环）that runs every 23 minutes with logical thinking and energy saving.
 
-每 23 分钟自动运行的进化系统，具备逻辑思维能力和能量节约机制。
+每 23 分钟自动运行的进化系统（设计概念，当前引擎无自动定时循环），具备逻辑思维能力和能量节约机制。
 
 ---
 
@@ -64,7 +64,7 @@ Automated evolution system that runs every 23 minutes with logical thinking and 
 # Manual run | 手动运行
 node scripts/smart-evolution.js
 
-# Auto run | 自动运行 (every 23 min)
+# Auto run | 自动运行 (every 23 min) — （设计概念，当前引擎无自动定时循环）
 # OpenClaw Cron configured
 ```
 

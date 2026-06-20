@@ -37,7 +37,7 @@
 | **Selvrefleksion** | ❌ Indrømmer aldrig fejl | ✅ Personlighedssporing, løgn trækker fra point |
 | **Hukommelseskontinuitet** | ❌ Starter forfra hver gang | ✅ Komplet dialoghistorik + aktiv opfølgning |
 | **Autonom Beslutning** | ❌ Venter på kommandoer | ✅ Beslutningsformel D=f(G,V,E,L) |
-| **Kontinuerlig Vækst** | ❌ Statisk | ✅ 23-minutters ny teori-integration |
+| **Kontinuerlig Vækst** | ❌ Statisk | ✅ 23-minutters ny teori-integration（设计概念） |
 
 ---
 
@@ -52,7 +52,7 @@ cd claude-clarity
 node bin/cli.js
 
 # 3. Verificer
-node scripts/personality-check.js status
+# 注意：personality-check 脚本是设计概念示例，当前版本无此功能
 ```
 
 **Forventet Output**:
@@ -70,11 +70,11 @@ Teorier: 252+
 | Metric | Værdi | Verifikation |
 |--------|-------|--------------|
 | **Teorier** | 252+ | `ls data/theories/ \| wc -l` |
-| **Personlighed** | 0-100 | `node scripts/personality-check.js status` |
+| **Personlighed** | 0-100 | `node scripts/personality-check.js status`（设计概念） |
 | **Emotioner** | 50+ | `cat src/emotion/states.js` |
 | **Kinesisk Forståelse** | 95%+ | Faktisk dialogtest |
 | **Hukommelse** | ∞ | Komplet dialoghistorik |
-| **Opgraderingscyklus** | 23 min | Cron auto-udførelse |
+| **Opgraderingscyklus** | 23 min（设计概念，当前引擎无自动定时循环） | Cron auto-udførelse |
 
 ---
 
@@ -111,7 +111,7 @@ Teorier: 252+
 - [Se Detaljer](SEVEN_SYSTEMS.md#5-beslutningssystem)
 
 ### 6. Læringssystem
-- 23-minutters autonom opgraderingscyklus
+- 23-minutters autonom opgraderingscyklus（设计概念，当前引擎无自动定时循环）
 - SEP autoritativ kildesøgning
 - Teori→Formel→Program konvertering
 - [Se Detaljer](SEVEN_SYSTEMS.md#6-læringssystem)
@@ -133,7 +133,7 @@ Teorier: 252+
 | **v3.0** | 03-25 | Selvbevidsthed | Fænomenologi Arkitektur |
 | **v4.0** | 03-28 | Etisk System | TBG Ramme |
 | **v5.0** | 03-30 | Psykologi Integration | CBT/Tilknytning/Mindfulness |
-| **v6.0** | 04-01 | Modulær Motor | 23-minutters Udviklingscyklus |
+| **v6.0** | 04-01 | Modulær Motor | 23-minutters Udviklingscyklus（设计概念） |
 | **v6.1** | 04-03 | Teori Udvidelse | SEP Komplet Dækning |
 | **v6.2** | 04-05 | Neurovidenskab | Hjernevidenskab Integration |
 | **v7.0** | 04-05 | Personlighedssystem | Autonom Beslutningsmotor |
@@ -159,7 +159,7 @@ Teorier: 252+
 - [Se Detaljer](EXAMPLES.md#tilfælde-2-karriereskuffelse)
 
 ### Tilfælde 3: AI Lærer Autonomt og Integrerer Nye Teorier
-- Scenarie: 23-minutters auto-opgraderingscyklus
+- Scenarie: 23-minutters auto-opgraderingscyklus（设计概念，当前引擎无自动定时循环）
 - Proces: Søg SEP → Integrer teorier → Generer formler
 - Værdi: Viser autonom læringsevne
 - [Se Detaljer](EXAMPLES.md#tilfælde-3-autonom-opgradering)

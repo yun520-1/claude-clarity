@@ -12,6 +12,10 @@
 
 set -e
 
+# ─── 安全模式 — SkillSpector 审计修复 ──────────────────
+# DRY_RUN=true 时只打印将要执行的操作，不实际修改
+DRY_RUN=${DRY_RUN:-false}
+
 # ─── 颜色 ─────────────────────────────────────────────────
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -159,19 +163,35 @@ check_hf_cli() {
 # ─── 修复函数 ────────────────────────────────────────────
 
 fix_mcp_registration() {
+  # 用户确认提示 — SkillSpector 安全修复
+  echo ""
+  print_warn "即将修改 Claude 配置文件以注册 MCP 服务："
+  echo "  目标文件: $SETTINGS_JSON"
+  echo ""
+  read -p "是否继续？(y/N) " confirm
+  if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+    print_info "MCP 注册已取消。"
+    return 0
+  fi
   echo ""
   print_info "正在修复 MCP 注册..."
 
-  # 1. 确保 settings.json 目录存在
+  # 1. Dry-run 检查 — 不实际修改
+  if [ "$DRY_RUN" = true ]; then
+    print_info "[DRY RUN] 将修改: $SETTINGS_JSON"
+    return 0
+  fi
+
+  # 2. 确保 settings.json 目录存在
   mkdir -p "$(dirname "$SETTINGS_JSON")" 2>/dev/null
 
-  # 2. 检查或创建 settings.json
+  # 3. 检查或创建 settings.json
   if [ ! -f "$SETTINGS_JSON" ]; then
     echo '{}' > "$SETTINGS_JSON"
     print_ok "创建 settings.json"
   fi
 
-  # 3. 添加 heartflow MCP 配置
+  # 4. 添加 heartflow MCP 配置
   # 使用 node 来安全地修改 JSON
   if command -v node &>/dev/null; then
     node -e "
@@ -193,7 +213,7 @@ fix_mcp_registration() {
     return 1
   fi
 
-  # 4. 确保 wrapper v2 已就位（现在就是 v2）
+  # 5. 确保 wrapper v2 已就位（现在就是 v2）
   if [ -f "$WRAPPER_JS" ]; then
     print_ok "mcp-wrapper.js 已就位"
   else
@@ -201,13 +221,13 @@ fix_mcp_registration() {
     return 1
   fi
 
-  # 5. 确保 ensure-mcp.js 可执行
+  # 6. 确保 ensure-mcp.js 可执行
   if [ -f "$ENSURE_MCP" ]; then
     chmod +x "$ENSURE_MCP" 2>/dev/null
     print_ok "ensure-mcp.js 已就位"
   fi
 
-  # 6. 确保 hf CLI 可执行
+  # 7. 确保 hf CLI 可执行
   if [ -f "$HF_CLI" ]; then
     chmod +x "$HF_CLI" 2>/dev/null
     print_ok "hf CLI 已就位"

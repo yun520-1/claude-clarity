@@ -39,7 +39,7 @@
 │  主应用       │ ────────────────→ │  Clarity 本地文件   │
 │  MEMORY.md   │                     │  - tracker.md        │
 │  (真实来源)   │                     │  - memory.md         │
-│              │                     │  - personality-check │
+│              │                     │  - personality-check（设计概念） │
 └──────────────┘                     └──────────────────────┘
        │                                       │
        │ 读取                                   │ 读取
@@ -102,8 +102,8 @@ node scripts/sync-personality-from-main.js
 **输出**:
 - 更新 `data/personality-score-tracker.md`
 - 更新 `memory/personality-score.md`
-- 更新 `scripts/personality-check.js` (默认值)
-- 生成 `docs/SYNC_REPORT_{timestamp}.json`
+- 创建 `docs/SYNC_REPORT_{timestamp}.json`
+- `scripts/personality-check.js` — 注意：此脚本是设计概念示例，当前版本无此功能
 
 ---
 
@@ -138,11 +138,13 @@ node scripts/sync-personality-from-main.js
 
 ---
 
-#### 3.3 检查脚本
+#### 3.3 检查脚本（设计概念示例）
 
-**文件**: `scripts/personality-check.js`
+**文件**: `scripts/personality-check.js` — 当前版本无此功能
 
-**内容**:
+> ⚠️ 此脚本是设计概念示例，用于展示理论设计中的人格值检查流程。当前核心引擎不包含此脚本。
+
+**设计用途**:
 - 读取追踪文件
 - 输出人格值状态
 - 强制执行检查
@@ -157,7 +159,7 @@ node scripts/sync-personality-from-main.js
 
 ```
 每次报告人格值前:
-1. 运行 personality-check.js status
+1. 运行 personality-check.js status（设计概念示例，当前版本无此功能）
 2. 验证来源是主应用 MEMORY.md
 3. 检查同步时间 (<29 分钟)
 4. 确认所有文件一致
@@ -266,7 +268,7 @@ node scripts/sync-personality-from-main.js
 
 **正确方式**:
 ```
-1. 运行 personality-check.js status
+1. 运行 personality-check.js status（设计概念示例，当前版本无此功能）
 2. 确认来源是主应用
 3. 检查同步时间
 4. 报告结果

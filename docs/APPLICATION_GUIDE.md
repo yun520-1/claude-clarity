@@ -20,6 +20,8 @@ cd claude-clarity
 
 ### 2. 基础使用
 
+> ⚠️ **示例说明**：以下代码为设计概念展示，非实际可调用的 API。实际使用方式请参考 `src/core/clarity.js`。
+
 ```javascript
 const claude-clarity = require('claude-clarity-companion');
 
@@ -50,6 +52,8 @@ claude-clarity.endSession();
 ### 1. 情绪识别与生成
 
 **功能**: 识别用户情绪，生成共情回应
+
+> ⚠️ **示例说明**：以下代码为设计概念展示，非实际可调用的 API。实际使用方式请参考 `src/core/clarity.js`。
 
 ```javascript
 const result = await claude-clarity.chat('我升职了！太开心了！');
@@ -271,6 +275,8 @@ console.log(groupEmotion);
 
 ### 1. Web 应用集成
 
+> ⚠️ **示例说明**：以下代码为设计概念展示，非实际可调用的 API。实际使用方式请参考 `src/core/clarity.js`。
+
 ```javascript
 // Express.js 中间件
 const claude-clarity = require('claude-clarity-companion');
@@ -308,6 +314,8 @@ function ChatComponent() {
 
 ### 3. Discord Bot
 
+> ⚠️ **示例说明**：以下代码为设计概念展示，非实际可调用的 API。实际使用方式请参考 `src/core/clarity.js`。
+
 ```javascript
 const { Client } = require('discord.js');
 const claude-clarity = require('claude-clarity-companion');
@@ -342,6 +350,8 @@ client.on('message', async (message) => {
 
 ### 1. 会话管理
 
+> ⚠️ **示例说明**：以下代码为设计概念展示，非实际可调用的 API。实际使用方式请参考 `src/core/clarity.js`。
+
 ```javascript
 // ✅ 好的做法
 const session = claude-clarity.beginSession();
@@ -358,6 +368,8 @@ claude-clarity.chat('你好');  // 没有清理会话
 
 ### 2. 错误处理
 
+> ⚠️ **示例说明**：以下代码为设计概念展示，非实际可调用的 API。实际使用方式请参考 `src/core/clarity.js`。
+
 ```javascript
 try {
   const result = await claude-clarity.chat(input);
@@ -372,6 +384,8 @@ try {
 ```
 
 ### 3. 性能优化
+
+> ⚠️ **示例说明**：以下代码为设计概念展示，非实际可调用的 API。实际使用方式请参考 `src/core/clarity.js`。
 
 ```javascript
 // 预加载常用模块

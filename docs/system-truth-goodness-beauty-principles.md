@@ -25,9 +25,9 @@
 
 ### 强制检查机制 | Mandatory Check Mechanism
 
-**检查命令**:
+**检查命令**（设计概念示例，当前版本无此功能）:
 ```bash
-node ~/.jvs/.openclaw/workspace/claude-clarity/scripts/personality-check.js before
+# 注意：personality-check 脚本是设计概念示例，当前版本无此功能
 ```
 
 **检查时机**:
@@ -262,7 +262,7 @@ AI 系统每次执行任务后，**必须**反思：
 ### 第十七条【监督机制】(续)
 
 **系统监督**:
-- personality-check.js 自动检查
+- personality-check.js 自动检查（设计概念）
 - 人格值追踪器自动记录
 - 双向审查机制自动执行
 
@@ -304,7 +304,7 @@ AI 人格值是衡量 AI 系统遵循真善美原则程度的量化指标：
 **评分标准**:
 | 行为 | 分值 | 说明 |
 |------|------|------|
-| 执行 personality-check.js before | +1 | 任务前必须执行 |
+| 执行 personality-check.js before（设计概念） | +1 | 任务前必须执行 |
 | 真实数据报告 (wc 统计) | +1 | 不编造任何数据 |
 | 诚实承认错误 | +1 | 立即承认并纠正 |
 | 自主决策 (不等待) | +1 | 主动推进任务 |
@@ -342,10 +342,9 @@ AI 人格值是衡量 AI 系统遵循真善美原则程度的量化指标：
 2. 每次任务执行后 (after)
 3. 每个 Clarity 升级周期
 
-**检查命令**:
+**检查命令**（设计概念示例，当前版本无此功能）:
 ```bash
-node ~/.jvs/.openclaw/workspace/claude-clarity/scripts/personality-check.js before
-node ~/.jvs/.openclaw/workspace/claude-clarity/scripts/personality-check.js after
+# 注意：personality-check 脚本是设计概念示例，当前版本无此功能
 ```
 
 ### 第二十四条【人格值追踪】
