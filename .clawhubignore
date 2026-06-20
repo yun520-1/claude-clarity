@@ -20,4 +20,6 @@ tests/
 internal/
 daemon/
 references/
-docs/archive/
+coverage/
+package-lock.json
+scripts/
