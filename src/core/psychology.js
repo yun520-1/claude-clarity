@@ -843,13 +843,33 @@ function getStateManager() {
 // ════════════════════════════════════════════════════════════════
 let _parentingConsented = false;
 
+// 审计日志：记录每次育儿分析同意状态变更
+const _parentingConsentAudit = [];
+
+/**
+ * 记录育儿分析同意状态变更（内部函数）
+ * @param {boolean} consented - 新的同意状态
+ * @param {string} source - 变更来源
+ */
+function _logParentingConsentChange(consented, source) {
+  _parentingConsentAudit.push({
+    ts: new Date().toISOString(),
+    consented: !!consented,
+    source: source || 'unknown',
+  });
+  // 只保留最近100条，防止内存泄漏
+  if (_parentingConsentAudit.length > 100) _parentingConsentAudit.shift();
+}
+
 /**
  * 设置育儿分析是否已获得用户明确同意
  * 默认关闭，需要调用方明确 opt-in
  * @param {boolean} consented - 用户是否同意接受育儿分析
+ * @param {string} [source='unknown'] - 变更来源（如 'user:explicit', 'system:reset'）
  */
-function setParentingConsented(consented) {
+function setParentingConsented(consented, source) {
   _parentingConsented = !!consented;
+  _logParentingConsentChange(consented, source);
 }
 
 /**
@@ -858,6 +878,14 @@ function setParentingConsented(consented) {
  */
 function isParentingConsented() {
   return _parentingConsented;
+}
+
+/**
+ * 获取育儿分析同意状态审计日志
+ * @returns {Array<{ts: string, consented: boolean, source: string}>}
+ */
+function getParentingConsentAudit() {
+  return _parentingConsentAudit.slice();
 }
 
 /**
@@ -928,7 +956,8 @@ function detectThreeGenerationTrauma(text) {
       scores: { grandparental: 0, parental: 0, child: 0, transmission: 0 },
       formula: null,
       insight: '育儿分析需用户明确同意后方可提供',
-      _consentRequired: true
+      _consentRequired: true,
+      _parentingDisclaimer: PARENTING_DISCLAIMER_PREFIX
     };
   }
 
@@ -950,7 +979,8 @@ function detectThreeGenerationTrauma(text) {
       ? PARENTING_DISCLAIMER_PREFIX + '三代间可能存在的模式：祖辈匮乏与父母过度补偿、孩子承接不属于自己的人生课题之间有一定相关性'
       : total >= 2
       ? PARENTING_DISCLAIMER_PREFIX + '存在可能的代际相关特征，建议结合原生家庭具体情况综合评估'
-      : '未检测到明显三代创伤标记'
+      : '未检测到明显三代创伤标记',
+    _parentingDisclaimer: PARENTING_DISCLAIMER_PREFIX
   };
 }
 
@@ -965,7 +995,8 @@ function detectChildDepressionFormula(text) {
       formula: null,
       severity: 'none',
       scores: { materialSurplus: 0, emotionalVoid: 0, pressure: 0 },
-      _consentRequired: true
+      _consentRequired: true,
+      _parentingDisclaimer: PARENTING_DISCLAIMER_PREFIX
     };
   }
 
@@ -978,9 +1009,9 @@ function detectChildDepressionFormula(text) {
   const scores = { materialSurplus: cnt(materialSurplus), emotionalVoid: cnt(emotionalVoid), pressure: cnt(pressure) };
   const depCount = cnt(depression);
   if (scores.materialSurplus >= 1 && scores.emotionalVoid >= 1 && scores.pressure >= 1) {
-    return { formula: PARENTING_DISCLAIMER_PREFIX + '物质过剩、情感需求与高压力可能有一定相关性', severity: depCount > 0 ? 'high' : 'medium', scores };
+    return { formula: PARENTING_DISCLAIMER_PREFIX + '物质过剩、情感需求与高压力可能有一定相关性', severity: depCount > 0 ? 'high' : 'medium', scores, _parentingDisclaimer: PARENTING_DISCLAIMER_PREFIX };
   }
-  return { formula: null, severity: depCount > 0 ? 'low' : 'none', scores };
+  return { formula: null, severity: depCount > 0 ? 'low' : 'none', scores, _parentingDisclaimer: PARENTING_DISCLAIMER_PREFIX };
 }
 
 // ========================================
@@ -2142,9 +2173,10 @@ module.exports = {
   detectChildDepressionFormula,
   detectDINKFears,
 
-  // 新增：育儿分析 opt-in 控制
+  // 新增：育儿分析 opt-in 控制与审计
   setParentingConsented,
   isParentingConsented,
+  getParentingConsentAudit,
   PARENTING_DISCLAIMER_PREFIX,
 
   // v2.0.0 话题隔离核心

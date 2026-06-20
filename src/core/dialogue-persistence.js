@@ -6,10 +6,74 @@
  *
  * 提取自 clarity.js 的 recordDialogue / getDialogueHistory /
  * getDialogueStats / getDreamHistory，v2.6.4+ 独立模块。
+ *
+ * @security - 所有持久化操作必须经用户明确同意
  */
 
 const fs = require('fs');
 const path = require('path');
+
+// —— 用户同意管理 ——
+
+let _dialoguePersistenceConsented = false;
+
+/**
+ * 设置用户是否同意对话持久化
+ * @param {boolean} consented - 用户是否同意
+ */
+function setDialoguePersistenceConsented(consented) {
+  _dialoguePersistenceConsented = !!consented;
+}
+
+/**
+ * 检查用户是否已同意对话持久化
+ * @returns {boolean}
+ */
+function isDialoguePersistenceConsented() {
+  return _dialoguePersistenceConsented;
+}
+
+/**
+ * 重置同意状态（用于会话结束清理）
+ */
+function resetDialoguePersistenceConsent() {
+  _dialoguePersistenceConsented = false;
+}
+
+// —— 文件大小保护 ——
+
+/**
+ * 对话历史文件的最大允许大小（字节）
+ * 超过此限制将拒绝追加写入
+ */
+const MAX_DIALOGUE_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+/**
+ * 单条对话内容的最大字符数（安全裁剪上限）
+ */
+const MAX_CONTENT_LENGTH = 2000;
+
+/**
+ * 检查文件大小是否在允许范围内
+ * @param {string} filePath - 文件路径
+ * @returns {{ok: boolean, size: number, error?: string}}
+ */
+function checkFileSize(filePath) {
+  try {
+    if (!fs.existsSync(filePath)) return { ok: true, size: 0 };
+    const stat = fs.statSync(filePath);
+    if (stat.size > MAX_DIALOGUE_FILE_SIZE) {
+      return {
+        ok: false,
+        size: stat.size,
+        error: `文件大小 ${(stat.size / 1024 / 1024).toFixed(1)}MB 超过限制 ${MAX_DIALOGUE_FILE_SIZE / 1024 / 1024}MB`,
+      };
+    }
+    return { ok: true, size: stat.size };
+  } catch (e) {
+    return { ok: false, size: 0, error: e.message };
+  }
+}
 
 /**
  * 记录一条对话到永久记忆（对话历史）
@@ -24,6 +88,11 @@ const path = require('path');
  * @returns {{success: boolean, id?: string, ts?: string, error?: string}}
  */
 function recordDialogue(deps, role, content, meta = {}) {
+  // 安全检查：用户未明确同意时不记录
+  if (!_dialoguePersistenceConsented) {
+    return { success: false, error: 'persistence_not_consented' };
+  }
+
   if (!content || !content.trim()) return { success: false, error: 'empty_content' };
   if (!['user', 'clarity'].includes(role)) role = 'unknown';
 
@@ -32,10 +101,22 @@ function recordDialogue(deps, role, content, meta = {}) {
     try { fs.mkdirSync(dir, { recursive: true }); } catch (e) { /* dir exists */ }
     try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
     const filePath = path.join(dir, 'dialogue-history.jsonl');
+
+    // 安全限制：检查文件大小，超过 10MB 则拒绝写入
+    const sizeCheck = checkFileSize(filePath);
+    if (!sizeCheck.ok) {
+      return { success: false, error: `file_size_limit: ${sizeCheck.error}` };
+    }
+
+    // 安全修剪：限制单条内容长度为 MAX_CONTENT_LENGTH
+    const safeContent = typeof content === 'string'
+      ? content.slice(0, MAX_CONTENT_LENGTH)
+      : String(content).slice(0, MAX_CONTENT_LENGTH);
+
     const entry = {
       id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       role,
-      content: content.slice(0, 2000),  // 限制单条最大长度
+      content: safeContent,
       ts: new Date().toISOString(),
       chatId: meta.chatId || null,
       meta: {
@@ -143,4 +224,15 @@ function getDreamHistory(deps, limit = 10) {
   }
 }
 
-module.exports = { recordDialogue, getDialogueHistory, getDialogueStats, getDreamHistory };
+module.exports = {
+  recordDialogue,
+  getDialogueHistory,
+  getDialogueStats,
+  getDreamHistory,
+  setDialoguePersistenceConsented,
+  isDialoguePersistenceConsented,
+  resetDialoguePersistenceConsent,
+  checkFileSize,
+  MAX_DIALOGUE_FILE_SIZE,
+  MAX_CONTENT_LENGTH,
+};

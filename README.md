@@ -1,7 +1,6 @@
-> ⚠️ **免责声明**：本文档描述心虫引擎的设计理念和概念框架。
-> 部分描述（如"意识"、"自我认知"）是比喻性的设计语言，
-> 不代表实际具备人类意识或认知能力。实际实现基于有限的
-> 统计学习和模式匹配。
+> ⚠️ **准确性声明**：本文档中的某些能力描述（如"自我认知"、"人格追踪"、"自我优化"）是比喻性的设计语言，代表设计目标而非当前完整实现。实际能力基于有限的统计学习和模式匹配，具体功能范围详见各模块注释和源代码。
+>
+> ⚠️ **Accuracy Statement**: Some capability descriptions in this document (e.g., "self-cognition," "personality tracking," "self-optimization") are metaphorical design language representing design goals rather than current full implementations. Actual capabilities are based on limited statistical learning and pattern matching. See module comments and source code for specific functionality scope.
 
 # 心虫 / Clarity 🧠 — AI 认知引擎
 
@@ -25,11 +24,9 @@
   <a href="https://clawhub.ai/skills/claude-clarity"><img src="https://img.shields.io/badge/ClawHub-%E2%9C%94-orange?style=flat-square" alt="ClawHub" /></a>
   <a href="https://github.com/Hermes"><img src="https://img.shields.io/badge/Hermes-%E2%9C%94-success?style=flat-square" alt="Hermes" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" /></a>
-  <a href="SECURITY.md"><img src="https://img.shields.io/badge/Security-SkillSpector%20Audited-brightgreen?style=flat-square" alt="Security Audited" /></a>
-  <a href="https://www.npmjs.com/package/claude-clarity"><img src="https://img.shields.io/badge/npm-claude--clarity-red?style=flat-square" alt="npm" /></a>
+  <a href="SECURITY.md"><img src="https://img.shields.io/badge/Security-SkillSpector%20Audited-yellow?style=flat-square" alt="Security Reviewed" /></a>
   <a href="https://github.com/yun520-1/claude-clarity"><img src="https://img.shields.io/badge/GitHub-yun520--1%2Fclaude--clarity-181717?style=flat-square" alt="GitHub" /></a>
   <a href="https://img.shields.io/github/stars/yun520-1/claude-clarity"><img src="https://img.shields.io/github/stars/yun520-1/claude-clarity?style=flat-square" alt="GitHub Stars" /></a>
-  <a href="https://img.shields.io/npm/dt/claude-clarity"><img src="https://img.shields.io/npm/dt/claude-clarity?style=flat-square" alt="npm Downloads" /></a>
 </p>
 
 <!-- COMMUNITY BANNER — 重点展示：二维码 + 邮箱 + GitHub Star -->
@@ -53,7 +50,7 @@
     </tr>
   </table>
   <br/>
-  <strong>🚀 全球开源 · 超过 70+ 认知模块 | Open Source · 70+ Cognitive Modules</strong>
+  <strong>🚀 全球开源 · 超过 60+ 认知模块 | Open Source · 60+ Cognitive Modules</strong>
 </div>
 
 ---
@@ -81,8 +78,8 @@
 ## 🚀 Install / 安装
 
 ```bash
-# npm — embed in any JavaScript/TypeScript project
-npm install claude-clarity
+# Git 方式（推荐）— 克隆仓库后本地引用
+git clone https://github.com/yun520-1/claude-clarity.git
 
 # Claude Code — add as a skill
 claude add skill /path/to/claude-clarity
@@ -104,7 +101,7 @@ node -e "const {createClarity}=require('./src/core/clarity.js'); const fs=requir
 
 在代码中使用 | Use in code:
 ```javascript
-const { createClarity } = require('claude-clarity');
+const { createClarity } = require('./src/core/clarity.js');
 const engine = createClarity({ rootPath: __dirname });
 await engine.start();
 
@@ -145,7 +142,7 @@ await engine.stop();
 > **Clarity (心虫) 是唯一一个把认知心理学教科书编写成代码的 AI 认知引擎。**
 > **Clarity is the only AI cognitive engine that codes cognitive psychology textbooks into runnable modules.**
 
-**它解决的问题 / The problem it solves:** LLMs forget everything between conversations and have no self-evaluation mechanism. Clarity adds persistent memory (3 tiers), self-verification (TGB scoring), emotion awareness (PAD model), and self-improvement (Q-learning) to any AI agent in minutes.
+**它解决的问题 / The problem it solves:** LLMs forget everything between conversations and have no self-evaluation mechanism. Clarity adds persistent memory (3 tiers), self-verification (TGB scoring), emotion awareness (PAD model), and experience-based learning (Q-table) to any AI agent in minutes.
 
 ---
 
@@ -225,12 +222,12 @@ Ask the user one of these to confirm Clarity is running:
        │                     │
        ▼                     ▼
 ┌──────────────┐   ┌──────────────────┐
-│  Psychology  │   │  Self-Optimizing │
-│  PAD Model   │   │  FailureAnalyzer │
-│  Crisis Eval │   │  SelfHealingRL   │
-│  Maslow      │   │  SkillGenerator  │
-│  Defense     │   │  MetaLearner     │
-│  Big Five    │   │  PhilosophyEng   │
+│  Psychology  │   │  Learning         │
+│  PAD Model   │   │  FailureAnalyzer  │
+│  Crisis Eval │   │  SelfHealingRL    │
+│  Maslow      │   │  SkillGenerator   │
+│  Defense     │   │  PhilosophyEng    │
+│  Big Five    │   │                   │
 └──────────────┘   └──────────────────┘
 ```
 
@@ -284,18 +281,18 @@ Additional memory systems: DreamEngine (DAG async dreams, L1-L6 scoring), Ebbing
 | **Goodness** = relational order / 善 = 关系秩序 | `S₉ = δ·E(x) + ε·R(x) + ζ·B(x)` | Does this create and maintain connections? |
 | **Beauty** = perceptual order / 美 = 感知秩序 | `S_b = η·F(x) + θ·H(x) + ι·U(x)` | Does this recognize form within chaos? |
 
-### Self-Optimization / 自我优化
+### Experience-Based Learning / 经验驱动学习
 
 - **SelfHealingRL** (Q-learning): `Q(s,a) ← Q(s,a) + α·[r + γ·maxQ(s',a') - Q(s,a)]`
 - **FailureAnalyzer**: HEAL error codes (HEAL001-007), 7 failure mode diagnoses
-- **SkillGenerator**: Auto-generate reusable skill files from conversation history
-- **MetaLearner**: Cross-session meta-learning, strategy pool optimization
+- **SkillGenerator** [实验性]: Auto-generate reusable skill files from reflect history
+- **Experience-based learning**: Records Q-table lessons from conversation patterns
 
 ### Psychology Engine / 心理学引擎
 
 - **PAD Emotion Model**: Pleasure - Arousal - Dominance, 8 emotion group states
 - **Free Energy Principle**: Predictive coding + Bayesian updates + precision-weighted attention
-- **Big Five Personality**: OCEAN 5D personality trait tracking
+- **Big Five Personality** [实验性]: OCEAN-inspired trait inference based on conversation patterns
 - **We-Intention**: Collective intentionality formula + trust repair (5 stages)
 - **SDT Motivation**: Self-determination theory, 6 motivation types (intrinsic → amotivation)
 
@@ -303,7 +300,7 @@ Additional memory systems: DreamEngine (DAG async dreams, L1-L6 scoring), Ebbing
 
 ## 🛡️ 安全与隐私 / Security & Privacy
 
-Clarity passed **NVIDIA SkillSpector** security audit (621 items). / 心虫经过 **NVIDIA SkillSpector** 安全审计（621 项全通过）。
+Clarity completed **NVIDIA SkillSpector** security review (203 findings addressed). / 心虫经过 **NVIDIA SkillSpector** 安全审查（已处理 203 项发现）。
 
 | Category / 类别 | Status / 状态 | Description / 说明 |
 |------|------|------|
@@ -444,8 +441,6 @@ v1.0.0 ─── (2025-03) ─ First stable release
   <br/>
   <strong>📦 ClawHub:</strong> <a href="https://clawhub.ai/skills/claude-clarity">clawhub.ai/skills/claude-clarity</a>
   <br/>
-  <strong>📦 npm:</strong> <code>npx claude-clarity</code> or <code>npm install claude-clarity</code>
-  <br/>
   <strong>⭐ GitHub:</strong> <a href="https://github.com/yun520-1/claude-clarity">github.com/yun520-1/claude-clarity</a> — Star us!
 </p>
 
@@ -461,7 +456,7 @@ v1.0.0 ─── (2025-03) ─ First stable release
 
 ## 📄 License
 
-MIT © 2025-2026 yun520-1 | [GitHub Repository](https://github.com/yun520-1/claude-clarity) | [npm Package](https://www.npmjs.com/package/claude-clarity) | [ClawHub Release](https://clawhub.ai/skills/claude-clarity)
+MIT © 2025-2026 yun520-1 | [GitHub Repository](https://github.com/yun520-1/claude-clarity) | [ClawHub Release](https://clawhub.ai/skills/claude-clarity)
 
 ---
 

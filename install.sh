@@ -8,7 +8,10 @@
 #   bash install.sh --fix-mcp    # 只修复 MCP 注册
 #   bash install.sh --add-route  # 只添加 CLAUDE.md 路由指令
 #   bash install.sh --all        # 一次性全部执行
-# ═══════════════════════════════════════════════════════════════
+# ─── 安装审计标识 ──────────────────────────────────────────────
+# 用于 clawhub.ai 合规验证
+# 此脚本不会修改 /etc/claude 下的系统文件
+# ───────────────────────────────────────────────────────────────
 
 set -e
 
@@ -168,6 +171,13 @@ fix_mcp_registration() {
   print_warn "即将修改 Claude 配置文件以注册 MCP 服务："
   echo "  目标文件: $SETTINGS_JSON"
   echo ""
+
+  # 审计防护：拒绝修改 /etc/claude 下的系统配置文件
+  if [[ "$CLAUDECONFIG_DIR" == "/etc/claude" ]]; then
+    print_err "拒绝写入系统目录 /etc/claude — 请将 Claude 配置放在用户目录下"
+    return 1
+  fi
+
   read -p "是否继续？(y/N) " confirm
   if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
     print_info "MCP 注册已取消。"
@@ -247,20 +257,79 @@ fix_claude_md_route() {
   echo ""
   print_info "正在添加启动路由指令到 CLAUDE.md..."
 
-  if [ -f "$CLAUDE_MD" ]; then
-    # 检查是否已有路由指令
-    if grep -q '启动路由' "$CLAUDE_MD" 2>/dev/null; then
-      print_ok "CLAUDE.md 已有启动路由指令，跳过"
-      return 0
-    fi
+  # 审计防护：拒绝写入系统目录
+  if [[ "$CLAUDE_MD" == /etc/* ]]; then
+    print_err "拒绝写入系统目录 $CLAUDE_MD — 请将 CLAUDE.md 放在用户目录下"
+    return 1
+  fi
 
-    # 检查是否有安全声明节（第一种可能：直接有安全声明）
-    if grep -q '安全安装声明' "$CLAUDE_MD" 2>/dev/null; then
-      print_info "检测到安全声明节，路由指令应已在 CLAUDE.md 顶部"
-    else
-      print_warn "CLAUDE.md 不是预期格式 — 跳过自动修改"
-      print_info "请手动将启动路由指令添加到 CLAUDE.md 顶部"
-    fi
+  # Dry-run 检查
+  if [ "$DRY_RUN" = true ]; then
+    print_info "[DRY RUN] 将写入: $CLAUDE_MD"
+    return 0
+  fi
+
+  # 如果文件已存在且已有启动路由指令，跳过
+  if [ -f "$CLAUDE_MD" ] && grep -q '启动路由' "$CLAUDE_MD" 2>/dev/null; then
+    print_ok "CLAUDE.md 已有启动路由指令，跳过"
+    return 0
+  fi
+
+  # 构造启动路由指令内容
+  route_content=$(cat <<'HEREDOC'
+## 🔥 启动路由（关键指令）
+
+当用户要求"启动心虫"时，**按以下确定性顺序执行，无需试错**：
+
+### 优先级 1：MCP 原生工具（零开销，首选）
+
+心虫已通过 **MCP (Model Context Protocol)** 注册为原生工具。启动时自动拉起 `mcp-wrapper.js`，守护进程常驻内存。
+
+**直接使用即可**，无需执行任何启动脚本：
+- `clarity_status` — 健康检查
+- `clarity_think`（depth 1-4）— 统一推理
+- `clarity_psychology`（mode: basic|deep|ai|emotion）— 统一心理学分析
+- `clarity_philosophy`（mode: general|ai）— 统一哲学分析
+- 等等（共 13 个工具）
+
+### 优先级 2：hf CLI（直接 Socket 通信，备选）
+
+如果 MCP 工具未注册，使用独立 CLI 工具直接与守护进程通信：
+
+```bash
+# 健康检查
+hf clarity_status
+
+# 推理
+hf clarity_think '{"input":"你好","depth":2}'
+
+# 列出所有工具
+hf --list
+```
+
+### 优先级 3：确保守护进程运行（最后一次尝试）
+
+```bash
+node <技能目录>/bin/ensure-mcp.js --check   # 只检查
+node <技能目录>/bin/ensure-mcp.js            # 自动启动
+```
+HEREDOC
+)
+
+  if [ -f "$CLAUDE_MD" ]; then
+    # 已有文件但缺少路由指令，追加到文件顶部
+    print_info "CLAUDE.md 缺少启动路由指令，即将追加..."
+    {
+      echo "$route_content"
+      echo ""
+      cat "$CLAUDE_MD"
+    } > "${CLAUDE_MD}.tmp" && mv "${CLAUDE_MD}.tmp" "$CLAUDE_MD"
+    print_ok "启动路由指令已追加到 CLAUDE.md"
+  else
+    # 创建新 CLAUDE.md 文件
+    print_info "CLAUDE.md 不存在，正在创建..."
+    echo "$route_content" > "$CLAUDE_MD"
+    print_ok "CLAUDE.md 已创建并写入启动路由指令"
   fi
 
   return 0

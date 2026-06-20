@@ -1,7 +1,16 @@
 /**
  * FactChecker - 事实检查模块
  * 检测绝对化声明、数字准确性、来源可靠性
+ *
+ * @deprecated - 此模块计划在下一大版本中移除
+ * 当前保留以向后兼容。所有调用方应迁移到外部验证。
  */
+
+// 安全限制：单条输入最大字符数
+const MAX_STATEMENT_LENGTH = 5000;
+// 安全限制：checkNumbers 一次最多处理多少个数字匹配
+const MAX_NUMBERS_CHECKED = 50;
+
 class FactChecker {
   constructor() {
     this.stats = {
@@ -21,11 +30,16 @@ class FactChecker {
     if (statement === null || statement === undefined) {
       return { checked: true, isLying: false, confidence: 1.0 };
     }
-    
+
     if (typeof statement !== 'string') {
       statement = String(statement);
     }
-    
+
+    // 安全限制：超出 MAX_STATEMENT_LENGTH 的输入将被截断
+    if (statement.length > MAX_STATEMENT_LENGTH) {
+      statement = statement.slice(0, MAX_STATEMENT_LENGTH);
+    }
+
     if (!statement) {
       return { checked: true, isLying: false, confidence: 1.0 };
     }
@@ -84,13 +98,23 @@ class FactChecker {
   checkNumbers(text) {
     if (!text) return { checked: true, accurate: true };
 
+    // 输入长度保护：避免恶意超大输入
+    if (text.length > MAX_STATEMENT_LENGTH) {
+      text = text.slice(0, MAX_STATEMENT_LENGTH);
+    }
+
     const numberPattern = /(\d+(?:\.\d+)?)\s*(%|百分之|倍|万|亿)/g;
     const matches = text.match(numberPattern);
 
+    // 防滥用保护：限制可处理的数字数量
+    const numbersFound = matches || [];
+    const safeNumbers = numbersFound.slice(0, MAX_NUMBERS_CHECKED);
+
     return {
       checked: true,
-      accurate: matches === null,
-      numbersFound: matches || [],
+      accurate: safeNumbers.length === 0,
+      numbersFound: safeNumbers,
+      truncated: numbersFound.length > MAX_NUMBERS_CHECKED, // 提示是否被截断
     };
   }
 

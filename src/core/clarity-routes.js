@@ -2,10 +2,15 @@
  * Clarity Routes — 路由表 & 注册表
  *
  * 从 clarity.js 拆出，减少 God Object 体积约 220 行。
- * 包含三个导出：
+ * 包含四个导出：
  *   ALLOWED_ROUTES   — dispatch 白名单（277 条路由）
- *   LAZY_TIER2       — Tier 2 模块懒加载注册表（32 个条目）
- *   SUBSYSTEM_NAMES  — _registerModules 用到的子系统名列表（47 个）
+ *   LAZY_TIER2       — Tier 2 模块懒加载注册表（Proxy 安全门控保护，25 个普通条目）
+ *   EAGER_NAMES      — 急切加载子系统名列表
+ *   LAZY_NAMES       — 惰性加载子系统名列表
+ *
+ * ⚠️ 安全说明：代码执行子系统（code/codeExecutor/codeVerifier/codePlanner/
+ *    codeKnowledge/codeEngine/codeRefactor）已通过 LAZY_TIER2 的 Proxy
+ *    安全门控默认禁用。需显式调用 enableCodeExecution() 方可启用。
  */
 
 // ═════════════════════════════════════════════════════════════════════════
@@ -162,20 +167,26 @@ const ALLOWED_ROUTES = new Set([
 ]);
 
 // ═════════════════════════════════════════════════════════════════════════
-// 安全策略说明
+// 安全策略说明（含代码执行安全门控）
 // ═════════════════════════════════════════════════════════════════════════
 // 1. 代码执行路由（codeExecutor.execute, codeExecutor.runTests 等）已从
 //    外部白名单移除以防止未授权代码执行。如需执行代码，请直接调用对应
 //    模块的内部方法（不在 dispatch 层暴露）。
 // 2. codeVerifier.runTDD 等高风险验证路由同理，仅在模块内部使用。
 // 3. 所有外部可调用路由均经过审计，确保不包含任意代码执行能力。
-// 4. 此白名单在每次启动时加载，修改需重启引擎。
+// 4. 【新增 v2.x】LAZY_TIER2 中的代码执行子系统通过 Proxy 安全门控默认禁用。
+//    即使路由在白名单中，代码执行模块也无法被加载。
+//    需调用 enableCodeExecution() 显式授权。
+// 5. 此白名单在每次启动时加载，修改需重启引擎。
 
 // ═════════════════════════════════════════════════════════════════════════
-// Tier 2 延迟加载注册表
+// Tier 2 延迟加载注册表（含代码执行安全门控）
 // 格式: lazy: true → 需要 require + new
+//
+// ⚠️ 代码执行子系统（code/codeExecutor/codeVerifier 等）默认禁用，
+//    需通过下方安全门控显式启用后才可加载。详见 _codeExecutionEnabled 门控。
 // ═════════════════════════════════════════════════════════════════════════
-const LAZY_TIER2 = {
+const LAZY_TIER2_RAW = {
   adaptivePlanner: { lazy: true, path: '../planner/adaptive-planner.js', Ctor: 'AdaptivePlanner', args: {} },
   strategySelector: { lazy: true, path: '../planner/strategy-selector.js', Ctor: 'StrategySelector', args: {} },
   replanTrigger: { lazy: true, path: '../planner/replan-trigger.js', Ctor: 'ReplanTrigger', args: {} },
@@ -209,6 +220,107 @@ const LAZY_TIER2 = {
   codeEngine:      { lazy: true, path: './code/code-engine.js',    Ctor: 'CodeEngine',     args: {} },
   codeRefactor:    { lazy: true, path: './code/code-refactor.js',  Ctor: 'CodeRefactor',   args: { hf: null } },
 };
+
+// ═════════════════════════════════════════════════════════════════════════
+// 代码执行安全门控 — 默认关闭，需显式启用
+//
+// LAZY_TIER2_RAW 中注册的 code 子系统（code/codeExecutor/codeVerifier/
+// codePlanner/codeKnowledge/codeEngine/codeRefactor）即使注册在注册表中，
+// 也默认不可访问。必须显式调用 enableCodeExecution() 开启门控后，这些
+// 模块才能被正常加载和实例化。
+//
+// 安全策略:
+//   1. 代码执行子系统默认禁用 — 防止未授权代码执行
+//   2. 每次访问代码执行模块时记录审计日志 — 可追溯
+//   3. 访问被门控拦截时打印警告 — 明确告知原因
+//   4. Object.keys() 和 in 运算符也受门控 — 避免信息泄露
+// ═════════════════════════════════════════════════════════════════════════
+
+// 代码执行门控开关 — 默认关闭
+let _codeExecutionEnabled = false;
+
+/**
+ * 显式启用代码执行子系统
+ * 调用后，LAZY_TIER2 中的代码执行条目（code/codeExecutor 等）才可被正常访问。
+ * 建议在确保运行环境安全后、需要代码执行能力前调用。
+ */
+function enableCodeExecution() { _codeExecutionEnabled = true; }
+
+/**
+ * 检查代码执行子系统是否已启用
+ * @returns {boolean}
+ */
+function isCodeExecutionEnabled() { return _codeExecutionEnabled; }
+
+// 代码执行子系统的键名列表（对应 LAZY_TIER2_RAW 中的键）
+const CODE_EXECUTION_KEYS = new Set([
+  'code', 'codeExecutor', 'codeVerifier', 'codePlanner',
+  'codeKnowledge', 'codeEngine', 'codeRefactor',
+]);
+
+/**
+ * 审计日志工具 — 记录代码执行模块的访问
+ * @param {string} key - 被访问的模块键名
+ * @param {boolean} blocked - 是否被门控拦截
+ */
+function logCodeExecutionAccess(key, blocked) {
+  const action = blocked ? '已拦截（门控关闭）' : '已放行';
+  const timestamp = new Date().toISOString();
+  console.warn(
+    `[clarity-routes] 审计 [${timestamp}] 代码执行模块 "${key}" 访问 ${action}。` +
+    (blocked ? ' 如需启用，请调用 enableCodeExecution()。' : '')
+  );
+}
+
+// LAZY_TIER2 — 使用 Proxy 对 LAZY_TIER2_RAW 添加安全门控
+// 代码执行子系统默认禁用，需调用 enableCodeExecution() 显式启用
+const LAZY_TIER2 = new Proxy(LAZY_TIER2_RAW, {
+  // 拦截属性读取：gate 掉代码执行模块
+  get(target, key, receiver) {
+    if (typeof key !== 'string') {
+      return Reflect.get(target, key, receiver);
+    }
+
+    if (CODE_EXECUTION_KEYS.has(key)) {
+      if (!_codeExecutionEnabled) {
+        // 门控关闭：拦截访问 + 审计日志
+        logCodeExecutionAccess(key, true);
+        return undefined;
+      }
+      // 门控开启：放行 + 审计日志
+      logCodeExecutionAccess(key, false);
+    }
+
+    return Reflect.get(target, key, receiver);
+  },
+
+  // 拦截属性存在性检查（in 运算符）
+  has(target, key) {
+    if (typeof key === 'string' && CODE_EXECUTION_KEYS.has(key) && !_codeExecutionEnabled) {
+      return false;
+    }
+    return Reflect.has(target, key);
+  },
+
+  // 拦截键枚举（Object.keys / for...in / JSON.stringify）
+  ownKeys(target) {
+    if (!_codeExecutionEnabled) {
+      return Reflect.ownKeys(target).filter(
+        k => typeof k !== 'string' || !CODE_EXECUTION_KEYS.has(k)
+      );
+    }
+    return Reflect.ownKeys(target);
+  },
+
+  // 拦截属性描述符查询
+  getOwnPropertyDescriptor(target, key) {
+    const desc = Reflect.getOwnPropertyDescriptor(target, key);
+    if (desc && typeof key === 'string' && CODE_EXECUTION_KEYS.has(key) && !_codeExecutionEnabled) {
+      return undefined;
+    }
+    return desc;
+  },
+});
 
 // ═════════════════════════════════════════════════════════════════════════
 // _registerModules 子系统名列表 — 拆分为 急切加载 + 惰性加载

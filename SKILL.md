@@ -8,7 +8,7 @@ description: >
   MCP 原生工具，专为 LLM Agent 设计的持续记忆系统。
   存在感知、五层认知模型、三层持久记忆（CORE/LEARNED/EPHEMERAL）、
   PAD 情绪分析、TGB 三维真善美评估、Q-learning 自愈策略。
-  支持 AI 自我审查、逆熵哲学引擎、大五人格心理学分析、
+  支持 AI 自我审查、逆熵哲学引擎、大五人格心理学分析[实验性]、
   反事实推理、梦境引擎、集体意向性追踪。
   别名：心虫、草履虫、小虫子（同一引擎，不同叫法）。
 tags:
@@ -283,9 +283,9 @@ node /Users/apple/.claude/skills/claude-clarity/bin/boot-fast.js --report-from-j
 | | KnowledgeGraph | `new KnowledgeGraph(rootPath)` | Node-based 知识网络 |
 | | MemorySlots | `new Slots({dataDir})` | Named slots with TTL |
 | | Observe | `createObserve(memory)` | 自动观察 + 合并 |
-| **进化 Evolution** | EvolutionLoop | `new EvolutionLoop({memory}).boot()` | 自进化循环 |
-| | MetaLearner | `new MetaLearner({memory}).boot()` | 元学习器 |
-| | SkillGenerator | `new SkillGenerator(rootPath)` | 从反思历史生成技能 |
+| **进化 Evolution** | EvolutionLoop[规划中] | `new EvolutionLoop({memory}).boot()` | 自进化循环 |
+| | MetaLearner[规划中] | `new MetaLearner({memory}).boot()` | 元学习器 |
+| | SkillGenerator[实验性] | `new SkillGenerator(rootPath)` | 从反思历史生成技能 |
 | | MetaPromptEngine | `new MetaPromptEngine()` | 提示优化 |
 | **意识 Consciousness** | GlobalWorkspace | `new GlobalWorkspace(rootPath)` | 全局工作空间 |
 | | MindWanderer | `new MindWanderer(rootPath)` | 心灵漫游 |
@@ -375,7 +375,7 @@ hf.think('用户输入');                  // 完整思维链（7 阶段）
 hf.thinkFast('简单问题');               // 快速推理（跳过验证阶段）
 hf.thinkDeep('复杂问题');               // 深度推理（全部阶段执行）
 hf.dreamNow();                          // 触发梦 + 整合 + 进化
-hf.evolveImprove(input, context);       // 进化 + 应用改进
+hf.dispatch('heal.heal', { errorType, context });  // Q-learning 自愈
 hf.detectIdentityDrift();               // 身份漂移检测
 hf.recordLesson({ content, context });  // 记录教训
 hf.getMemoryStats();                    // 记忆统计
@@ -921,7 +921,7 @@ node -e "const {Clarity}=require('./src/core/clarity.js');const hf=new Clarity()
 - Auth credentials stored in `auth.json`（gitignored）
 - No data exfiltration to external services without explicit config
 - Q-table 和记忆数据存储在 `memory/` 目录，纯本地持久化
-- 经 SkillSpector 审计并修复 161 项安全发现
+- 经 SkillSpector 审计并修复 203 项安全发现
 
 ---
 

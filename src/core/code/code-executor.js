@@ -257,7 +257,8 @@ function formatBytes(bytes) {
 function executeProcess(command, args, options = {}) {
   return new Promise((resolve) => {
     const { timeout = DEFAULT_STEP_TIMEOUT, cwd = process.cwd(), maxMemoryMB = 512,
-            maxOutput = MAX_OUTPUT_SIZE } = options;
+            maxOutput = MAX_OUTPUT_SIZE, restrictedEnv = false, sandboxDir = null,
+            detached = false } = options;
 
     let stdout = '';
     let stderr = '';
@@ -269,19 +270,63 @@ function executeProcess(command, args, options = {}) {
     const startTime = Date.now();
     const startCpuTime = process.cpuUsage ? process.cpuUsage() : null;
 
+    // v2.7 安全升级：使用沙箱隔离目录作为工作目录
+    const workDir = sandboxDir || cwd;
+
+    // v2.7 安全升级：沙箱模式下仅保留最小必要环境变量
+    let env;
+    if (restrictedEnv) {
+      env = {
+        PATH: '/usr/bin:/bin:/usr/local/bin',
+        NODE_ENV: 'production',
+        LANG: process.env.LANG || 'en_US.UTF-8',
+        TMPDIR: process.env.TMPDIR || '/tmp',
+      };
+    } else {
+      env = { ...process.env, NODE_ENV: 'production' };
+    }
+
+    // v2.7 安全升级：尝试以降权用户运行（仅 root 时生效）
+    let uid, gid;
+    if (restrictedEnv) {
+      try {
+        if (typeof process.getuid === 'function' && process.getuid() === 0) {
+          // 当前为 root，切换至 nobody (uid 65534)
+          uid = 65534;
+          gid = 65534;
+        }
+      } catch (e) {
+        // 非 root 环境无法设置 uid/gid，忽略
+      }
+    }
+
     const proc = spawn(command, args, {
-      cwd,
-      env: { ...process.env, NODE_ENV: 'production' },
+      cwd: workDir,
+      env,
       stdio: ['pipe', 'pipe', 'pipe'],
-      detached: false,
+      detached,
+      uid,
+      gid
     });
 
     pid = proc.pid;
 
-    // 超时控制
+    // 超时控制（v2.7 安全升级：同时终止进程组）
     const timer = setTimeout(() => {
       killed = true;
-      proc.kill('SIGKILL');
+      // 尝试终止整个进程组（防止子进程逃逸）
+      if (detached && proc.pid) {
+        try {
+          process.kill(-proc.pid, 'SIGKILL');
+        } catch (e) {
+          // 进程组可能已退出
+        }
+      }
+      try {
+        proc.kill('SIGKILL');
+      } catch (e) {
+        // 进程可能已退出
+      }
     }, timeout);
 
     proc.stdout.on('data', (data) => {
@@ -369,6 +414,20 @@ class CodeExecutor {
 
     // v2.0 新增：内存引用（用于协同）
     this._memory = null;
+
+    // v2.7 安全升级：根路径和安全审计日志路径
+    this._rootPath = options.rootPath || path.resolve(__dirname, '../../..');
+    this._securityAuditLogPath = path.join(this._rootPath, 'memory', 'security-audit.log');
+
+    // 确保安全审计日志目录存在
+    try {
+      const auditDir = path.dirname(this._securityAuditLogPath);
+      if (!fs.existsSync(auditDir)) {
+        fs.mkdirSync(auditDir, { recursive: true });
+      }
+    } catch (error) {
+      // 忽略目录创建失败
+    }
   }
 
   /**
@@ -594,7 +653,17 @@ class CodeExecutor {
       }
 
       if (!config.compileRequired) {
-        tempFile = createTempFile(execCode, language);
+        // v2.7 安全升级：沙箱模式下将代码文件写入隔离目录
+        if (options.sandboxDir) {
+          const ext = {
+            javascript: '.js', python: '.py', bash: '.sh',
+            rust: '.rs', go: '.go', java: '.java', cpp: '.cpp'
+          }[language] || '.txt';
+          tempFile = path.join(options.sandboxDir, `exec_code${ext}`);
+          fs.writeFileSync(tempFile, execCode, 'utf8');
+        } else {
+          tempFile = createTempFile(execCode, language);
+        }
       }
 
       try {
@@ -616,10 +685,18 @@ class CodeExecutor {
         const runTimeout = options.stepTimeout || this.stepTimeout;
         const maxMemory = config.resourceLimit?.maxMemoryMB || 512;
 
+        const execProcessOptions = { timeout: runTimeout, maxMemoryMB: maxMemory };
+        // v2.7 安全升级：传递沙箱隔离选项
+        if (options.sandboxDir) {
+          execProcessOptions.sandboxDir = options.sandboxDir;
+          execProcessOptions.restrictedEnv = true;
+          execProcessOptions.detached = true;
+        }
+
         const result = await executeProcess(
           execCommand,
           execArgs,
-          { timeout: runTimeout, maxMemoryMB: maxMemory }
+          execProcessOptions
         );
 
         lastResult = this._processExecutionResult(result, attempt);
@@ -800,7 +877,7 @@ class CodeExecutor {
     for (const testCase of testCases) {
       const result = await this.execute(code, testCase.language || 'javascript', {
         ...testCase.options,
-        sandbox: false, // 测试执行需绕过沙箱以获得完整能力
+        sandbox: true,  // v2.7 安全升级：测试执行默认启用沙箱
         timeout: testCase.timeout || this.stepTimeout
       });
 
@@ -835,7 +912,10 @@ class CodeExecutor {
   }
 
   /**
-   * 沙箱执行 - 最高安全级别
+   * 沙箱执行 - 最高安全级别（v2.7 安全升级）
+   *
+   * 在隔离的临时目录中执行，限制环境变量，采用进程组隔离，
+   * 所有操作均有安全审计日志记录。
    */
   async sandbox(code, language, options = {}) {
     const sandboxOptions = {
@@ -844,25 +924,43 @@ class CodeExecutor {
       stepTimeout: options.stepTimeout || Math.min(this.stepTimeout, 3000),
       totalTimeout: options.totalTimeout || Math.min(this.totalTimeout, 10000),
       retryOnError: false,
-      useCache: false, // 沙箱模式禁用缓存
-      incremental: false // 沙箱模式禁用增量
+      useCache: false,            // 沙箱模式禁用缓存
+      incremental: false,          // 沙箱模式禁用增量
+      restrictedEnv: true,         // v2.7 安全升级：限制环境变量
+      detached: true               // v2.7 安全升级：进程组隔离
     };
 
+    // 安全检查：危险命令黑名单
     const securityResult = securityCheck(code);
     if (!securityResult.safe) {
+      this._securityAuditLog({
+        type: 'blocked',
+        reason: `危险命令黑名单: ${securityResult.reason}`,
+        code,
+        blocked: true,
+        details: `匹配模式: ${securityResult.matched.join(', ')}`
+      });
       return this._createErrorResult(`沙箱安全检查失败: ${securityResult.reason}`, -1);
     }
 
     // 网络访问检查
-    const networkPatterns = [
-      /fetch\s*\(/i, /http\.request/i, /https\.request/i,
-      /net\.connect/i, /socket\.connect/i, /grpc/i, /websocket/i,
-      /requests\./i, /urllib/i, /curl/i, /wget/i
-    ];
-
     if (options.allowNetwork !== true) {
+      const networkPatterns = [
+        /fetch\s*\(/i, /http\.request/i, /https\.request/i,
+        /net\.connect/i, /socket\.connect/i, /grpc/i, /websocket/i,
+        /requests\./i, /urllib/i, /curl/i, /wget/i,
+        /XMLHttpRequest/i, /WebSocket/i
+      ];
+
       for (const pattern of networkPatterns) {
         if (pattern.test(code)) {
+          this._securityAuditLog({
+            type: 'blocked',
+            reason: '检测到网络访问',
+            code,
+            blocked: true,
+            details: `匹配模式: ${pattern}`
+          });
           return this._createErrorResult('沙箱模式禁止网络访问', -1);
         }
       }
@@ -878,12 +976,60 @@ class CodeExecutor {
 
       for (const pattern of fsPatterns) {
         if (pattern.test(code)) {
+          this._securityAuditLog({
+            type: 'blocked',
+            reason: '检测到文件系统访问',
+            code,
+            blocked: true,
+            details: `匹配模式: ${pattern}`
+          });
           return this._createErrorResult('沙箱模式禁止直接文件系统访问', -1);
         }
       }
     }
 
-    return this._executeCore(code, language, sandboxOptions);
+    // v2.7 安全升级：创建沙箱临时工作目录
+    let sandboxDir = null;
+    try {
+      sandboxDir = fs.mkdtempSync(path.join(os.tmpdir(), 'clarity-sandbox-'));
+    } catch (error) {
+      return this._createErrorResult(`创建沙箱目录失败: ${error.message}`, -1);
+    }
+    sandboxOptions.sandboxDir = sandboxDir;
+
+    let result;
+    try {
+      result = await this._executeCore(code, language, sandboxOptions);
+
+      // 记录执行结果到安全审计日志
+      this._securityAuditLog({
+        type: 'execution',
+        reason: result.success ? '执行成功' : '执行失败',
+        code,
+        blocked: false,
+        details: `退出码: ${result.exitCode}, 耗时: ${result.duration}ms`
+      });
+    } catch (error) {
+      result = this._createErrorResult(`沙箱执行异常: ${error.message}`, -1);
+      this._securityAuditLog({
+        type: 'execution',
+        reason: `执行异常: ${error.message}`,
+        code,
+        blocked: false,
+        details: error.message
+      });
+    } finally {
+      // 清理沙箱临时目录
+      if (sandboxDir) {
+        try {
+          fs.rmSync(sandboxDir, { recursive: true, force: true });
+        } catch (error) {
+          // 忽略清理失败
+        }
+      }
+    }
+
+    return result;
   }
 
   /**
@@ -1027,6 +1173,37 @@ class CodeExecutor {
       error: message,
       attempt
     };
+  }
+
+  /**
+   * 安全审计日志记录（v2.7 新增）
+   *
+   * 记录所有代码执行尝试和阻止的安全违规到审计日志文件。
+   * 每条记录包含：时间戳、代码哈希、执行类型、是否被阻止、详细信息。
+   */
+  _securityAuditLog(event) {
+    const { type, reason, code, blocked, details } = event;
+    const timestamp = new Date().toISOString();
+    const codeHash = crypto.createHash('sha256').update(code || '').digest('hex').substring(0, 16);
+
+    const logEntry = JSON.stringify({
+      timestamp,
+      codeHash,
+      type,
+      reason,
+      blocked: !!blocked,
+      details: details || ''
+    }) + '\n';
+
+    try {
+      const auditDir = path.dirname(this._securityAuditLogPath);
+      if (!fs.existsSync(auditDir)) {
+        fs.mkdirSync(auditDir, { recursive: true });
+      }
+      fs.appendFileSync(this._securityAuditLogPath, logEntry, 'utf8');
+    } catch (error) {
+      // 忽略审计日志写入失败
+    }
   }
 
   /**
