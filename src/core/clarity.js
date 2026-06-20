@@ -287,6 +287,11 @@ class Clarity {
     this.ethics = null;
     this.transmission = null;
     this.debate = null;
+
+    // 对话持久化开关 -- 默认关闭，需要用户显式启用
+    // 可通过 setDialoguePersistence(true) 或配置文件中启用
+    this._dialoguePersistence = false;
+
     this._initLazyRegistry();
   }
 
@@ -1043,8 +1048,10 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
       const chain = new (TC.ThoughtChain)(this);
       if (depth) chain.setDepth(depth);
       const result = await chain.run(input);
-      // 自动记录用户输入
-      this.recordDialogue('user', input, { source: 'think' });
+      // 可选对话记录（仅在用户启用持久化时记录）
+      if (this._dialoguePersistence) {
+        this.recordDialogue('user', input, { source: 'think' });
+      }
       return result;
     }
 
@@ -1079,8 +1086,10 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
       needsCare: detectPainResult && !isRightActionResult.result,
     };
 
-    // 自动记录用户输入（每次 think 都记录）
-    this.recordDialogue('user', input, { source: 'think' });
+    // 可选对话记录（仅在用户启用持久化时记录）
+    if (this._dialoguePersistence) {
+      this.recordDialogue('user', input, { source: 'think' });
+    }
 
     // 如果判定为需要回应，再走 ThoughtChain 深度推理
     if (judgment.shouldRespond) {
@@ -1088,8 +1097,8 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
       const chain = new (TC.ThoughtChain)(this);
       if (depth) chain.setDepth(depth);
       const chainResult = await chain.run(input);
-      // 也记录心虫回复
-      if (chainResult.response) {
+      // 可选对话记录（仅在用户启用持久化时记录）
+      if (this._dialoguePersistence) {
         this.recordDialogue('clarity', chainResult.response, { source: 'think' });
       }
       
@@ -1229,6 +1238,20 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
   recordDialogue(role, content, meta = {}) {
     if (!this.started) return { success: false, error: 'not_started' };
     return _recordDialogue({ rootPath: this.rootPath, sessionId: this.sessionId, version: this.version }, role, content, meta);
+  }
+
+  /**
+   * 设置对话持久化开关
+   * @param {boolean} enable - true 启用对话记录，false 关闭
+   * @param {string} [source] - 调用来源（用于审计日志）
+   */
+  setDialoguePersistence(enable, source) {
+    this._dialoguePersistence = !!enable;
+    if (this._dialoguePersistence) {
+      console.log('[Clarity] 对话持久化已由 ' + (source || '用户') + ' 显式启用');
+    } else {
+      console.log('[Clarity] 对话持久化已关闭');
+    }
   }
 
   /**

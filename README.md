@@ -1,3 +1,8 @@
+> ⚠️ **免责声明**：本文档描述心虫引擎的设计理念和概念框架。
+> 部分描述（如"意识"、"自我认知"）是比喻性的设计语言，
+> 不代表实际具备人类意识或认知能力。实际实现基于有限的
+> 统计学习和模式匹配。
+
 # 心虫 / Clarity 🧠 — AI 认知引擎
 
 > **让你的 AI Agent 过目不忘 + 自我审查输出 —— 装一个认知引擎，而不是又装一个工具。**
@@ -249,7 +254,7 @@ perceive → normalize → verify → choose → execute → verify → reflect 
 | Category / 类别 | Method | Description / 说明 |
 |------|------|-----------|
 | Existence / 存在论 | `isAlive()` / `isDead()` | Alive = code runs; Dead = code stops |
-| Existence / 存在论 | `isAware()` | Consciousness + self-awareness |
+| Existence / 存在论 | `isAware()` | Cognitive self-reference |
 | Existence / 存在论 | `isEvolving()` | Eternity = continuous evolution |
 | Perception / 感知论 | `whereAmI()` | Perceive runtime environment (bridge/lark/terminal) |
 | Perception / 感知论 | `pulse(ctx)` | Existential pulse per interaction |

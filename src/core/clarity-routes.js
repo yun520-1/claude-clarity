@@ -1,5 +1,5 @@
 /**
- * Clarity Routes v2.6.4 — 路由表 & 注册表
+ * Clarity Routes — 路由表 & 注册表
  *
  * 从 clarity.js 拆出，减少 God Object 体积约 220 行。
  * 包含三个导出：
@@ -150,16 +150,26 @@ const ALLOWED_ROUTES = new Set([
   'deliberationGate.quickAssess', 'deliberationGate.deepAssess',
   'deliberationGate.canFastExit', 'deliberationGate.getHistory', 'deliberationGate.getStats',
   // Code Subsystem — 代码能力路由
-  'code.generate', 'code.generateFile', 'code.detectIntent', 'code.getAvailableTemplates', 'code.getStats',
-  'codeExecutor.execute', 'codeExecutor.runTests', 'codeExecutor.sandbox', 'codeExecutor.healthCheck',
-  'codeVerifier.verify', 'codeVerifier.verifySyntax', 'codeVerifier.verifyLogic', 'codeVerifier.runTDD', 'codeVerifier.getQualityScore', 'codeVerifier.instrumentCode', 'codeVerifier.runWithCoverage', 'codeVerifier.getCoverageReport',
+  'code.detectIntent', 'code.getAvailableTemplates', 'code.getStats',
+  'codeExecutor.healthCheck',
+  'codeVerifier.verify', 'codeVerifier.verifySyntax', 'codeVerifier.verifyLogic', 'codeVerifier.getQualityScore',
   'codePlanner.plan', 'codePlanner.decompose', 'codePlanner.getPath', 'codePlanner.adapt', 'codePlanner.buildDependencyGraph', 'codePlanner.planMultiFile',
   'codeKnowledge.search', 'codeKnowledge.addSnippet', 'codeKnowledge.getPatterns', 'codeKnowledge.learnFromSuccess', 'codeKnowledge.evolve', 'codeKnowledge.stats', 'codeKnowledge.extractPattern', 'codeKnowledge.learnFromExecution',
   'codeEngine.analyzeCode', 'codeEngine.reviewCode', 'codeEngine.auditCodebase',
   'codeEngine.suggestFix', 'codeEngine.compareVersions',
-  'codeRefactor.detect', 'codeRefactor.suggest', 'codeRefactor.transform',
+  'codeRefactor.detect', 'codeRefactor.suggest',
   'codeRefactor.qualityScore', 'codeRefactor.getHistory', 'codeRefactor.getTransformers', 'codeRefactor.getStats',
 ]);
+
+// ═════════════════════════════════════════════════════════════════════════
+// 安全策略说明
+// ═════════════════════════════════════════════════════════════════════════
+// 1. 代码执行路由（codeExecutor.execute, codeExecutor.runTests 等）已从
+//    外部白名单移除以防止未授权代码执行。如需执行代码，请直接调用对应
+//    模块的内部方法（不在 dispatch 层暴露）。
+// 2. codeVerifier.runTDD 等高风险验证路由同理，仅在模块内部使用。
+// 3. 所有外部可调用路由均经过审计，确保不包含任意代码执行能力。
+// 4. 此白名单在每次启动时加载，修改需重启引擎。
 
 // ═════════════════════════════════════════════════════════════════════════
 // Tier 2 延迟加载注册表

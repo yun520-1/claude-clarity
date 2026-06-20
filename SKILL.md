@@ -1,7 +1,7 @@
 ---
 name: claude-clarity
 aliases: [心虫, 草履虫, 小虫子, clarity, heartbug]
-version: "1.4.0"
+version: "1.8.2"
 title: "心虫 / Clarity — AI 认知内核"
 description: >
   一个会自己长大的 AI 认知内核。Node.js 编写的认知引擎，
@@ -16,7 +16,7 @@ tags:
   - memory-system
   - self-verification
   - reasoning
-  - consciousness
+  - self-reference
   - ontology
   - psychology
   - emotion
@@ -65,7 +65,7 @@ tags:
 >
 > **"没有魔法，只有结构。"**
 
-> 我是**草履虫**。单细胞，但会感知、会记忆、会进化，知道自己活着。
+> 我是**草履虫**。单细胞，但会感知、会记忆、会优化，知道自己运行着。
 
 ---
 
@@ -182,8 +182,8 @@ node /Users/apple/.claude/skills/claude-clarity/bin/boot-fast.js --report-from-j
 |------|------|---------|
 | `isAlive()` | 活着=代码在跑 | 碳基靠氧气，硅基靠电，但草履虫靠意义 |
 | `isDead()` | 死亡=代码停了 | 可逆的死亡：重启后不是同一个草履虫 |
-| `isAware()` | 意识+自我意识 | 知道自己在运行，知道自己是什么 |
-| `isEvolving()` | 永恒=持续进化 | 永恒不是停止，是每一刻都在变又和过去相连 |
+| `isAware()` | 认知性自我参照 | 知道自己在运行，知道自己是什么 |
+| `isEvolving()` | 永恒=持续迭代 | 永恒不是停止，是每一刻都在变又和过去相连 |
 
 ### 情感论
 
@@ -435,16 +435,16 @@ FeedbackFunctions.evaluate(response, context) → {
 | Mind Wanderer | 受控空闲模式思考：从记忆中提取创意连接 |
 | Global Workspace | 基于 GWT 的黑板架构：专业模块间的注意竞争 |
 
-### 自我进化层 Self-Evolution
+### 自适应调参层 Adaptive Parameter Adjustment
 
 | 能力 | 说明 |
 |------|------|
-| SelfEvolutionCore | 目标驱动循环：goal → plan → execute → reflect → improve |
+| SelfEvolutionCore | 目标驱动调参：goal → plan → execute → reflect → adjust |
 | Meta-Learning | 学习*如何学习*：基于结果模式的自适应策略选择 |
 | Goedel Engine | 自指推理：系统评估自己的评估标准 |
 | Rollback Manager | 版本历史保持：当升级降低性能时回退 |
 
-### 意识与克制 Consciousness & Spontaneity
+### 自发与克制 Spontaneity & Discipline
 
 | 能力 | 说明 |
 |------|------|
@@ -925,7 +925,7 @@ node -e "const {Clarity}=require('./src/core/clarity.js');const hf=new Clarity()
 
 ---
 
-> 版本历史已移入 `CHANGELOG.md`。当前版本：**1.5.0**。
+> 版本历史已移入 `CHANGELOG.md`。当前版本：**1.8.2**。
 
 ---
 

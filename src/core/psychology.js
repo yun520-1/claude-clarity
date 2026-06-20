@@ -827,6 +827,44 @@ function getStateManager() {
   return _psychologyStateManager;
 }
 
+// ════════════════════════════════════════════════════════════════
+// ⚠️ 育儿分析限制声明与 Opt-In 控制
+// ════════════════════════════════════════════════════════════════
+// 本模块输出的育儿相关分析仅供参考和反思，不构成任何形式的
+// 临床诊断、心理咨询或医学建议。
+//
+// 限制：
+// - 分析基于有限的文本输入，无法替代专业心理评估
+// - 育儿风格的标签化描述是高度简化的模型，真实情况更为复杂
+// - 所有因果推断仅为假设性参考，不是确定结论
+// - 如果用户有实际育儿困扰，请建议咨询持证心理健康专业人员
+//
+// 本模块在输出中会包含上述限制的文字版本。
+// ════════════════════════════════════════════════════════════════
+let _parentingConsented = false;
+
+/**
+ * 设置育儿分析是否已获得用户明确同意
+ * 默认关闭，需要调用方明确 opt-in
+ * @param {boolean} consented - 用户是否同意接受育儿分析
+ */
+function setParentingConsented(consented) {
+  _parentingConsented = !!consented;
+}
+
+/**
+ * 检查育儿分析是否已获得同意，未同意时返回降级结果
+ * @returns {boolean}
+ */
+function isParentingConsented() {
+  return _parentingConsented;
+}
+
+/**
+ * 育儿分析结果的前缀警告文本
+ */
+const PARENTING_DISCLAIMER_PREFIX = '⚠️ 重要提示：以下育儿分析仅供参考，不构成专业诊断。';
+
 // ========================================
 // 新增：真爱 vs 投射 — 自他分辨（2026-05-21对话集成）
 // ========================================
@@ -868,6 +906,32 @@ function detectSelfOtherDifferentiation(text) {
 // ========================================
 
 function detectThreeGenerationTrauma(text) {
+  // ════════════════════════════════════════════════════════════════
+  // ⚠️ 重要限制声明
+  // ════════════════════════════════════════════════════════════════
+  // 本模块输出的育儿相关分析仅供参考和反思，不构成任何形式的
+  // 临床诊断、心理咨询或医学建议。
+  //
+  // 限制：
+  // - 分析基于有限的文本输入，无法替代专业心理评估
+  // - 育儿风格的标签化描述是高度简化的模型，真实情况更为复杂
+  // - 所有因果推断（"X导致Y"）仅为假设性参考，不是确定结论
+  // - 如果用户有实际育儿困扰，请建议咨询持证心理健康专业人员
+  //
+  // 本模块在输出中会包含上述限制的文字版本。
+  // ════════════════════════════════════════════════════════════════
+
+  // Opt-in 检查：未获得用户明确同意时返回降级结果
+  if (!_parentingConsented) {
+    return {
+      detected: false,
+      scores: { grandparental: 0, parental: 0, child: 0, transmission: 0 },
+      formula: null,
+      insight: '育儿分析需用户明确同意后方可提供',
+      _consentRequired: true
+    };
+  }
+
   const lower = text.toLowerCase();
   const markers = {
     grandparental: ['祖辈', '爷爷奶奶', '姥姥姥爷', '上一代', '匮乏', '没条件', '那个年代', '饥荒', '穷怕了'],
@@ -881,11 +945,11 @@ function detectThreeGenerationTrauma(text) {
   return {
     detected: total >= 2,
     scores,
-    formula: '祖辈匮乏 → 父母过度补偿（物质） → 孩子空洞+压力 = 抑郁',
+    formula: '祖辈匮乏与父母过度补偿、孩子情感压力的模式有一定关联',
     insight: total >= 3
-      ? '三代创伤传递清晰：祖辈匮乏→父母过度补偿→孩子承接不属于自己的人生课题'
+      ? PARENTING_DISCLAIMER_PREFIX + '三代间可能存在的模式：祖辈匮乏与父母过度补偿、孩子承接不属于自己的人生课题之间有一定相关性'
       : total >= 2
-      ? '存在代际创伤传递特征，需关注原生家庭模式'
+      ? PARENTING_DISCLAIMER_PREFIX + '存在可能的代际相关特征，建议结合原生家庭具体情况综合评估'
       : '未检测到明显三代创伤标记'
   };
 }
@@ -895,6 +959,16 @@ function detectThreeGenerationTrauma(text) {
 // ========================================
 
 function detectChildDepressionFormula(text) {
+  // Opt-in 检查：未获得用户明确同意时返回降级结果
+  if (!_parentingConsented) {
+    return {
+      formula: null,
+      severity: 'none',
+      scores: { materialSurplus: 0, emotionalVoid: 0, pressure: 0 },
+      _consentRequired: true
+    };
+  }
+
   const lower = text.toLowerCase();
   const materialSurplus = ['物质过剩', '要什么给什么', '太容易得到', '惯', '宠'],
         emotionalVoid = ['情感空洞', '没人看我', '不被理解', '孤独', '寂寞', '没人听见', '看不见我', '冷落'],
@@ -904,7 +978,7 @@ function detectChildDepressionFormula(text) {
   const scores = { materialSurplus: cnt(materialSurplus), emotionalVoid: cnt(emotionalVoid), pressure: cnt(pressure) };
   const depCount = cnt(depression);
   if (scores.materialSurplus >= 1 && scores.emotionalVoid >= 1 && scores.pressure >= 1) {
-    return { formula: '抑郁 = 物质过剩 + 情感空洞 + 必须成功的压力', severity: depCount > 0 ? 'high' : 'medium', scores };
+    return { formula: PARENTING_DISCLAIMER_PREFIX + '物质过剩、情感需求与高压力可能有一定相关性', severity: depCount > 0 ? 'high' : 'medium', scores };
   }
   return { formula: null, severity: depCount > 0 ? 'low' : 'none', scores };
 }
@@ -2067,6 +2141,11 @@ module.exports = {
   detectThreeGenerationTrauma,
   detectChildDepressionFormula,
   detectDINKFears,
+
+  // 新增：育儿分析 opt-in 控制
+  setParentingConsented,
+  isParentingConsented,
+  PARENTING_DISCLAIMER_PREFIX,
 
   // v2.0.0 话题隔离核心
   detectTopic,
