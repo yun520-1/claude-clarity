@@ -162,7 +162,11 @@ class DAGNode {
 
   async _findConnections(ctx) {
     // Find associative connections between fragments
-    const fragments = ctx.fragments || [];
+    const MAX_FRAGMENTS = 200;
+    let fragments = ctx.fragments || [];
+    if (fragments.length > MAX_FRAGMENTS) {
+      fragments = fragments.slice(-MAX_FRAGMENTS);
+    }
     const connections = [];
     
     for (let i = 0; i < fragments.length; i++) {
@@ -674,7 +678,11 @@ class DAGNode {
 
   async _detectContradictions(ctx) {
     // Detect contradictions in memory fragments
-    const fragments = ctx.fragments || [];
+    const MAX_FRAGMENTS = 200;
+    let fragments = ctx.fragments || [];
+    if (fragments.length > MAX_FRAGMENTS) {
+      fragments = fragments.slice(-MAX_FRAGMENTS);
+    }
     const contradictions = [];
     
     for (let i = 0; i < fragments.length; i++) {

@@ -186,7 +186,7 @@ class ThoughtChain {
         let psychResult = null;
         let empathyResult = null;
         try {
-          psychResult = hf.dispatch('psychology.analyzePsychology', input);
+          psychResult = await hf.dispatch('psychology.analyzePsychology', input);
         } catch (e) {
           // 子系统不存在时静默降级
           psychResult = null;
@@ -194,7 +194,7 @@ class ThoughtChain {
         
         // 1.7 【心理推断深度集成】调用共情检测 — empathy-detector 结果注入上下文
         try {
-          empathyResult = hf.dispatch('psychology.getEmpathy', input);
+          empathyResult = await hf.dispatch('psychology.getEmpathy', input);
         } catch (e) {
           // 共情检测失败时静默降级
           empathyResult = null;

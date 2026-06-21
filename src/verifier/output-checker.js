@@ -204,9 +204,10 @@ class OutputChecker {
   }
 
   /**
-   * 深度比较
+   * 深度比较（含深度限制，防止栈溢出）
    */
-  _deepEqual(a, b) {
+  _deepEqual(a, b, maxDepth = 20, _currentDepth = 0) {
+    if (_currentDepth > maxDepth) return false;
     if (a === b) return true;
     if (a === null || b === null) return false;
     if (typeof a !== typeof b) return false;
@@ -218,7 +219,7 @@ class OutputChecker {
       if (keysA.length !== keysB.length) return false;
 
       for (const key of keysA) {
-        if (!this._deepEqual(a[key], b[key])) return false;
+        if (!this._deepEqual(a[key], b[key], maxDepth, _currentDepth + 1)) return false;
       }
 
       return true;

@@ -226,7 +226,6 @@ class HeartLogic {
     if (!content || !signal) return false;
     const idx = content.indexOf(signal);
     if (idx < 0) return false;
-    const before = content.slice(Math.max(0, idx - 3), idx).trim();
     // 否定前缀：不/没/别/未/无/不要/没有
     const negations = ['不', '没', '别', '未', '无', '不要', '没有'];
     return negations.some(n => {
@@ -1491,7 +1490,7 @@ class HeartLogic {
 
     return {
       aggregates: modules,
-      allEmpty: true, // 五蕴皆是空，这是肯定的
+      allEmpty: Object.values(modules).every(mod => !mod.isFixed && !mod.isSelfGrasped),
       selfGraspDetected,
       insight: selfGraspDetected
         ? '照见：某模块在执着于"自我"，需要放下'

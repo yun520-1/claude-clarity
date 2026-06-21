@@ -10,6 +10,8 @@
  * 来源：StillWater v2.0 psychology.js PAD 模型
  */
 
+const { PADWordLibrary, calculatePADFromText: _calculatePADFromText } = require('./pad-utils.js');
+
 class EmotionalGrowth {
   constructor(options = {}) {
     this.emotionModule = options.emotionModule || null;
@@ -33,21 +35,8 @@ class EmotionalGrowth {
     // v2.0 新增：成长轨迹数据
     this._trajectoryData = [];
 
-    // v2.0 新增：PAD词库（参考 autonomous-emotion.js）
-    this._PADWordLibrary = {
-      pleasure: {
-        positive: ['好', '棒', '优秀', '喜欢', '爱', '开心', '高兴', '快乐', '太棒', '真棒', '完美', '感谢', '感激', '谢谢', 'good', 'great', 'excellent', 'love', 'like', 'happy', 'wonderful', 'awesome', 'perfect'],
-        negative: ['坏', '差', '糟糕', '讨厌', '恨', '不喜欢', '难过', '伤心', '失望', '绝望', 'bad', 'terrible', 'awful', 'hate', 'dislike', 'sad', 'disappointed', 'worst', 'horrible']
-      },
-      arousal: {
-        high: ['激动', '兴奋', '震惊', '紧张', '担心', '焦虑', '害怕', '愤怒', 'excited', 'shocked', 'nervous', 'worried', 'anxious', 'scared', 'angry', 'thrilled'],
-        low: ['平静', '冷静', '放松', '无聊', '疲惫', '累', 'calm', 'relaxed', 'peaceful', 'bored', 'tired', 'exhausted']
-      },
-      dominance: {
-        high: ['自信', '确定', '控制', '掌握', '主动', '相信', '肯定', 'confident', 'certain', 'control', 'sure', 'definitely'],
-        low: ['无助', '失控', '无力', '被动', '迷茫', 'helpless', 'lost', 'uncertain', 'confused']
-      }
-    };
+    // PAD 词库引用自共享模块 pad-utils.js
+    this._PADWordLibrary = PADWordLibrary;
 
     // 绑定情感监听（如果提供了emotionModule）
     if (this.emotionModule) {
@@ -163,47 +152,10 @@ class EmotionalGrowth {
   }
 
   /**
-   * 从文本计算PAD坐标（参考 autonomous-emotion.js）
+   * 从文本计算PAD坐标（委托至共享模块 pad-utils.js）
    */
   calculatePADFromText(text) {
-    if (!text || typeof text !== 'string') {
-      return { pleasure: 0, arousal: 0, dominance: 0, matches: 0 };
-    }
-
-    const lower = text.toLowerCase();
-    let pleasure = 0, arousal = 0.1, dominance = 0.1;
-    let matches = 0;
-
-    // pleasure 维度
-    for (const w of this._PADWordLibrary.pleasure.positive) {
-      if (lower.includes(w)) { pleasure += 0.15; matches++; }
-    }
-    for (const w of this._PADWordLibrary.pleasure.negative) {
-      if (lower.includes(w)) { pleasure -= 0.15; matches++; }
-    }
-
-    // arousal 维度
-    for (const w of this._PADWordLibrary.arousal.high) {
-      if (lower.includes(w)) { arousal += 0.2; matches++; }
-    }
-    for (const w of this._PADWordLibrary.arousal.low) {
-      if (lower.includes(w)) { arousal -= 0.2; matches++; }
-    }
-
-    // dominance 维度
-    for (const w of this._PADWordLibrary.dominance.high) {
-      if (lower.includes(w)) { dominance += 0.15; matches++; }
-    }
-    for (const w of this._PADWordLibrary.dominance.low) {
-      if (lower.includes(w)) { dominance -= 0.15; matches++; }
-    }
-
-    // 边界限制
-    pleasure = Math.max(-1, Math.min(1, pleasure));
-    arousal = Math.max(-1, Math.min(1, arousal));
-    dominance = Math.max(-1, Math.min(1, dominance));
-
-    return { pleasure, arousal, dominance, matches };
+    return _calculatePADFromText(text);
   }
 
   /**

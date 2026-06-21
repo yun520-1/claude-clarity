@@ -28,7 +28,9 @@ function cloneModule(obj) {
   for (const key of Object.keys(obj)) {
     const val = obj[key];
     if (key === 'dimensions' && val && typeof val === 'object') {
-      clone[key] = JSON.parse(JSON.stringify(val));
+      clone[key] = typeof structuredClone === 'function'
+        ? structuredClone(val)
+        : JSON.parse(JSON.stringify(val));
     } else if (typeof val === 'function') {
       clone[key] = val.bind ? val.bind(clone) : val;
     } else {

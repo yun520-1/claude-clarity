@@ -12,6 +12,7 @@
  */
 
 const { MeaningfulMemory } = require('../memory/meaningful-memory.js');
+const { calculatePADFromText: _calculatePADFromText } = require('./pad-utils.js');
 
 class AutonomousEmotion {
   constructor(options = {}) {
@@ -85,62 +86,10 @@ class AutonomousEmotion {
   }
 
   /**
-   * 计算文本的 PAD 坐标（来源：StillWater psychology.js）
+   * 计算文本的 PAD 坐标（委托至共享模块 pad-utils.js）
    */
   calculatePADFromText(text) {
-    if (!text || typeof text !== 'string') {
-      return { pleasure: 0, arousal: 0.1, dominance: 0.1 };
-    }
-
-    const lower = text.toLowerCase();
-    let pleasure = 0, arousal = 0.1, dominance = 0.1;
-    let matches = 0;
-
-    // pleasure 维度：正面/负面词
-    const pleasureWords = {
-      positive: ['好', '棒', '棒', '优秀', '喜欢', '爱', '开心', '高兴', '快乐', '太棒', '真棒', '完美', '感谢', '感激', '谢谢', '喜欢', 'good', 'great', 'excellent', 'love', 'like', 'happy', 'wonderful', 'awesome', 'perfect', 'thanks', 'thankful'],
-      negative: ['坏', '差', '糟糕', '讨厌', '恨', '不喜欢', '难过', '伤心', '失望', '糟糕', '绝望', 'bad', 'terrible', 'awful', 'hate', 'dislike', 'sad', 'disappointed', 'worst', 'horrible']
-    };
-
-    for (const w of pleasureWords.positive) {
-      if (lower.includes(w)) { pleasure += 0.15; matches++; }
-    }
-    for (const w of pleasureWords.negative) {
-      if (lower.includes(w)) { pleasure -= 0.15; matches++; }
-    }
-
-    // arousal 维度：高唤醒/低唤醒词
-    const arousalWords = {
-      high: ['激动', '兴奋', '震惊', '紧张', '担心', '焦虑', '害怕', '愤怒', '激动', 'excited', 'shocked', 'nervous', 'worried', 'anxious', 'scared', 'angry', 'thrilled'],
-      low: ['平静', '冷静', '放松', '平静', '无聊', '疲惫', '累', '累', 'calm', 'relaxed', 'peaceful', 'bored', 'tired', 'exhausted']
-    };
-
-    for (const w of arousalWords.high) {
-      if (lower.includes(w)) { arousal += 0.2; matches++; }
-    }
-    for (const w of arousalWords.low) {
-      if (lower.includes(w)) { arousal -= 0.2; matches++; }
-    }
-
-    // dominance 维度：控制感词
-    const dominanceWords = {
-      high: ['自信', '确定', '控制', '掌握', '主动', '相信', '肯定', 'confident', 'certain', 'control', 'sure', 'definitely'],
-      low: ['无助', '失控', '无力', '被动', '迷茫', 'confused', 'helpless', 'lost', 'uncertain', 'confused']
-    };
-
-    for (const w of dominanceWords.high) {
-      if (lower.includes(w)) { dominance += 0.15; matches++; }
-    }
-    for (const w of dominanceWords.low) {
-      if (lower.includes(w)) { dominance -= 0.15; matches++; }
-    }
-
-    // 边界限制
-    pleasure = Math.max(-1, Math.min(1, pleasure));
-    arousal = Math.max(-1, Math.min(1, arousal));
-    dominance = Math.max(-1, Math.min(1, dominance));
-
-    return { pleasure, arousal, dominance, matches };
+    return _calculatePADFromText(text);
   }
 
   /**
