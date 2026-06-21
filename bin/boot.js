@@ -46,13 +46,13 @@ function readJsonOrNull(filePath) {
   return null;
 }
 
-function countJsonKeys(filePath) {
+function _countJsonKeys(filePath) {
   const data = readJsonOrNull(filePath);
   if (!data || typeof data !== 'object') return 0;
   return Object.keys(data).length;
 }
 
-function readLessons(bankPath) {
+function _readLessons(bankPath) {
   try {
     if (fs.existsSync(bankPath)) {
       const raw = fs.readFileSync(bankPath, 'utf8');
@@ -103,7 +103,7 @@ function getMemoryStats() {
         const entries = Object.keys(learned).length;
         const now = Date.now();
         const LEARNED_STABILITY_MS = 720 * 60 * 60 * 1000;
-        const toForget = Object.entries(learned).filter(([k, v]) => {
+        const toForget = Object.entries(learned).filter(([_k, v]) => {
           const age = now - (v.createdAt || v.timestamp || 0);
           return age > LEARNED_STABILITY_MS;
         }).length;
@@ -206,7 +206,7 @@ function getMemoryStats() {
   try {
     const existenceLogPath = path.join(memoryDir, 'existence-log.jsonl');
     if (fs.existsSync(existenceLogPath)) {
-      const stat = fs.statSync(existenceLogPath);
+      const _stat = fs.statSync(existenceLogPath);
       // 估算行数：用文件大小/平均行长的粗略估算，再通过读文件头尾精确计算
       const raw = fs.readFileSync(existenceLogPath, 'utf8');
       const lines = raw.trim().split('\n').filter(Boolean);
@@ -218,7 +218,7 @@ function getMemoryStats() {
   return stats;
 }
 
-async function main() {
+function main() {
   const report = {
     bootTime: new Date().toISOString(),
     version: '1.0.0',

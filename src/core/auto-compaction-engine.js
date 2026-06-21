@@ -343,7 +343,7 @@ class AutoCompactionEngine {
           tokenCount: this.tokenizer.estimateMessages(messages),
           strategy,
         });
-      } catch (e) {
+      } catch (_e) {
         // 忽略回调错误
       }
     }
@@ -405,7 +405,7 @@ class AutoCompactionEngine {
           duration,
           strategy,
         });
-      } catch (e) {
+      } catch (_e) {
         // 忽略回调错误
       }
     }
@@ -438,7 +438,7 @@ class AutoCompactionEngine {
       if (this.config.onWarning) {
         try {
           this.config.onWarning(checkResult);
-        } catch (e) { /* 回调异常不影响压缩流程 */ }
+        } catch (_e) { /* 回调异常不影响压缩流程 */ }
       }
     }
 

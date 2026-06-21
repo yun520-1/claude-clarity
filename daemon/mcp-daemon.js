@@ -292,7 +292,7 @@ server.listen(SOCKET_PATH, () => {
   fs.writeFileSync(PID_FILE, String(process.pid));
 
   // 设置权限
-  try { fs.chmodSync(SOCKET_PATH, 0o700); } catch (e) { /* ignore */ }
+  try { fs.chmodSync(SOCKET_PATH, 0o700); } catch (_e) { /* ignore */ }
 
   const totalTime = Date.now() - startTime;
   console.error(`[Clarity Daemon] 已启动 (总计 ${totalTime}ms, PID ${process.pid})`);
@@ -313,7 +313,7 @@ server.on('error', (err) => {
           console.error(`[Clarity Daemon] Socket 被占用但进程 ${pid} 不存在`);
         }
       }
-    } catch (e) { /* ignore */ }
+    } catch (_e) { /* ignore */ }
     console.error(`[Clarity Daemon] Socket ${SOCKET_PATH} 已被占用`);
     try { fs.unlinkSync(SOCKET_PATH); } catch (_) {}
     try { fs.unlinkSync(PID_FILE); } catch (_) {}

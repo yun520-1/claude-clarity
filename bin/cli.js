@@ -28,12 +28,12 @@ const args = process.argv.slice(3);
 
 function respond(data) {
     // 只输出JSON，不输出日志
-    process.stdout.write(JSON.stringify(data) + '\n');
+    process.stdout.write(`${JSON.stringify(data)}\n`);
     process.exit(0);
 }
 
 function respondError(msg) {
-    process.stdout.write(JSON.stringify({ error: msg }) + '\n');
+    process.stdout.write(`${JSON.stringify({ error: msg })}\n`);
     process.exit(1);
 }
 

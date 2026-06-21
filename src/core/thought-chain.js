@@ -244,7 +244,7 @@ class ThoughtChain {
         let canFastExit = null;
 
         try {
-          gateResult = hf.dispatch('deliberationGate.quickAssess', input);
+          gateResult = await hf.dispatch('deliberationGate.quickAssess', input);
         } catch (e) {
           gateResult = null;
         }
@@ -252,7 +252,7 @@ class ThoughtChain {
         // 如果有 PARSE 结果且思考门可用，做深度评估校准
         if (parse && gateResult && gateResult.estimatedComplexity >= 2) {
           try {
-            gateResult = hf.dispatch('deliberationGate.deepAssess', input, parse);
+            gateResult = await hf.dispatch('deliberationGate.deepAssess', input, parse);
           } catch (e) {
             // 深度评估失败，使用快速评估结果
           }
@@ -274,7 +274,7 @@ class ThoughtChain {
         // 快速退出：低复杂度任务跳过后续深度阶段
         if (gateResult) {
           try {
-            const fastExitCheck = hf.dispatch('deliberationGate.canFastExit', gateResult);
+            const fastExitCheck = await hf.dispatch('deliberationGate.canFastExit', gateResult);
             canFastExit = fastExitCheck;
           } catch (e) {
             canFastExit = null;
@@ -320,7 +320,7 @@ class ThoughtChain {
           // 2.3 【思维连机制】对每个假设调用因果推理子系统 — 串联第二层
           for (const h of evaluated) {
             try {
-              const causalResult = hf.dispatch('causalInference.inferCauses', h.description, { query: input });
+              const causalResult = await hf.dispatch('causalInference.inferCauses', h.description, { query: input });
               if (causalResult && causalResult.causes) {
                 h.causalRoots = causalResult.causes;
                 h.causalConfidence = causalResult.confidence || 0.5;
@@ -417,14 +417,14 @@ class ThoughtChain {
         const hypotheses = hypothesesStage?.result?.hypotheses || [];
 
         // 4.1 对每个假设找证据
-        const evidenceForHypotheses = hypotheses.map(h => {
+        const evidenceForHypotheses = await Promise.all(hypotheses.map(async h => {
           const evidence = this._findEvidence(h, input);
           const qualityScore = this._assessEvidenceQuality(evidence);
 
           // 【思维连机制】调用 commonsenseEngine 验证证据合理性 — 串联第四层
           let commonsenseResult = null;
           try {
-            commonsenseResult = hf.dispatch('commonsenseEngine.validate', h.description, { context: input });
+            commonsenseResult = await hf.dispatch('commonsenseEngine.validate', h.description, { context: input });
           } catch (e) {
             commonsenseResult = null;
           }
@@ -437,7 +437,7 @@ class ThoughtChain {
             strongEvidence: qualityScore > 0.7 || commonsenseResult?.valid === true,
             weakEvidence: qualityScore < 0.3 || commonsenseResult?.valid === false
           };
-        });
+        }));
 
         // 4.2 检查是否有高质量证据支持任何假设
         const strongHypothesis = evidenceForHypotheses.find(e => e.strongEvidence);
@@ -481,7 +481,7 @@ class ThoughtChain {
             hasStrongEvidence: !!strongHypothesis,
             causalRoots: hypothesesStage?.result?.topHypothesis?.causalRoots,
           };
-          decisionResult = hf.dispatch('decision.decide', decisionContext);
+          decisionResult = await hf.dispatch('decision.decide', decisionContext);
         } catch (e) {
           decisionResult = null;
         }
@@ -550,7 +550,7 @@ class ThoughtChain {
         // [FIX] confidence.calibrate(string, number) 不是 (object)
         let subsystemCalibration = null;
         try {
-          subsystemCalibration = hf.dispatch('confidence.calibrate',
+          subsystemCalibration = await hf.dispatch('confidence.calibrate',
             synthesis?.conclusion || input,
             confidence
           );
@@ -562,7 +562,7 @@ class ThoughtChain {
         // [FIX] restraint.shouldIntervene(string, number, string) 参数顺序修正
         let restraintResult = null;
         try {
-          restraintResult = hf.dispatch('restraint.shouldIntervene',
+          restraintResult = await hf.dispatch('restraint.shouldIntervene',
             synthesis?.conclusion || '',
             confidence,
             parse?.type || 'general'
@@ -624,7 +624,7 @@ class ThoughtChain {
         // 【思维连机制】调用 autonomousEmotion 情感自主引擎 — 串联第七层
         let emotionResult = null;
         try {
-          emotionResult = hf.dispatch('autonomousEmotion.trigger', {
+          emotionResult = await hf.dispatch('autonomousEmotion.trigger', {
             type: isReception ? 'witness_response' : 'response_generation',
             conclusion: isReception ? parse?.goal : synthesis?.conclusion,
             confidence: calibrate?.calibratedConfidence || 0.5,

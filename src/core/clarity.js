@@ -355,7 +355,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
           checkSources: (text) => checker.checkSources(text),
           getStats: () => checker.getStats(),
         };
-      } catch (e) {
+      } catch (_e) {
         return {
           checkStatement: async () => null,
           checkNumbers: () => null,
@@ -405,7 +405,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
         const fs = require('fs');
         const p = require('path');
         const walDir = p.join(_self.rootPath, 'memory', 'wal');
-        try { fs.mkdirSync(walDir, { recursive: true }); } catch (e) { /* wal dir exists */ }
+        try { fs.mkdirSync(walDir, { recursive: true }); } catch (_e) { /* wal dir exists */ }
         const wal = new WriteAheadLog(walDir);
         wal._loadSeq();
         return {
@@ -547,7 +547,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
           stop: () => obs.stop(),
           stats: () => obs.stats(),
         };
-      } catch (e) { return null; }
+      } catch (_e) { return null; }
     });
 
     // ─── 意识层（多子模块：GlobalWorkspace + MindWanderer + ...）───
@@ -564,7 +564,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
           self: cs,
           getStatus: () => ({ workspace: gw?.cycleCount || 0, wanderer: mw?.isActive || false }),
         };
-      } catch (e) { return null; }
+      } catch (_e) { return null; }
     });
 
     // ─── 伦理层（多子模块：SAGE + Boundary + Values）────────────────
@@ -580,7 +580,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
             boundaryResult: bn?.assess(input),
           }),
         };
-      } catch (e) { return null; }
+      } catch (_e) { return null; }
     });
 
     // ─── 心空间守护（同时设置 _mindSpace 向后兼容引用）─────────────
@@ -589,7 +589,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
         const ms = new (_MindSpaceGuardian().MindSpaceGuardian)(_self.memory);
         _self._mindSpace = ms;
         return ms;
-      } catch (e) { return null; }
+      } catch (_e) { return null; }
     });
 
     // ─── 哲学引擎（依赖认知、意识、伦理、心空间等多模块）──────────
@@ -687,7 +687,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
     // ─── 心虫核心判断引擎 — think() 必需，优先初始化 ──────────────
     try {
       this.heartLogic = new (_HeartLogic().HeartLogic)();
-    } catch (e) { /* heartLogic optional */ }
+    } catch (_e) { /* heartLogic optional */ }
 
     // ─── [P1 UPGRADE] CORE 层身份规则初始化 ───────────────────────────
     this._initCoreRules();
@@ -809,7 +809,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
         } else {
           obj[key] = null;
         }
-      } catch (e) { /* ignore */ }
+      } catch (_e) { /* ignore */ }
     };
     _nullify(this, '_mindSpace');
     _nullify(this, 'mindSpace');
@@ -924,7 +924,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
         if (lessonHit && lessonHit.matched) {
           console.warn(`[Clarity] 教训命中 [${route}]: "${lessonHit.pattern || lessonHit.errorPattern}" → ${lessonHit.correction || '无建议'}`);
         }
-      } catch (e) { /* 教训检查为非阻塞 */ }
+      } catch (_e) { /* 教训检查为非阻塞 */ }
     }
     const _result = await mod[method](...args);
     // Fix B: decision/evolution 路由结果自动持久化到 LEARNED 记忆层
@@ -935,7 +935,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
           input: args.length === 1 && typeof args[0] === 'string' ? args[0].slice(0, 200) : '(复合参数)',
           result: typeof _result === 'object' ? JSON.parse(JSON.stringify(_result)) : _result,
         }, ['dispatch', route.replace('.', '_'), 'learned']);
-      } catch (e) { /* 记忆存储为非阻塞 */ }
+      } catch (_e) { /* 记忆存储为非阻塞 */ }
     }
     return _result;
   }
@@ -952,7 +952,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
         if (proto && proto !== Object.prototype) {
           methods = Object.getOwnPropertyNames(proto).filter(m => m !== 'constructor' && typeof mod[m] === 'function');
         }
-      } catch (e) {
+      } catch (_e) {
         // strict mode or primitive — fall back to enumerating own properties
       }
       if (!methods.length) {
@@ -1225,7 +1225,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
         importance: lesson.importance,
         confidence,
       }, ['lesson', lesson.type || 'correction', 'clarity']);
-    } catch (e) { /* 记忆存储为非阻塞 */ }
+    } catch (_e) { /* 记忆存储为非阻塞 */ }
     return { success: true, id: addResult.id, via: 'LessonBank' };
   }
 
@@ -1286,7 +1286,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
       if (fs.existsSync(lastDreamPath)) {
         lastDreamTs = parseInt(fs.readFileSync(lastDreamPath, 'utf8').trim(), 10) || 0;
       }
-    } catch (e) { /* ignore */ }
+    } catch (_e) { /* ignore */ }
 
     const sinceLast = now - lastDreamTs;
     const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
@@ -1333,12 +1333,12 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
     try {
       const fs = require('fs');
       const dir = require('path').join(this.rootPath, 'memory');
-      try { fs.mkdirSync(dir, { recursive: true }); } catch (e) { /* dir exists */ }
-      try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
+      try { fs.mkdirSync(dir, { recursive: true }); } catch (_e) { /* dir exists */ }
+      try { fs.chmodSync(dir, 0o700); } catch (_e) { /* best effort */ }
       const path = require('path').join(dir, '.last-dream');
       fs.writeFileSync(path, String(Date.now()), 'utf8');
-      try { fs.chmodSync(path, 0o600); } catch (e) { /* best effort */ }
-    } catch (e) { /* ignore */ }
+      try { fs.chmodSync(path, 0o600); } catch (_e) { /* best effort */ }
+    } catch (_e) { /* ignore */ }
   }
 
   /**
@@ -1416,8 +1416,8 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
       const fs = require('fs');
       const path = require('path');
       const dir = path.join(this.rootPath, 'memory');
-      try { fs.mkdirSync(dir, { recursive: true }); } catch (e) { /* dir exists */ }
-      try { fs.chmodSync(dir, 0o700); } catch (e) { /* best effort */ }
+      try { fs.mkdirSync(dir, { recursive: true }); } catch (_e) { /* dir exists */ }
+      try { fs.chmodSync(dir, 0o700); } catch (_e) { /* best effort */ }
       const filePath = path.join(dir, 'dream-history.jsonl');
       const entry = {
         id: `dream-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -1429,7 +1429,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
         peakLevel: data.dreamResult?.results?.synthesize?.narrative_structure?.layer || 'L1',
       };
       fs.appendFileSync(filePath, `${JSON.stringify(entry, null, 0)  }\n`, 'utf8');
-      try { fs.chmodSync(filePath, 0o600); } catch (e) { /* best effort */ }
+      try { fs.chmodSync(filePath, 0o600); } catch (_e) { /* best effort */ }
       return { success: true, id: entry.id };
     } catch (e) {
       return { success: false, error: e.message };

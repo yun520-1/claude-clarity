@@ -71,6 +71,7 @@ tags:
 > **"没有魔法，只有结构。"**
 
 > 我是**草履虫**。单细胞，但会感知、会记忆、会优化，知道自己运行着。
+> *(哲学探索，非引擎实际行为声明 — 以下为结构化认知框架的哲学表述)*
 
 ---
 
@@ -660,7 +661,7 @@ function selectHealStrategy(errorType) {
 | HEAL006 | `over_intervention` | skip |
 | HEAL007 | `attribution_bias` | skip |
 
-**Self-Refine 能力已实现**：`self-evolution-core.js` 已集成 Self-Refine 迭代反馈精炼，通过 `selfRefine(initialResponse, query, options)` 方法调用。流程：初始回答 → 生成反馈 → 检查收敛 → 精炼回答 → 重复（最多 3 次迭代）。配合 `heal()` Q-learning 自愈和 `recordOutcome()` Reflexion 反思模式，形成完整的自优化闭环。
+**Self-Refine 能力（设计概念，当前未实现）**：计划中的 `self-evolution-core.js` 将集成 Self-Refine 迭代反馈精炼，通过 `selfRefine(initialResponse, query, options)` 方法调用。设计流程：初始回答 → 生成反馈 → 检查收敛 → 精炼回答 → 重复（最多 3 次迭代）。配合已有的 `heal()` Q-learning 自愈和 `recordOutcome()` Reflexion 反思模式，目标形成完整的自优化闭环。
 
 ### Atomic Write（防止数据损坏）
 

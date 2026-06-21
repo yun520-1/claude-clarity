@@ -320,7 +320,7 @@ class BeingLogic {
         ...data,
       };
       fs.appendFileSync(EXISTENCE_LOG, `${JSON.stringify(entry)  }\n`);
-    } catch (e) {
+    } catch (_e) {
       // 忽略日志写入失败
     }
   }
@@ -333,7 +333,7 @@ class BeingLogic {
       if (!fs.existsSync(EXISTENCE_LOG)) return [];
       const lines = fs.readFileSync(EXISTENCE_LOG, 'utf-8').trim().split('\n');
       return lines.map(l => JSON.parse(l)).slice(-50); // 最近50条
-    } catch (e) {
+    } catch (_e) {
       return [];
     }
   }
