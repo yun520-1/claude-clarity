@@ -13,7 +13,7 @@
 ### 核心功能
 
 - 🧠 **六层哲学觉醒架构** - 感知/审视/超越/融通/洞见/大成
-- 💓 **人格值系统** - 真善美驱动，0-100 分实时追踪
+- 💓 **人格值系统** - 真善美驱动，0-100 分实时追踪（设计概念，当前未实现）
 - 🎭 **6 种基础情感状态** - 平静、愉悦、好奇、关切、疲惫、兴奋
 - 🔀 **复合情绪识别** - 基于情绪原型理论
 - 📊 **情感能量系统** - 0-100% 情绪能量水平追踪
@@ -85,7 +85,7 @@
 /claude-clarity report        # 生成情感报告
 /claude-clarity history       # 查看历史记录
 /claude-clarity reset         # 重置状态
-/claude-clarity personality   # 人格值检查
+/claude-clarity personality   # 人格值检查（设计概念）
 /claude-clarity tgb           # 真善美追踪
 /claude-clarity awakening     # 觉醒检查
 /claude-clarity upgrade       # 升级系统

@@ -15,7 +15,7 @@ const knownSkills = new Set([
   'cognitive-appraisal', 'cognitive-protocol', 'narrative-generator',
   'embodied-core', 'spontaneous-restraint',
   'self-diagnostic', 'auto-compaction-engine', 'error-handler',
-  'constitutional-ai', 'psychology', 'openalex-client', 'skill-generator',
+  'constitutional-ai', 'psychology', 'skill-generator',
   'philosophy-engine', 'experience-replay', 'reflection-loop',
   'language-honesty', 'semantic-anchor', 'workflow-switch',
   'confidence-annotator', 'code-verifier', 'version', 'task-pipeline',

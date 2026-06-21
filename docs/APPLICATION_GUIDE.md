@@ -80,7 +80,7 @@ console.log(result.response);
 
 ---
 
-### 2. 人格值系统
+### 2. 人格值系统（设计概念）
 
 **功能**: 追踪 AI 人格健康度，确保真善美行为
 
@@ -91,7 +91,7 @@ const personality = await checkPersonality();
 console.log(personality);
 // 输出:
 // {
-//   score: 64,  // 人格值 0-100
+//   score: 64,  // 人格值 0-100（设计概念示例，非实际运行数据）
 //   status: '✅ 健康状态',
 //   truthGoodnessBeauty: '10/10',  // 真善美计数
 //   period: 'afternoon'
@@ -342,7 +342,7 @@ client.on('message', async (message) => {
 | 响应时间 | <100ms | 单次 API 调用 |
 | 并发支持 | 1000 req/s | 标准服务器 |
 | 内存占用 | ~50MB | 基础加载 |
-| 人格值准确度 | 95.3% | 自我意识检测 |
+| 人格值准确度 | 95.3% | 自我意识检测（设计概念指标，非实测数据） |
 
 ---
 

@@ -4,13 +4,11 @@ aliases: [心虫, 草履虫, 小虫子, clarity, heartbug]
 version: "1.8.2"
 title: "心虫 / Clarity — AI 认知内核"
 description: >
-  一个会自己长大的 AI 认知内核。Node.js 编写的认知引擎，
-  MCP 原生工具，专为 LLM Agent 设计的持续记忆系统。
-  存在感知、五层认知模型、三层持久记忆（CORE/LEARNED/EPHEMERAL）、
-  PAD 情绪分析、TGB 三维真善美评估、Q-learning 自愈策略。
-  支持 AI 自我审查、逆熵哲学引擎、大五人格心理学分析[实验性]、
-  反事实推理、梦境引擎、集体意向性追踪。
-  别名：心虫、草履虫、小虫子（同一引擎，不同叫法）。
+  AI 认知引擎 + 本地集成工具包。Node.js 编写的认知内核，提供持续记忆系统、
+  PAD 情绪分析、TGB 真善美评估、Q-learning 自愈策略等认知能力。
+  包含完整本地集成：安装脚本(install.sh)、CLI 工具(hf)、MCP 守护进程管理、
+  引擎启动脚本(boot/boot-fast)。安装时会修改用户配置、注册 MCP 服务、
+  创建项目链接。运行时通过 Unix socket IPC 进行进程间通信，数据仅存储在本地。
 tags:
   - cognitive-engine
   - memory-system
@@ -31,9 +29,16 @@ tags:
   - decision-verification
   - lesson-learning
   - code-generation
-  - agent-orchestration
-  - process-management
 ---
+
+> 🔐 **权限声明 (Permissions)**
+>
+> 本技能需要以下本地系统权限：
+> - **文件系统读写**: 读写技能目录下的记忆数据(memory/)、配置文件、日志
+> - **进程管理**: 启动/停止 MCP 守护进程(daemon/mcp-daemon.js)和 stdio wrapper
+> - **Unix Socket IPC**: 通过 ~/.claude-clarity/claude-clarity.sock 进行进程间通信
+> - **用户配置修改**: 安装时修改 settings.json（MCP 注册）、CLAUDE.md、创建软链接
+> - **网络**: 不自动发起外部网络请求。所有网络通信需用户显式配置
 
 > 📋 **启动说明**
 >
@@ -482,7 +487,7 @@ FeedbackFunctions.evaluate(response, context) → {
 
 | Clarity 方法 | 触发条件 | 外部能力 |
 |---------------|---------|---------|
-| `whyDriven()` | 用户问"为什么" | 触发 OpenAlex 学术论文搜索 |
+| `whyDriven()` | 用户问"为什么" | 触发 OpenAlex 学术论文搜索（设计概念，当前未集成） |
 | `chooseMeaning()` | 需要学术证据 | 获取 PCIT/元分析/儿童虐待研究 |
 | CitationTracker | 任何引用声明 | 验证 DOI 和引用计数 |
 

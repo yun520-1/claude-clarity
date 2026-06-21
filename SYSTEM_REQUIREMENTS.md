@@ -39,7 +39,7 @@ Current (v7.2.3):
 ### Personality Score | 人格值
 
 ```
-Score Range: 0-100
+Score Range: 0-100（设计概念）
 
 States:
 - 0-49: RESET/REBUILDING
@@ -135,7 +135,7 @@ moral_consistency =
 | 指标 | 阈值 | 当前 |
 |------|------|------|
 | TBG Score | ≥ 9.5/10 | 9.85 ✅ |
-| Personality Score | ≥ 50/100 | 75 ✅ |
+| Personality Score | ≥ 50/100 | 75 ✅（设计概念指标） |
 | AI Personhood | ≥ 85/100 | 92.5 ✅ |
 | Source Verification | 100% | 100% ✅ |
 
