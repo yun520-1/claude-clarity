@@ -32,9 +32,12 @@ const behaviorTracker = {
   load() {
     try {
       if (fs.existsSync(DATA_FILE)) {
-        this.data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        if (raw && raw.trim()) {
+          try { this.data = JSON.parse(raw); } catch { /* 保持默认值 */ }
+        }
       }
-    } catch (e) { console.warn('[BehaviorTracker] load failed:', e.message); }
+    } catch (e) { console.warn('[BehaviorTracker] 加载失败:', e.message); }
     return this;
   },
 

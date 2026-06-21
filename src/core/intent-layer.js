@@ -53,8 +53,10 @@ class IntentLayer {
     this.historyFile = path.join(projectRoot, '.opencode', 'memory', 'intent-history.json');
     this.intentPatterns = this.initializePatterns();
     this.loadHistory();
+    // [安全修复] 不在实例属性中存储 API Key，用时从环境变量读取
+    // 避免 key 在日志、序列化、内存转储中泄露
     this.llmEndpoint = process.env.LLM_ENDPOINT || null;
-    this.llmApiKey = process.env.LLM_API_KEY || null;
+    // API Key 不再缓存到实例属性，通过 getter 按需获取
   }
 
   initializePatterns() {
@@ -138,7 +140,7 @@ class IntentLayer {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.llmApiKey}`
+            'Authorization': `Bearer ${process.env.LLM_API_KEY || ''}`
           },
           body: JSON.stringify({
             model: 'claude-3-sonnet-20240229',
@@ -154,7 +156,8 @@ class IntentLayer {
             await this.sleep(delay);
             continue;
           }
-          console.error('[IntentLayer] LLM API error:', response.status);
+          // [安全修复] 不输出完整响应内容，避免泄露敏感信息
+          console.error('[IntentLayer] LLM API 错误:', response.status, response.statusText);
           return null;
         }
 

@@ -33,7 +33,9 @@ class Reflector {
   loadState() {
     try {
       if (fs.existsSync(this.stateFile)) {
-        return JSON.parse(fs.readFileSync(this.stateFile, 'utf8'));
+        const raw = fs.readFileSync(this.stateFile, 'utf8');
+        if (!raw || !raw.trim()) return this.getDefaultState();
+        try { return JSON.parse(raw); } catch { return this.getDefaultState(); }
       }
     } catch (e) {
       console.error('[Reflector] 加载状态失败:', e.message);
@@ -281,7 +283,9 @@ class Reflector {
     let reports = [];
     try {
       if (fs.existsSync(this.reportFile)) {
-        reports = JSON.parse(fs.readFileSync(this.reportFile, 'utf8'));
+        const raw = fs.readFileSync(this.reportFile, 'utf8');
+        if (!raw || !raw.trim()) { reports = []; }
+        else { try { reports = JSON.parse(raw); } catch { reports = []; } }
       }
     } catch (e) {
       reports = [];

@@ -261,6 +261,22 @@ const server = net.createServer((socket) => {
 
       try {
         const msg = JSON.parse(trimmed);
+        // [安全修复] 验证 JSON-RPC 消息结构，防止原型污染
+        if (!msg || typeof msg !== 'object' || !msg.method || typeof msg.method !== 'string') {
+          socket.write(JSON.stringify({
+            jsonrpc: '2.0', id: null,
+            error: { code: -32600, message: '无效请求: 缺少 method' },
+          }) + '\n');
+          continue;
+        }
+        // [安全修复] 防止 __proto__/constructor 注入
+        if (msg.method === '__proto__' || msg.method === 'constructor' || msg.method.startsWith('__')) {
+          socket.write(JSON.stringify({
+            jsonrpc: '2.0', id: null,
+            error: { code: -32601, message: '方法不存在' },
+          }) + '\n');
+          continue;
+        }
         const response = await handleRequest(msg);
         if (response !== null) {
           socket.write(JSON.stringify(response) + '\n');

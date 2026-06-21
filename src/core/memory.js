@@ -136,7 +136,8 @@ function _getOrCreateAesKey() {
   if (envKey) {
     _aesKey = Buffer.from(envKey, 'base64');
     if (_aesKey.length !== AES_CONFIG.keyLength) {
-      throw new Error('HEARTFLOW_AES_KEY must be 32 bytes (base64 encoded)');
+      // [安全修复] 不输出密钥长度细节，避免泄露密钥结构信息
+      throw new Error('HEARTFLOW_AES_KEY 长度无效');
     }
     return _aesKey;
   }
