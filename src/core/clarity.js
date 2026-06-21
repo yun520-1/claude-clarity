@@ -328,9 +328,9 @@ class Clarity {
     add('being',            () => new (_BeingLogic().BeingLogic)());
     add('arbitration',      () => new (_CooperativeArbitration().CooperativeArbitration)({}));
     add('embodied',         () => new (_EmbodiedCore().EmbodiedCore)(_self.rootPath));
-    add('workflow',         () => _WorkflowSwitch()());
-    add('snapshot',         () => _StateSnapshot()());
-    add('error',            () => _ErrorHandler()());
+    add('workflow',         () => new (_WorkflowSwitch())());
+    add('snapshot',         () => (_StateSnapshot));
+    add('error',            () => (_ErrorHandler));
     add('slots',            () => new (_Slots().Slots)({ dataDir: require('path').join(_self.rootPath, 'data') }));
     add('transmission',     () => new (_TransmissionEngine().TransmissionEngine)(_self.rootPath));
     add('aiPsychology',     () => new (_AIPsychologyEngine().AIPsychologyEngine)());
@@ -827,7 +827,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
    * 例子: hf.dispatch('truth.checkStatement', 'xxx')
    *       hf.dispatch('lesson.getTopLessons', 5)
    */
-  dispatch(route, ...args) {
+  async dispatch(route, ...args) {
     if (!this.started) throw new Error('Clarity not started');
     // [A01] 权限控制 - 白名单检查
     if (!ALLOWED_ROUTES.has(route)) {
@@ -926,7 +926,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
         }
       } catch (e) { /* 教训检查为非阻塞 */ }
     }
-    const _result = mod[method](...args);
+    const _result = await mod[method](...args);
     // Fix B: decision/evolution 路由结果自动持久化到 LEARNED 记忆层
     if (route === 'decision.decide') {
       try {
@@ -965,7 +965,7 @@ add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
 
   // ─── Health ─────────────────────────────────────────────────────────────
 
-  healthCheck() {
+  async healthCheck() {
     if (!this.started) return { started: false, version: this.version, error: 'not_started' };
     const loaded = Object.keys(this._modules);
     const all = [
@@ -1676,7 +1676,7 @@ if (require.main === module) {
   hf.start();
 
   const t0 = Date.now();
-  hf.healthCheck().then(health => {
+  hf.healthCheck().then(async health => {
     console.log(`[Clarity] ${_VERSION().VERSION} health check (${Date.now() - t0}ms):`);
     // Run dispatch smoke tests
     const tests = [
@@ -1686,7 +1686,7 @@ if (require.main === module) {
     let passed = 0, failed = 0;
     for (const [route, ...args] of tests) {
       try {
-        hf.dispatch(route, ...args);
+        await hf.dispatch(route, ...args);
         passed++;
       } catch (e) {
         console.error(`  FAIL ${route}: ${e.message}`);

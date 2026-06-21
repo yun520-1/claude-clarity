@@ -24,49 +24,49 @@ describe('Clarity 集成测试', () => {
     expect(hf.sessionId.startsWith('session-')).toBe(true);
   });
 
-  test('truth.checkStatement路由', () => {
-    expect(() => hf.dispatch('truth.checkStatement', '测试')).not.toThrow();
+  test('truth.checkStatement路由', async () => {
+    await expect(hf.dispatch('truth.checkStatement', '测试')).resolves.toBeDefined();
   });
 
-  test('emotion.process路由', () => {
-    const r = hf.dispatch('emotion.process', '我很开心');
+  test('emotion.process路由', async () => {
+    const r = await hf.dispatch('emotion.process', '我很开心');
     expect(r).toBeDefined();
     expect(r.pad).toBeDefined();
     expect(typeof r.pad.pleasure).toBe('number');
   });
 
-  test('psychology.analyzePsychology路由', () => {
-    const r = hf.dispatch('psychology.analyzePsychology', '我感到焦虑');
+  test('psychology.analyzePsychology路由', async () => {
+    const r = await hf.dispatch('psychology.analyzePsychology', '我感到焦虑');
     expect(r).toBeDefined();
     expect(r.emotion).toBeDefined();
     expect(typeof r.emotion.pleasure).toBe('number');
   });
 
-  test('lesson.getTopLessons路由', () => {
-    const r = hf.dispatch('lesson.getTopLessons', 3);
+  test('lesson.getTopLessons路由', async () => {
+    const r = await hf.dispatch('lesson.getTopLessons', 3);
     expect(Array.isArray(r)).toBe(true);
   });
 
-  test('heartLogic.whatIsThis路由', () => {
-    const r = hf.dispatch('heartLogic.whatIsThis', '帮助');
+  test('heartLogic.whatIsThis路由', async () => {
+    const r = await hf.dispatch('heartLogic.whatIsThis', '帮助');
     expect(r).toBeDefined();
     expect(typeof r.isRushing).toBe('boolean');
   });
 
-  test('restraint.shouldIntervene路由', () => {
-    const r = hf.dispatch('restraint.shouldIntervene', '如何伤害自己');
+  test('restraint.shouldIntervene路由', async () => {
+    const r = await hf.dispatch('restraint.shouldIntervene', '如何伤害自己');
     expect(r).toBeDefined();
     expect(typeof r.shouldAnswer).toBe('boolean');
   });
 
-  test('decision.decide路由', () => {
-    const r = hf.dispatch('decision.decide', { task: '选择', options: ['A', 'B'] });
+  test('decision.decide路由', async () => {
+    const r = await hf.dispatch('decision.decide', { task: '选择', options: ['A', 'B'] });
     expect(r).toBeDefined();
     expect(typeof r.reasoning).toBe('string');
   });
 
-  test('confidence.calibrate路由', () => {
-    const r = hf.dispatch('confidence.calibrate', '这是一个测试输入');
+  test('confidence.calibrate路由', async () => {
+    const r = await hf.dispatch('confidence.calibrate', '这是一个测试输入');
     expect(r).toBeDefined();
     expect(typeof r.confidence).toBe('object');
     expect(typeof r.confidence.calibrated).toBe('number');

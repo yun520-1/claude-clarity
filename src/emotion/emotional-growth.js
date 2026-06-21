@@ -432,7 +432,7 @@ class EmotionalGrowth {
       const predictedHighArousal = arousal > 0;
       const pattern = this._findPattern(experience.emotion);
 
-      if (pattern && pattern.avgIntensity > 0.6 !== predictedHighArousal) {
+      if (pattern && pattern.avgIntensity > 0.6 && predictedHighArousal) {
         this._adaptiveParams.arousalBias += predictedHighArousal ? 0.02 : -0.02;
       }
     }

@@ -439,10 +439,20 @@ async function routeTool(name, args) {
  * MCP 使用 \n 分隔的 JSON-RPC 消息通过 stdio 传输
  */
 function startStdioTransport() {
+  const MAX_BUFFER_SIZE = 10 * 1024 * 1024; // 10 MB
   let buffer = '';
 
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', async (chunk) => {
+    if (buffer.length + chunk.length > MAX_BUFFER_SIZE) {
+      console.error('[Clarity MCP] stdin buffer overflow, closing');
+      process.stdin.pause();
+      if (hf && hf.started) {
+        if (hf.memory && typeof hf.memory.flush === 'function') hf.memory.flush();
+        hf.stop().catch(() => {});
+      }
+      process.exit(1);
+    }
     buffer += chunk;
 
     // MCP 使用 \n 作为消息分隔符

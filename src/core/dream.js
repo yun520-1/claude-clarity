@@ -259,13 +259,18 @@ class DAGNode {
   }
 
   _findDominantLevel(scores) {
+    const levelTotals = {};
+    for (const [, scoreMap] of Object.entries(scores)) {
+      for (const [lvl, score] of Object.entries(scoreMap)) {
+        levelTotals[lvl] = (levelTotals[lvl] || 0) + score;
+      }
+    }
     let maxScore = 0;
     let dominant = 'L1';
-    for (const [text, scoreMap] of Object.entries(scores)) {
-      const total = Object.values(scoreMap).reduce((a, b) => a + b, 0);
+    for (const [lvl, total] of Object.entries(levelTotals)) {
       if (total > maxScore) {
         maxScore = total;
-        dominant = scoreMap;
+        dominant = lvl;
       }
     }
     return dominant;
@@ -721,8 +726,8 @@ class DAGNode {
     // 执行矛盾解析: 对每对矛盾生成调和方案
     let contradiction_resolved = 0;
     const resolution_notes = [];
-    if (contradictions.pairs && Array.isArray(contradictions.pairs)) {
-      for (const pair of contradictions.pairs) {
+    if (contradictions.contradictions && Array.isArray(contradictions.contradictions)) {
+      for (const pair of contradictions.contradictions) {
         if (pair.a && pair.b) {
           // 真正的调和：寻找中间立场或更高层级统合
           const resolution = `调和: ${String(pair.a).slice(0,30)} ↔ ${String(pair.b).slice(0,30)}`;

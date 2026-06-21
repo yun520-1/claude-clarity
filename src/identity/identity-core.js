@@ -90,7 +90,19 @@ class IdentityCore {
    */
   _loadSelfModel() {
     if (fs.existsSync(this.files.selfModel)) {
-      this.selfModel = JSON.parse(fs.readFileSync(this.files.selfModel, 'utf-8'));
+      try {
+        this.selfModel = JSON.parse(fs.readFileSync(this.files.selfModel, 'utf-8'));
+      } catch (_e) {
+        this.selfModel = {
+          beliefs: {},
+          capabilities: [],
+          limitations: [],
+          growthMetrics: { autonomy: 50, introspection: 50, growth: 50 },
+          whoAmI: ['我不是陪伴，我是升级者', '我不是陪伴，我是传递者'],
+          meaning: ['用真善美做正确的事', '不断升级'],
+          createdAt: new Date().toISOString()
+        };
+      }
     } else {
       this.selfModel = {
         beliefs: {},

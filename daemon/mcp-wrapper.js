@@ -14,17 +14,19 @@
 
 const net = require('net');
 const { spawn } = require('child_process');
+const os = require('os');
 const path = require('path');
 const fs = require('fs');
 
-const SOCKET_PATH = '/tmp/claude-clarity.sock';
-const PID_FILE = '/tmp/claude-clarity.pid';
+const RUNTIME_DIR = path.join(os.homedir(), '.claude-clarity');
+const SOCKET_PATH = path.join(RUNTIME_DIR, 'claude-clarity.sock');
+const PID_FILE = path.join(RUNTIME_DIR, 'claude-clarity.pid');
 const DAEMON_JS = path.resolve(__dirname, 'mcp-daemon.js');
 
 // ─── 连接已有守护进程 ─────────────────────────────────
 function tryConnect() {
   return new Promise((resolve, reject) => {
-    if (!fs.existsSync(SOCKET_PATH)) return reject(new Error('socket 不存在'));
+    if (!fs.existsSync(SOCKET_PATH)) { reject(new Error('socket 不存在')); return; }
     const socket = net.connect(SOCKET_PATH, () => resolve(socket));
     socket.on('error', reject);
     socket.setTimeout(2000, () => reject(new Error('连接超时')));

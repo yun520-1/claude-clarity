@@ -157,13 +157,18 @@ class GoalTree {
     this.load();
     const idx = this._tree.findIndex(n => n.id === id);
     if (idx === -1) return false;
-    // 先删所有后代（深度优先）
+    // 先删所有后代（深度优先，从高索引到低索引避免位移问题）
     const descendants = this._getDescendants(id);
-    for (const d of descendants) {
-      const di = this._tree.findIndex(n => n.id === d.id);
-      if (di !== -1) this._tree.splice(di, 1);
+    const descendantIndices = descendants
+      .map(d => this._tree.findIndex(n => n.id === d.id))
+      .filter(di => di !== -1)
+      .sort((a, b) => b - a); // 降序排列，从后往前删除避免索引位移
+    for (const di of descendantIndices) {
+      this._tree.splice(di, 1);
     }
-    this._tree.splice(idx, 1);
+    // 重新查找父节点索引（后代删除后原索引可能已变化）
+    const currentIdx = this._tree.findIndex(n => n.id === id);
+    if (currentIdx !== -1) this._tree.splice(currentIdx, 1);
     this.save();
     return true;
   }

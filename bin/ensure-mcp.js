@@ -16,15 +16,17 @@
  *   2 = 启动失败
  */
 
+const os = require('os');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
-const SOCKET_PATH = '/tmp/claude-clarity.sock';
+const RUNTIME_DIR = path.join(os.homedir(), '.claude-clarity');
+const SOCKET_PATH = path.join(RUNTIME_DIR, 'claude-clarity.sock');
 const DAEMON_JS = path.join(ROOT, 'daemon', 'mcp-daemon.js');
 const WRAPPER_JS = path.join(ROOT, 'daemon', 'mcp-wrapper.js');
-const PID_FILE = '/tmp/claude-clarity.pid';
+const PID_FILE = path.join(RUNTIME_DIR, 'claude-clarity.pid');
 
 const args = process.argv.slice(2);
 const onlyCheck = args.includes('--check');
