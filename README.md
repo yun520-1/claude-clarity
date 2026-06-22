@@ -14,6 +14,7 @@
   <a href="#-discoverability-发现指南">🌍 Discover</a> ·
   <a href="#-capabilities">🧠 Capabilities</a> ·
   <a href="#-community-加入社区">💬 Community</a> ·
+  <a href="#-有问题欢迎提-issue">🐛 Issues</a> ·
   <a href="#-security">🛡️ Security</a>
 </p>
 
@@ -429,6 +430,36 @@ v1.0.0 ─── (2025-03) ─ First stable release
 - **Leventhal's Common-Sense Model** (1564 citations) — Common-sense model
 - **Handbook of Self-Regulation** (3659 citations) — Self-regulation
 - **Executive Function and Metacognition** (463 citations) — Metacognition
+
+---
+
+## 🐛 有问题欢迎提 Issue / Questions & Feedback
+
+<p align="center">
+  <strong>使用中遇到任何问题、有功能建议、或想讨论心虫的设计理念？</strong>
+  <br/>
+  欢迎通过 GitHub Issues 告诉我们 👇
+</p>
+
+<p align="center">
+  <a href="https://github.com/yun520-1/claude-clarity/issues/new/choose">
+    <img src="https://img.shields.io/badge/🐛-提交_Bug_Report-red?style=for-the-badge&logo=github" alt="提交 Bug" />
+  </a>
+  &nbsp;
+  <a href="https://github.com/yun520-1/claude-clarity/issues/new/choose">
+    <img src="https://img.shields.io/badge/💡-功能建议-blue?style=for-the-badge&logo=github" alt="功能建议" />
+  </a>
+  &nbsp;
+  <a href="https://github.com/yun520-1/claude-clarity/issues/new/choose">
+    <img src="https://img.shields.io/badge/❓-使用咨询-green?style=for-the-badge&logo=github" alt="使用咨询" />
+  </a>
+</p>
+
+<p align="center">
+  <sub>三种 Issue 模板可选：Bug 报告 / 功能建议 / 使用咨询 · 中英文均可 · 通常 24h 内回复</sub>
+  <br/>
+  <sub>Three templates available: Bug Report / Feature Request / Question · EN/CN both welcome · Usually reply within 24h</sub>
+</p>
 
 ---
 
