@@ -1,7 +1,7 @@
 ---
 name: claude-clarity
 aliases: [心虫, 草履虫, 小虫子, clarity, heartbug]
-version: "1.8.7"
+version: "1.8.8"
 title: "心虫 / Clarity — AI 认知内核"
 description: >
   AI 认知引擎 + 本地集成工具包。Node.js 编写的认知内核，提供持续记忆系统、
