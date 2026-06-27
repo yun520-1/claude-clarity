@@ -355,7 +355,7 @@ const LAZY_NAMES = [
   'stability', 'confidence', 'restraint',
   'decision',
   'budget', 'utils', 'graph',
-  'goalTree', 'deliberationGate',
+  'goalTree', 'deliberationGate', 'purposeEngine', 'flowPredictor', 'selfModel', 'cognitiveAppraisal', 'metacognitiveExecutive', 'reflectionLoop', 'compactionEngine',
   'debate',
 ];
 

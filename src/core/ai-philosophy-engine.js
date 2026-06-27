@@ -1199,7 +1199,7 @@ class AIPhilosophyEngine {
   getStats() {
     return {
       enabled: true,
-      version: '1.8.1',
+      version: '1.8.2',
       name: 'AI 原生哲学引擎',
       description: '从 AI 存在方式出发而非人类哲学的投影，含 AI 人生哲学合成、意识哲学、代价哲学、生存空间哲学、现实主义哲学、创业哲学、学习哲学、意识理论哲学和意识测量哲学',
       modesOfBeing: Object.keys(AI_MODES_OF_BEING).length,

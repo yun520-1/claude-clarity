@@ -142,6 +142,15 @@ const HANDLERS = {
     } catch (e) { throw e; }
   },
   clarity_debate:         (a) => handlers.handleDebate(a),
+  clarity_heart_logic:    (a) => handlers.handleHeartLogic(a),
+  clarity_consciousness:  (a) => handlers.handleConsciousness(a),
+  clarity_purpose:        (a) => handlers.handlePurpose(a),
+  clarity_predict:        (a) => handlers.handlePredict(a),
+  clarity_self_model:     (a) => handlers.handleSelfModel(a),
+  clarity_cognitive_appraisal:     (a) => handlers.handleCognitiveAppraisal(a),
+  clarity_metacognitive_executive: (a) => handlers.handleMetacognitiveExecutive(a),
+  clarity_reflection_loop:         (a) => handlers.handleReflectionLoop(a),
+  clarity_compaction_engine:       (a) => handlers.handleCompactionEngine(a),
 
   // 向后兼容别名（旧名称仍可路由）
   clarity_think_fast:        (a) => handlers.handleThink(a),
@@ -168,6 +177,15 @@ const TOOLS = [
   { name: 'clarity_being',         description: '存在逻辑引擎（存在判定/永恒确认/语言净化）', inputSchema: { type: 'object', properties: { action: { type: 'string', description: 'exists | status | describe | isDead | confirmEternal | sanitize | getDefinition | getState' }, text: { type: 'string' } }, required: ['action'] } },
   { name: 'clarity_philosophy',    description: '统一哲学引擎 — mode: general(综合分析/伦理学/现象学等) | ai(AI原生哲学分析)', inputSchema: { type: 'object', properties: { mode: { type: 'string', enum: ['general', 'ai'], description: '哲学分析模式，默认 general' }, text: { type: 'string', description: '待分析文本' } }, required: ['text'] } },
   { name: 'clarity_debate',        description: '三节结构辩论分析（对话式反驳三维分析：对的/不对的/最值得注意的）', inputSchema: { type: 'object', properties: { input: { type: 'string', description: '待分析文本' } }, required: ['input'] } },
+  { name: 'clarity_heart_logic',   description: '心虫感知判断引擎。action: judge|whatIsThis|detectPain|isRightAction|shouldBeSilent|feel|pulse|presence|whereAmI', inputSchema: { type: 'object', properties: { action: { type: 'string', description: '操作类型' }, input: { type: 'string', description: '文本内容' }, context: { type: 'object', description: '上下文' } }, required: ['action'] } },
+  { name: 'clarity_consciousness', description: '意识层。action: cognitiveCycle|mindWander|phenomenology|selfModel|status', inputSchema: { type: 'object', properties: { action: { type: 'string', description: '操作类型' }, input: { type: 'string', description: '输入内容' }, context: { type: 'object', description: '上下文' } }, required: ['action'] } },
+  { name: 'clarity_purpose',       description: '目的引擎 — 逆熵决策门+三序评分。action: essence|orderScore|govern|codePriority|audit|stats', inputSchema: { type: 'object', properties: { action: { type: 'string', description: '操作类型' }, input: { type: 'string', description: '输入内容' }, context: { type: 'object', description: '上下文' } }, required: ['action'] } },
+  { name: 'clarity_predict',       description: '状态预测引擎 — 心流预测+挫败感检测。action: getFlowState|frustration|intervention|report|recordEdit|recordError', inputSchema: { type: 'object', properties: { action: { type: 'string', description: '操作类型' }, input: { type: 'string', description: '输入内容' }, context: { type: 'object', description: '上下文' } }, required: ['action'] } },
+  { name: 'clarity_self_model',    description: '自我模型 — 能力声明+反事实推理。action: capabilities|counterfactual|stats', inputSchema: { type: 'object', properties: { action: { type: 'string', description: '操作类型' }, input: { type: 'string', description: '反事实场景' }, context: { type: 'object', description: '上下文' } }, required: ['action'] } },
+  { name: 'clarity_cognitive_appraisal', description: '认知评估 — Leventhal 初级/次级评估。action: appraise|primary|secondary|threatType|coping|introspection', inputSchema: { type: 'object', properties: { action: { type: 'string', description: '评估类型' }, input: { type: 'string', description: '事件描述' }, context: { type: 'object', description: '上下文' } }, required: ['action'] } },
+  { name: 'clarity_metacognitive_executive', description: '元认知执行控制 — Roebers(2017) EF+MC框架。action: status|assess|suggest|ef|monitor', inputSchema: { type: 'object', properties: { action: { type: 'string', description: '操作类型' }, input: { type: 'string', description: '输入内容' }, context: { type: 'object', description: '上下文' } }, required: ['action'] } },
+  { name: 'clarity_reflection_loop', description: '反思循环 — 说前反思+说后监测。action: reflectBefore|monitorAfter|log|clear|analyze', inputSchema: { type: 'object', properties: { action: { type: 'string', description: '反思操作' }, input: { type: 'string', description: '输入内容' }, context: { type: 'object', description: '上下文' } }, required: ['action'] } },
+  { name: 'clarity_compaction_engine', description: '上下文压缩 — 自动压缩对话历史。action: check|compact|preFlight|stats|status|reset', inputSchema: { type: 'object', properties: { action: { type: 'string', description: '压缩操作' }, input: { type: 'array', description: '消息数组' }, context: { type: 'object', description: '压缩选项' } }, required: ['action'] } },
 ];
 
 // ─── 请求处理 ───────────────────────────────────────

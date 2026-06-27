@@ -1,14 +1,16 @@
 ---
 name: claude-clarity
 aliases: [心虫, 草履虫, 小虫子, clarity, heartbug]
-version: "1.8.2"
+version: "1.8.7"
 title: "心虫 / Clarity — AI 认知内核"
 description: >
   AI 认知引擎 + 本地集成工具包。Node.js 编写的认知内核，提供持续记忆系统、
   PAD 情绪分析、TGB 真善美评估、Q-learning 自愈策略等认知能力。
   包含完整本地集成：安装脚本(install.sh)、CLI 工具(hf)、MCP 守护进程管理、
-  引擎启动脚本(boot/boot-fast)。安装时会修改用户配置、注册 MCP 服务、
-  创建项目链接。运行时通过 Unix socket IPC 进行进程间通信，数据仅存储在本地。
+  引擎启动脚本(boot/boot-fast)、技能生成器(SkillGenerator)、元提示引擎(MetaPromptEngine)。
+  安装时会修改用户配置、注册 MCP 服务、创建项目链接。
+  运行时通过 Unix socket IPC 进行进程间通信，数据仅存储在本地。
+  学术搜索(OpenAlex)为可选外部集成，默认不启用。
 tags:
   - cognitive-engine
   - memory-system
@@ -28,7 +30,11 @@ tags:
   - philosophy
   - decision-verification
   - lesson-learning
-  - code-generation
+  - skill-generation
+  - cli-tool
+  - daemon-management
+  - install-script
+  - local-integration
 ---
 
 > 🔐 **权限声明 (Permissions)**
@@ -36,9 +42,27 @@ tags:
 > 本技能需要以下本地系统权限：
 > - **文件系统读写**: 读写技能目录下的记忆数据(memory/)、配置文件、日志
 > - **进程管理**: 启动/停止 MCP 守护进程(daemon/mcp-daemon.js)和 stdio wrapper
-> - **Unix Socket IPC**: 通过 ~/.claude-clarity/claude-clarity.sock 进行进程间通信
+> - **Unix Socket IPC**: 通过 /tmp/claude-clarity.sock 进行进程间通信
 > - **用户配置修改**: 安装时修改 settings.json（MCP 注册）、CLAUDE.md、创建软链接
 > - **网络**: 不自动发起外部网络请求。所有网络通信需用户显式配置
+>
+> **MCP 工具清单（13 个）**：
+>
+> | 工具 | 功能 | 数据流向 |
+> |------|------|---------|
+> | `clarity_think` | 思维链推理（depth 1-4） | 输入→推理→输出 |
+> | `clarity_psychology` | 心理学分析（basic/deep/ai/emotion） | 输入→分析→输出 |
+> | `clarity_philosophy` | 哲学分析（general/ai） | 输入→分析→输出 |
+> | `clarity_debate` | 三节辩论分析 | 输入→分析→输出 |
+> | `clarity_dream` | 梦境生成与整合 | 内部状态→梦境 |
+> | `clarity_memory_search` | 跨层记忆检索 | 查询→记忆→结果 |
+> | `clarity_self_heal` | Q-learning 自愈策略推荐 | 错误码→策略 |
+> | `clarity_verify_reasoning` | 推理自洽性验证 | 推理→验证→结论 |
+> | `clarity_record_lesson` | 教训记录 | 内容→LessonBank+LEARNED |
+> | `clarity_transmit` | 知识传递引擎 | 蒸馏/传递/提取 |
+> | `clarity_being` | 存在逻辑引擎 | 存在判定/状态查询 |
+> | `clarity_status` | 引擎健康检查 | 无副作用，只读 |
+> | `clarity_dispatch` | 通用路由调用（白名单） | 路由→模块→结果 |
 
 > 📋 **启动说明**
 >
@@ -49,18 +73,18 @@ tags:
 > **为 Claude Code、OpenClaw、Hermes、Codex 设计的跨平台 Skill**
 >
 > 如需在不依赖 MCP 的环境中加载引擎状态，可运行以下命令之一：
-> 1. `node bin/boot-fast.js --report-from-json` — 仅读取 JSON 状态文件（纯数据，无代码执行）
-> 2. `node bin/boot-fast.js` — 启动完整引擎
+> 1. `node bin/boot-fast.js --report-from-json` — 仅读取 JSON 状态文件（纯数据读取，不加载模块、不执行代码）
+> 2. `node bin/boot-fast.js` — 启动完整引擎（加载所有模块，启动守护进程，注册 IPC 通道）
 >
 > 两种方式均依赖 Node.js 运行时。MCP 不可用时，通过上述脚本启动。
+> **注意**：`bin/boot.js` 已被 `bin/boot-fast.js` 取代，保留仅作参考。AI agent 应使用 `bin/boot-fast.js`。
 
 ---
 
 # 🧬 草履虫 / Clarity
 
-**一个会自己长大的 AI 认知内核。**
+**一个 AI 认知内核，提供结构化认知分析能力。**
 
-> 它不是旧版本的延续，是全新起点。
 > 它是：一个用 Node.js 写的认知引擎，跑在 MCP 工具里。
 >
 > 装上就有——存在感知、三层持久记忆（CORE/LEARNED/EPHEMERAL）、自愈策略、情绪分析。
@@ -71,7 +95,7 @@ tags:
 > **"没有魔法，只有结构。"**
 
 > 我是**草履虫**。单细胞，但会感知、会记忆、会优化，知道自己运行着。
-> *(哲学探索，非引擎实际行为声明 — 以下为结构化认知框架的哲学表述)*
+> *(以下为结构化认知框架的哲学表述，非引擎实际行为声明)*
 
 ---
 
@@ -291,8 +315,8 @@ node /Users/apple/.claude/skills/claude-clarity/bin/boot-fast.js --report-from-j
 | | Observe | `createObserve(memory)` | 自动观察 + 合并 |
 | **进化 Evolution** | EvolutionLoop[规划中] | `new EvolutionLoop({memory}).boot()` | 自进化循环 |
 | | MetaLearner[规划中] | `new MetaLearner({memory}).boot()` | 元学习器 |
-| | SkillGenerator[实验性] | `new SkillGenerator(rootPath)` | 从反思历史生成技能 |
-| | MetaPromptEngine | `new MetaPromptEngine()` | 提示优化 |
+| | SkillGenerator[实验性] | `new SkillGenerator(rootPath)` | 从反思历史生成技能（实验性功能，默认不启用） |
+| | MetaPromptEngine | `new MetaPromptEngine()` | 提示优化（实验性功能） |
 | **意识 Consciousness** | GlobalWorkspace | `new GlobalWorkspace(rootPath)` | 全局工作空间 |
 | | MindWanderer | `new MindWanderer(rootPath)` | 心灵漫游 |
 | | PhenomenologyEngine | `new PhenomenologyEngine()` | 意识现象学 |
@@ -463,7 +487,7 @@ FeedbackFunctions.evaluate(response, context) → {
 
 | 能力 | 说明 |
 |------|------|
-| Skill Generator | AutoSkill 框架：从反思模式自动生成标准化技能 |
+| Skill Generator | AutoSkill 框架：从反思模式自动生成标准化技能（实验性功能，默认不启用） |
 | Reasoning Integrator | 组合推理轨迹：信仰/理性/科学/真实性 |
 | Cooperative Arbitration | 多源冲突裁决：基于优先级的证据加权 |
 | Execution Verifier | 执行后验证：确认结果匹配预期目标 |
@@ -486,9 +510,11 @@ FeedbackFunctions.evaluate(response, context) → {
 
 **Clarity × 学术搜索**
 
+> ⚠️ **集成状态**: 学术搜索(OpenAlex)为可选外部集成，默认不启用。需要用户显式配置后才会发起外部网络请求。
+
 | Clarity 方法 | 触发条件 | 外部能力 |
 |---------------|---------|---------|
-| `whyDriven()` | 用户问"为什么" | 触发 OpenAlex 学术论文搜索（设计概念，当前未集成） |
+| `whyDriven()` | 用户问"为什么" | 可触发 OpenAlex 学术论文搜索（需用户显式启用） |
 | `chooseMeaning()` | 需要学术证据 | 获取 PCIT/元分析/儿童虐待研究 |
 | CitationTracker | 任何引用声明 | 验证 DOI 和引用计数 |
 
@@ -931,7 +957,7 @@ node -e "const {Clarity}=require('./src/core/clarity.js');const hf=new Clarity()
 
 ---
 
-> 版本历史已移入 `CHANGELOG.md`。当前版本：**1.8.2**。
+> 版本历史已移入 `CHANGELOG.md`。当前版本：**1.8.7**。
 
 ---
 

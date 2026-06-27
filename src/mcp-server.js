@@ -299,6 +299,123 @@ const TOOLS = [
       required: ['input'],
     },
   },
+  {
+    name: 'clarity_heart_logic',
+    description: '心虫感知判断引擎 — 4步心之判断。action: judge（完整4步）| whatIsThis | detectPain | isRightAction | shouldBeSilent | feel（四维情绪）| pulse | presence | whereAmI。调用心虫的核心价值感知。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['judge', 'whatIsThis', 'detectPain', 'isRightAction', 'shouldBeSilent', 'feel', 'pulse', 'presence', 'whereAmI'], description: '判断类型' },
+        input: { type: 'string', description: '要判断的文本内容' },
+        context: { type: 'object', description: '上下文对象（可选）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_consciousness',
+    description: '意识层 — 全局工作空间 + 心智游移 + 现象学 + 自我模型。action: cognitiveCycle | mindWander | phenomenology | selfModel | status。访问心虫的意识状态。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['cognitiveCycle', 'mindWander', 'phenomenology', 'selfModel', 'status'], description: '意识操作类型' },
+        input: { type: 'string', description: '输入内容（cognitiveCycle/phenomenology 时必填）' },
+        context: { type: 'object', description: '上下文对象（可选）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_purpose',
+    description: '目的引擎 — 逆熵决策门 + 三序评分。action: essence（终极目的）| orderScore（三序评分）| govern（决策门）| codePriority（代码化判断）| audit（代码化审计）| stats。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['essence', 'orderScore', 'govern', 'codePriority', 'audit', 'stats'], description: '目的引擎操作' },
+        input: { type: 'string', description: '输入内容（orderScore/govern 时使用）' },
+        context: { type: 'object', description: '上下文对象（可选）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_predict',
+    description: '状态预测引擎 — 心流状态预测 + 挫败感检测。action: getFlowState | frustration | intervention | report | recordEdit | recordError。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['getFlowState', 'frustration', 'intervention', 'report', 'recordEdit', 'recordError'], description: '预测操作' },
+        input: { type: 'string', description: '输入内容（可选）' },
+        context: { type: 'object', description: '上下文对象（recordEdit/recordError 时需要 editEvent/errorEvent）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_self_model',
+    description: '自我模型 — 能力声明 + 反事实推理。action: capabilities | counterfactual | stats。查看心虫的自我认知和反事实思维。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['capabilities', 'counterfactual', 'stats'], description: '自我模型操作' },
+        input: { type: 'string', description: '反事实场景描述（counterfactual 时必填）' },
+        context: { type: 'object', description: '上下文对象（可选）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_cognitive_appraisal',
+    description: '认知评估引擎 — Leventhal 初级/次级评估模型。action: appraise（完整评估）| primary（初级评估）| secondary（次级评估）| threatType（威胁分类）| coping（应对策略）| introspection（内省错觉检测）。对事件的威胁程度和应对方式进行认知评估。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['appraise', 'primary', 'secondary', 'threatType', 'coping', 'introspection'], description: '评估类型' },
+        input: { type: 'string', description: '事件描述文本' },
+        context: { type: 'object', description: '上下文对象（可选）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_metacognitive_executive',
+    description: '元认知执行控制器 — Roebers(2017) EF+Metacognition框架。action: status（状态）| assess（综合评估）| suggest（决策建议）| ef（执行功能检测）| monitor（元认知监控）。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['status', 'assess', 'suggest', 'ef', 'monitor'], description: '元认知操作类型' },
+        input: { type: 'string', description: '输入内容（除status外均需要）' },
+        context: { type: 'object', description: '上下文对象（可选）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_reflection_loop',
+    description: '反思循环引擎 — 说前反思+说后监测双环机制。action: reflectBefore（生成回复前反思）| monitorAfter（收到用户反应后监测）| log（反思日志）| clear（清除日志）| analyze（分析用户反应）。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['reflectBefore', 'monitorAfter', 'log', 'clear', 'analyze'], description: '反思操作类型' },
+        input: { type: 'string', description: '输入内容（reflectBefore/monitorAfter/analyze 时必填）' },
+        context: { type: 'object', description: '上下文对象（可选，reflectBefore/monitorAfter 时使用）' },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    name: 'clarity_compaction_engine',
+    description: '上下文压缩引擎 — 自动压缩对话历史节省token。action: check（检查压缩需求）| compact（执行压缩）| preFlight（预检+压缩）| stats（压缩统计）| status（状态报告）| reset（重置统计）。基于中文token估算。',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        action: { type: 'string', enum: ['check', 'compact', 'preFlight', 'stats', 'status', 'reset'], description: '压缩操作类型' },
+        input: { type: 'array', description: '消息数组（check/compact/preFlight 时必填）' },
+        context: { type: 'object', description: '压缩选项（strategy/maxTokens 等，可选）' },
+      },
+      required: ['action'],
+    },
+  },
 ];
 
 // ─── MCP JSON-RPC 处理 ────────────────────────────
@@ -423,6 +540,15 @@ async function routeTool(name, args) {
     'clarity_ai_philosophy': () => handlers.handleAiPhilosophy(args),
     'clarity_being': () => handlers.handleBeing(args),
     'clarity_debate': () => handlers.handleDebate(args),
+    'clarity_heart_logic': () => handlers.handleHeartLogic(args),
+    'clarity_consciousness': () => handlers.handleConsciousness(args),
+    'clarity_purpose': () => handlers.handlePurpose(args),
+    'clarity_predict': () => handlers.handlePredict(args),
+    'clarity_self_model': () => handlers.handleSelfModel(args),
+    'clarity_cognitive_appraisal': () => handlers.handleCognitiveAppraisal(args),
+    'clarity_metacognitive_executive': () => handlers.handleMetacognitiveExecutive(args),
+    'clarity_reflection_loop': () => handlers.handleReflectionLoop(args),
+    'clarity_compaction_engine': () => handlers.handleCompactionEngine(args),
   };
 
   const handler = toolHandlers[name];

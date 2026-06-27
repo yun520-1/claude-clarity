@@ -650,6 +650,417 @@ class ClarityMCPHandlers {
       return wrapError(`思考门执行失败: ${e.message}`);
     }
   }
+
+  /**
+   * 心虫感知判断引擎 — 4步心之判断
+   * 使用方式：{ action: "judge", input: "...", context: {...} }
+   * action: judge | whatIsThis | detectPain | isRightAction | shouldBeSilent | feel | pulse | presence | whereAmI
+   */
+  async handleHeartLogic({ action, input, context }) {
+    if (!action) return wrapError('缺少 action 参数');
+    const hl = this.hf.heartLogic;
+    if (!hl) return wrapError('HeartLogic 引擎未加载');
+
+    try {
+      let result;
+      switch (action) {
+        case 'judge':
+          // 4步心之判断完整流程
+          result = {
+            whatIsThis: hl.whatIsThis(input || '', context || {}),
+            detectPain: hl.detectPain(input || ''),
+            isRightAction: hl.isRightAction({ output: input, ...context }),
+            shouldBeSilent: hl.shouldBeSilent({ input, ...context }),
+            shouldRespond: !hl.shouldBeSilent({ input, ...context }).result,
+            needsCare: hl.detectPain(input || '') && !hl.isRightAction({ output: input, ...context }).result,
+          };
+          break;
+        case 'whatIsThis':
+          result = hl.whatIsThis(input || '', context || {});
+          break;
+        case 'detectPain':
+          result = { detected: hl.detectPain(input || '') };
+          break;
+        case 'isRightAction':
+          result = hl.isRightAction({ output: input, ...context });
+          break;
+        case 'shouldBeSilent':
+          result = hl.shouldBeSilent({ input, ...context });
+          break;
+        case 'feel':
+          result = hl.whatDoIFeel(input || '', context || {});
+          break;
+        case 'pulse':
+          result = hl.pulse({ input, ...context });
+          break;
+        case 'presence':
+          result = hl.getPresence();
+          break;
+        case 'whereAmI':
+          if (context) {
+            hl.updateLocation(context);
+            context._meta = { updated: true };
+          }
+          result = hl.whereAmI();
+          break;
+        default:
+          return wrapError(`HeartLogic 不支持的操作: ${action}`);
+      }
+      return wrapOk(result);
+    } catch (e) {
+      return wrapError(`HeartLogic 执行失败: ${e.message}`);
+    }
+  }
+
+  /**
+   * 意识层 — 全局工作空间 + 心智游移 + 现象学 + 自我模型
+   * 使用方式：{ action: "cognitiveCycle"|"mindWander"|"phenomenology"|"selfModel"|"status", input: "...", context: {...} }
+   */
+  async handleConsciousness({ action, input, context }) {
+    if (!action) return wrapError('缺少 action 参数');
+    const mod = this.hf.consciousness;
+    if (!mod) return wrapError('意识层模块未加载');
+
+    try {
+      let result;
+      switch (action) {
+        case 'cognitiveCycle':
+          if (!input) return wrapError('cognitiveCycle 需要 input 参数');
+          result = await mod.globalWorkspace.cognitiveCycle(input, context || {});
+          break;
+        case 'status':
+          result = mod.getStatus();
+          break;
+        case 'mindWander':
+          // 调用心智游移（无输入时触发空闲创意）
+          if (mod.mindWanderer && typeof mod.mindWanderer.wander === 'function') {
+            result = await mod.mindWanderer.wander(input || 'idle', context || {});
+          } else {
+            result = { message: '心智游移器暂不可用', available: false };
+          }
+          break;
+        case 'phenomenology':
+          if (!input) return wrapError('phenomenology 需要 input 参数');
+          if (mod.phenomenology && typeof mod.phenomenology.analyzeIntentionality === 'function') {
+            result = mod.phenomenology.analyzeIntentionality(input, context || {});
+          } else {
+            result = { message: '现象学引擎暂不可用', available: false };
+          }
+          break;
+        case 'selfModel':
+          if (mod.self && typeof mod.self.isAware === 'function') {
+            result = mod.self.isAware();
+          } else {
+            result = { message: '意识自我模型暂不可用', available: false };
+          }
+          break;
+        default:
+          return wrapError(`Consciousness 不支持的操作: ${action}`);
+      }
+      return wrapOk(result);
+    } catch (e) {
+      return wrapError(`意识层执行失败: ${e.message}`);
+    }
+  }
+
+  /**
+   * 目的引擎 — 逆熵决策门 + 三序评分
+   * 使用方式：{ action: "essence"|"orderScore"|"govern"|"codePriority"|"audit"|"stats" }
+   */
+  async handlePurpose({ action, input, context }) {
+    if (!action) return wrapError('缺少 action 参数');
+    const pe = this.hf.purposeEngine;
+    if (!pe) return wrapError('PurposeEngine 未加载');
+
+    try {
+      let result;
+      switch (action) {
+        case 'essence':
+          result = pe.essence();
+          break;
+        case 'orderScore':
+          result = pe.orderScore({ output: input, ...context });
+          break;
+        case 'govern':
+          result = pe.govern({ content: input, ...context });
+          break;
+        case 'codePriority':
+          result = pe.codePriority(context || {});
+          break;
+        case 'audit':
+          result = pe.getGrowthAudit?.() || { message: '审计暂不可用' };
+          break;
+        case 'stats':
+          result = pe.getStats?.() || { message: '统计暂不可用' };
+          break;
+        default:
+          return wrapError(`PurposeEngine 不支持的操作: ${action}`);
+      }
+      return wrapOk(result);
+    } catch (e) {
+      return wrapError(`PurposeEngine 执行失败: ${e.message}`);
+    }
+  }
+
+  /**
+   * 状态预测引擎 — 心流预测 + 挫败感检测
+   * 使用方式：{ action: "getFlowState"|"frustration"|"intervention"|"report"|"recordEdit"|"recordError" }
+   */
+  async handlePredict({ action, input, context }) {
+    if (!action) return wrapError('缺少 action 参数');
+    const fp = this.hf.flowPredictor;
+    if (!fp) return wrapError('FlowPredictor 未加载');
+
+    try {
+      let result;
+      switch (action) {
+        case 'getFlowState':
+          result = fp.getFlowState();
+          break;
+        case 'frustration':
+          result = fp.calculateFrustrationScore?.() || { message: '挫败感评分暂不可用' };
+          break;
+        case 'intervention':
+          result = fp.evaluateIntervention?.() || { message: '干预评估暂不可用' };
+          break;
+        case 'report':
+          result = fp.generateReport?.() || { message: '报告生成暂不可用' };
+          break;
+        case 'recordEdit':
+          if (!context?.editEvent) return wrapError('recordEdit 需要 context.editEvent');
+          fp.recordEdit(context.editEvent);
+          result = { recorded: true, flowState: fp.getFlowState() };
+          break;
+        case 'recordError':
+          if (!context?.errorEvent) return wrapError('recordError 需要 context.errorEvent');
+          fp.recordError(context.errorEvent);
+          result = { recorded: true, flowState: fp.getFlowState() };
+          break;
+        default:
+          return wrapError(`FlowPredictor 不支持的操作: ${action}`);
+      }
+      return wrapOk(result);
+    } catch (e) {
+      return wrapError(`FlowPredictor 执行失败: ${e.message}`);
+    }
+  }
+
+  /**
+   * 自我模型 — 能力声明 + 反事实推理
+   * 使用方式：{ action: "capabilities"|"counterfactual"|"stats", input: "...", context: {...} }
+   */
+  async handleSelfModel({ action, input, context }) {
+    if (!action) return wrapError('缺少 action 参数');
+    const sm = this.hf.selfModel;
+    if (!sm) return wrapError('SelfModel 未加载');
+
+    try {
+      let result;
+      switch (action) {
+        case 'capabilities':
+          result = typeof sm.getCapabilities === 'function' ? sm.getCapabilities() : { message: '能力查询暂不可用' };
+          break;
+        case 'counterfactual':
+          if (!input) return wrapError('counterfactual 需要 input 参数（反事实场景描述）');
+          result = typeof sm.generateCounterfactual === 'function'
+            ? sm.generateCounterfactual({ scenario: input, ...context })
+            : { message: '反事实推理暂不可用', scenario: input };
+          break;
+        case 'stats':
+          result = typeof sm.getStats === 'function' ? sm.getStats() : { message: '统计暂不可用' };
+          break;
+        default:
+          return wrapError(`SelfModel 不支持的操作: ${action}`);
+      }
+      return wrapOk(result);
+    } catch (e) {
+      return wrapError(`SelfModel 执行失败: ${e.message}`);
+    }
+  }
+
+  // ─── 认知评估引擎 ──────────────────────────────────
+  // 来源: Leventhal's Common-Sense Model (2006, 1564 citations)
+  // 初级评估: 相关性/新奇性/确定性/轨迹
+  // 次级评估: 控制感/能力/结果预期/效能预期
+  // 威胁分类: harm_loss/threat/challenge/benefit/neutral
+  // 应对策略: problem_focused/emotion_focused/meaning_focused/avoidance
+  //
+  // 使用方式: { action: "appraise"|"primary"|"secondary"|"threatType"|"coping"|"introspection", input: "..." }
+  async handleCognitiveAppraisal({ action, input, context }) {
+    if (!action) return wrapError('缺少 action 参数');
+    const ca = this.hf.cognitiveAppraisal;
+    if (!ca) return wrapError('CognitiveAppraisal 未加载');
+
+    try {
+      let result;
+      switch (action) {
+        case 'appraise':
+          if (!input) return wrapError('appraise 需要 input 参数（事件描述）');
+          result = ca.appraise(input, context);
+          break;
+        case 'primary':
+          if (!input) return wrapError('primary 需要 input 参数');
+          result = ca.primaryAppraisal(input, context);
+          break;
+        case 'secondary':
+          if (!input) return wrapError('secondary 需要 input 参数');
+          result = ca.secondaryAppraisal(input, context);
+          break;
+        case 'threatType':
+          if (!input) return wrapError('threatType 需要 input 参数');
+          const primary = ca.primaryAppraisal(input, context);
+          const secondary = ca.secondaryAppraisal(input, context);
+          result = { threatType: ca.classifyThreatType(primary, secondary), primary: primary.overall, secondary: secondary.overall };
+          break;
+        case 'coping':
+          if (!input) return wrapError('coping 需要 input 参数');
+          const p = ca.primaryAppraisal(input, context);
+          const s = ca.secondaryAppraisal(input, context);
+          const tt = ca.classifyThreatType(p, s);
+          result = { threatType: tt, strategies: ca.recommendCopingStrategies(tt, p, s) };
+          break;
+        case 'introspection':
+          result = ca.detectIntrospectionIllusion(input);
+          break;
+        default:
+          return wrapError(`CognitiveAppraisal 不支持的操作: ${action}`);
+      }
+      return wrapOk(result);
+    } catch (e) {
+      return wrapError(`CognitiveAppraisal 执行失败: ${e.message}`);
+    }
+  }
+
+  // ─── 元认知执行控制器 ──────────────────────────────
+  // 来源: Roebers(2017) EF+Metacognition统一框架 (463 citations)
+  // 功能: 认知资源监控/执行功能评估/注意力偏差检测/学习策略推荐
+  //
+  // 使用方式: { action: "status"|"assess"|"suggest"|"ef"|"monitor", input: "..." }
+  async handleMetacognitiveExecutive({ action, input, context }) {
+    if (!action) return wrapError('缺少 action 参数');
+    const me = this.hf.metacognitiveExecutive;
+    if (!me) return wrapError('MetacognitiveExecutive 未加载');
+
+    try {
+      let result;
+      switch (action) {
+        case 'status':
+          result = { status: 'active', capabilities: me.efDetector.capabilities, baselineEF: me.baselineEF, baselineMC: me.baselineMC };
+          break;
+        case 'assess':
+          if (!input) return wrapError('assess 需要 input 参数（认知任务描述）');
+          result = me.assess({ text: input, ...context });
+          break;
+        case 'suggest':
+          if (!input) return wrapError('suggest 需要 input 参数（决策上下文）');
+          result = me.suggestForDecision({ text: input, ...context });
+          break;
+        case 'ef':
+          if (!input) return wrapError('ef 需要 input 参数');
+          result = me.efDetector.detect({ text: input, ...context });
+          break;
+        case 'monitor':
+          if (!input) return wrapError('monitor 需要 input 参数');
+          result = me.mcMonitor.monitor({ text: input, ...context });
+          break;
+        default:
+          return wrapError(`MetacognitiveExecutive 不支持的操作: ${action}`);
+      }
+      return wrapOk(result);
+    } catch (e) {
+      return wrapError(`MetacognitiveExecutive 执行失败: ${e.message}`);
+    }
+  }
+
+  // ─── 反思循环引擎 ──────────────────────────────────
+  // 来源: 话语反思双环机制 (说前反思 + 说后监测)
+  // 内环: 过程监控（实时监测思考质量）
+  // 外环: 结果反思（事后分析决策质量）
+  // 状态持久化: .opencode/memory/clarity_state.json
+  //
+  // 使用方式: { action: "reflectBefore"|"monitorAfter"|"log"|"clear"|"analyze", input: "..." }
+  async handleReflectionLoop({ action, input, context }) {
+    if (!action) return wrapError('缺少 action 参数');
+    const rl = this.hf.reflectionLoop;
+    if (!rl) return wrapError('ReflectionLoop 未加载');
+
+    try {
+      let result;
+      switch (action) {
+        case 'reflectBefore':
+          if (!input) return wrapError('reflectBefore 需要 input 参数（草稿内容）');
+          result = await rl.reflectBeforeSpeaking(input, context || {});
+          break;
+        case 'monitorAfter':
+          if (!input) return wrapError('monitorAfter 需要 input 参数（用户反应）');
+          result = await rl.monitorAfterSpeaking(input, context || {});
+          break;
+        case 'log':
+          result = rl.getReflectionLog();
+          break;
+        case 'clear':
+          rl.clearLog();
+          result = { cleared: true };
+          break;
+        case 'analyze':
+          if (!input) return wrapError('analyze 需要 input 参数（用户反应文本）');
+          const prevResponse = context?.previousResponse || '';
+          result = rl.analyzeUserReaction(input, prevResponse);
+          break;
+        default:
+          return wrapError(`ReflectionLoop 不支持的操作: ${action}`);
+      }
+      return wrapOk(result);
+    } catch (e) {
+      return wrapError(`ReflectionLoop 执行失败: ${e.message}`);
+    }
+  }
+
+  // ─── 上下文压缩引擎 ──────────────────────────────────
+  // 来源: mark-heartflow-skill v2.0.37 auto-compaction-engine
+  // 功能: 中文 Token 估算 + 自动压缩 (80% 预警 / 90% 强制)
+  // 策略: trim(保留最新N条) + summarize(伪摘要)
+  // 统计: 压缩效率、节省token、连续压缩计数
+  //
+  // 使用方式: { action: "check"|"compact"|"preFlight"|"stats"|"status"|"reset", input: [...] }
+  async handleCompactionEngine({ action, input, context }) {
+    if (!action) return wrapError('缺少 action 参数');
+    const ce = this.hf.compactionEngine;
+    if (!ce) return wrapError('CompactionEngine 未加载');
+
+    try {
+      let result;
+      switch (action) {
+        case 'check':
+          if (!Array.isArray(input)) return wrapError('check 需要 input 为消息数组');
+          result = ce.check(input);
+          break;
+        case 'compact':
+          if (!Array.isArray(input)) return wrapError('compact 需要 input 为消息数组');
+          result = ce.compact(input, context || {});
+          break;
+        case 'preFlight':
+          if (!Array.isArray(input)) return wrapError('preFlight 需要 input 为消息数组');
+          result = ce.preFlightCheck(input, context || {});
+          break;
+        case 'stats':
+          result = ce.getStats();
+          break;
+        case 'status':
+          result = ce.getStatus();
+          break;
+        case 'reset':
+          ce.resetStats();
+          result = { reset: true };
+          break;
+        default:
+          return wrapError(`CompactionEngine 不支持的操作: ${action}`);
+      }
+      return wrapOk(result);
+    } catch (e) {
+      return wrapError(`CompactionEngine 执行失败: ${e.message}`);
+    }
+  }
 }
 
 // ─── 响应包装 ─────────────────────────────────────

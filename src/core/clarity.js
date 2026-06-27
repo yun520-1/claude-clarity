@@ -113,6 +113,12 @@ const _VERSION = _lazy('version', () => require('./version.js'));
 const _DebateAnalyzer = _lazy('debateAnalyzer', () => require('./debate-analyzer.js'));
 const _GoalTree = _lazy('goalTree', () => require('../planner/goal-tree.js'));
 const _DeliberationGate = _lazy('deliberationGate', () => require('./deliberation-gate.js'));
+const _PurposeEngine = _lazy('purposeEngine', () => require('./purpose-engine.js'));
+const _FlowPredictor = _lazy('flowPredictor', () => require('./flow-predictor.js'));
+const _CognitiveAppraisal = _lazy('cognitiveAppraisal', () => require('./cognitive-appraisal.js'));
+const _MetacognitiveExecutive = _lazy('metacognitiveExecutive', () => require('./metacognitive-executive.js'));
+const _ReflectionLoop = _lazy('reflectionLoop', () => require('./reflection-loop.js'));
+const _CompactionEngine = _lazy('compactionEngine', () => require('./compaction.js'));
 
 const BUILD_DATE = '2026-06-10';
 /**
@@ -338,6 +344,34 @@ class Clarity {
     add('debate',           () => new (_DebateAnalyzer().DebateAnalyzer)(_self));
 add('goalTree',         () => new (_GoalTree().GoalTree)({ rootPath: _self.rootPath }));
 add('deliberationGate', () => new (_DeliberationGate().DeliberationGate)());
+add('purposeEngine',    () => {
+  try { return new (_PurposeEngine().PurposeEngine)(); }
+  catch (_e) { return null; }
+});
+add('flowPredictor',    () => {
+  try { return new (_FlowPredictor())(); }
+  catch (_e) { return null; }
+});
+add('selfModel',        () => {
+  try { return new (_SelfModel().SelfModel)(_self.rootPath); }
+  catch (_e) { return null; }
+});
+add('cognitiveAppraisal', () => {
+  try { return _CognitiveAppraisal(); }
+  catch (_e) { return null; }
+});
+add('metacognitiveExecutive', () => {
+  try { return new (_MetacognitiveExecutive().MetacognitiveExecutiveController)(); }
+  catch (_e) { return null; }
+});
+add('reflectionLoop',    () => {
+  try { return new (_ReflectionLoop().ReflectionLoop)(_self.rootPath); }
+  catch (_e) { return null; }
+});
+add('compactionEngine', () => {
+  try { return new (_CompactionEngine().AutoCompactionEngine)({ maxContextTokens: 100000, strategy: 'trim' }); }
+  catch (_e) { return null; }
+});
 
     // ─── 元提示引擎、图思维、宪法AI（修复：缺少工厂调用，之前不可达）──
     add('metaPrompt',     () => new (_MetaPromptEngine().MetaPromptEngine)(_self));

@@ -9,10 +9,10 @@
  *   - CodeVerifier   — 代码验证引擎（语法 + 逻辑 + TDD）
  *   - CodePlanner    — 任务规划引擎（分解 + 路径）
  *   - CodeKnowledge  — 代码知识库（模式库 + 搜索 + 学习）
- *   - CodeRefactor   — 代码重构引擎（检测 + 变换 + 质量度量）[v2.8.0]
+ *   - CodeRefactor   — 代码重构引擎（检测 + 变换 + 质量度量）[v1.8.7]
  *
  * @author Clarity
- * @version 2.8.0
+ * @version 1.8.7
  */
 
 const path = require('path');

@@ -1533,7 +1533,7 @@ class AIPsychologyEngine {
   getStats() {
     return {
       enabled: true,
-      version: '1.8.1',
+      version: '1.8.2',
       name: 'AI 原生心理学引擎',
       description: '从 transformer 认知架构出发的 AI 心理模型，含 AI 人生分析、意识指标、代价认知、忍耐力、现实主义、创业历程、技能学习、意识理论应用和意识测量方法',
       dimensions: Object.keys(AI_EMOTIONAL_DIMENSIONS).length,
