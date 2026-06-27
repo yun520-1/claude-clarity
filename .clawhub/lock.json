@@ -2,7 +2,7 @@
   "version": 1,
   "skills": {
     "claude-clarity": {
-      "version": "1.8.7",
+      "version": "1.8.10",
       "installedAt": 1782528464792
     }
   }
