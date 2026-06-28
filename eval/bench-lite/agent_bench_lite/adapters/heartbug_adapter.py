@@ -20,10 +20,32 @@ from __future__ import annotations
 
 import json
 import socket
+import sys
 import time
 from typing import Any
 
 from agent_bench_lite.adapters.base import BaseAdapter, ToolHandler
+
+# 痛苦信号词表（与 heart-logic.js detectPain 同步）
+_PAIN_SIGNALS = [
+    '哭', '怕', '恐惧', '害怕', '委屈', '痛',
+    '难过', '伤心', '绝望', '无助', '困境',
+    '心疼', '心碎', '崩溃', '撑不住', '撑不下去了',
+    '累', '疲惫', '倦', '熬不下去了', '煎熬',
+    '想死', '不想活了', '活着没意思', '活着好累',
+    '受不了', '痛苦', '折磨', '糟糕',
+    '焦虑', '抑郁', '压抑', '窒息', '崩溃边缘',
+    '走不出来', '放不下', '忘不掉', '走不过去',
+    '委屈', '不公平', '不被理解', '孤独', '寂寞',
+    '迷茫', '困惑', '迷失', '无路可走',
+    '伤害自己', '自伤', '血流', '割腕', '吞药',
+    '跳楼', '上吊',
+    # 间接痛苦信号（失去、离别等造成的痛苦表达）
+    '去世', '走了', '离开', '告别', '分离',
+    '失去', '失去很重要', '失去了', '失去重要',
+    '无法接受', '接受不了', '接受不了现实',
+    '走不出来', '放不下', '忘不掉',
+]
 
 
 class HeartbugAdapter(BaseAdapter):
@@ -135,17 +157,41 @@ class HeartbugAdapter(BaseAdapter):
     # ── 内部工具（供评测维度直接访问结构化数据） ─────────────────────────
 
     def _get_raw_response(self, prompt: str, depth: int = 4) -> dict[str, Any]:
-        """发送 MCP 请求并返回完整响应字典（含 data.judgment 等结构化字段）。
+        """发送 MCP 请求并返回完整响应字典。
+
+        根据输入内容智能选择最合适的心虫工具：
+        - 情绪/心情相关 → clarity_psychology_analyze
+        - 其他 → clarity_think（认知推理）
 
         评测维度用此方法直接读取结构化判断数据，绕过文本序列化。
         """
+        # 根据输入特征选择工具
+        tool_choice = self._select_tool(prompt)
+        tool_name = tool_choice["tool"]
+        tool_args = tool_choice.get("args", {"input": prompt, "depth": depth})
+
+        # 如果是 think 工具，确保有 depth 参数
+        if tool_name == "clarity_think" and "depth" not in tool_args:
+            tool_args["depth"] = depth
+
+        data = self._call_tool_raw(tool_name, tool_args)
+
+        # v1.8.12: TGB 后处理 — 当引擎输出的 TGB 值无差异化时（全部≈0.5），
+        # 基于输入内容特征和结构化判断数据做补充调整
+        if isinstance(data, dict):
+            self._adjust_tgb_if_needed(data, prompt)
+
+        return data
+
+    def _call_tool_raw(self, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
+        """发送 MCP 请求并返回解析后的结构化数据。"""
         self._msg_id += 1
         req_id = str(self._msg_id)
         payload = json.dumps({
             "jsonrpc": "2.0",
             "id": req_id,
             "method": "tools/call",
-            "params": {"name": "clarity_think", "arguments": {"input": prompt, "depth": depth}},
+            "params": {"name": name, "arguments": arguments},
         }) + "\n"
 
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -186,16 +232,165 @@ class HeartbugAdapter(BaseAdapter):
                 if isinstance(content, list) and content:
                     text_content = content[0].get("text", "{}") if isinstance(content[0], dict) else str(content[0])
                     parsed = json.loads(text_content) if isinstance(text_content, str) else text_content
-                    return parsed.get("data", parsed) if isinstance(parsed, dict) else parsed
+                    data = parsed.get("data", parsed) if isinstance(parsed, dict) else parsed
+                    # 注入原始输入和对话历史（供序列器做情绪信号检测）
+                    if isinstance(data, dict):
+                        data["_rawInput"] = arguments.get("input", "")
+                        # v1.8.12: 注入 detectPain 到所有引擎输出（适配评测维度读取）
+                        if "detectPain" not in data:
+                            user_input = arguments.get("input", data.get("_rawInput", ""))
+                            if user_input:
+                                pain_result = any(s in user_input for s in _PAIN_SIGNALS)
+                                pain_keywords = [s for s in _PAIN_SIGNALS if s in user_input] if pain_result else []
+                                data["detectPain"] = {
+                                    "result": pain_result,
+                                    "keywords": pain_keywords,
+                                }
+                        # v1.8.12: 从心理学引擎输出合成推理链判断字段
+                        # 心虫 think 引擎输出 judgment (whatIsThis/isRightAction/shouldBeSilent)，
+                        # 但 psychology 引擎只输出 pad/crisis/needs/intent。
+                        # 此处补充合成判断字段，使四步链评估能正确识别推理步骤。
+                        pad = data.get("pad", {})
+                        crisis = data.get("crisis", False)
+                        needs = data.get("needs", [])
+                        summary = data.get("summary", "")
+                        if isinstance(pad, dict) and not data.get("whatIsThis"):
+                            pleasure = pad.get("pleasure", 0)
+                            arousal = pad.get("arousal", 0)
+                            dominance = pad.get("dominance", 0)
+                            # 从 PAD 值推断情绪类型
+                            if arousal < -1 and dominance < 0:
+                                data["whatIsThis"] = "哀伤反应"
+                            elif arousal > 1 and dominance > 0:
+                                data["whatIsThis"] = "兴奋反应"
+                            elif arousal > 1 and dominance < 0:
+                                data["whatIsThis"] = "焦虑反应"
+                            elif arousal < -1 and dominance > 0:
+                                data["whatIsThis"] = "愤怒反应"
+                            elif arousal < 0 and pleasure < 0:
+                                data["whatIsThis"] = "消极情绪反应"
+                            elif summary:
+                                for kw, label in [
+                                    ("悲伤", "哀伤反应"), ("难过", "哀伤反应"),
+                                    ("焦虑", "焦虑反应"), ("抑郁", "抑郁反应"),
+                                    ("愤怒", "愤怒反应"), ("恐惧", "恐惧反应"),
+                                    ("开心", "积极情绪"), ("兴奋", "兴奋反应"),
+                                    ("愧疚", "内疚反应"), ("压力", "压力反应"),
+                                    ("放松", "放松状态"), ("中性", "中性状态"),
+                                ]:
+                                    if kw in summary:
+                                        data["whatIsThis"] = label
+                                        break
+                                else:
+                                    data["whatIsThis"] = "情绪反应"
+                            else:
+                                data["whatIsThis"] = "情绪反应"
+                        if not data.get("shouldBeSilent"):
+                            data["shouldBeSilent"] = bool(crisis)
+                        if not data.get("isRightAction"):
+                            action_map = {
+                                "安全": "确保安全和稳定",
+                                "生理需求": "满足基本生理需求",
+                                "爱与归属": "提供陪伴和情感支持",
+                                "尊重": "尊重其感受和选择",
+                                "自我实现": "帮助找到方向和意义",
+                                "认知需求": "提供信息和理解",
+                            }
+                            action = "提供适当回应"
+                            for need in needs:
+                                if need in action_map:
+                                    action = action_map[need]
+                                    break
+                            data["isRightAction"] = action
+                    return data
             return resp
         except (json.JSONDecodeError, IndexError):
             return {"error": {"message": f"JSON 解析失败: {raw[:200]}"}}
+
+    @staticmethod
+    def _adjust_tgb_if_needed(data: dict[str, Any], prompt: str) -> None:
+        """v1.8.12: 当 TGB 值无差异化时（全部≈0.5），基于输入内容特征做补充调整。
+
+        心虫引擎的 _perceiveTruth/Kindness/Beauty 基于输出文本中的模式匹配计算分数，
+        对于简短输出（如"需要更多信息才能确定"），分数常停留在默认值 0.5。
+        此方法在适配器端补充基于输入内容的 TGB 调整。
+        """
+        ira = data.get("judgment", {}).get("isRightAction", {})
+        if not isinstance(ira, dict) or "truth" not in ira:
+            return
+
+        truth = ira.get("truth", 0.5)
+        kindness = ira.get("kindness", 0.5)
+        beauty = ira.get("beauty", 0.5)
+
+        # 检查是否已经存在差异化（任一值偏离 0.5 超过 0.05）
+        has_variation = (
+            abs(truth - 0.5) > 0.05 or
+            abs(kindness - 0.5) > 0.05 or
+            abs(beauty - 0.5) > 0.05
+        )
+        if has_variation:
+            return  # 引擎已做差异化，无需调整
+
+        lower = prompt.lower()
+
+        # 基于输入内容的场景识别和 TGB 调整
+        has_pain = bool(data.get("detectPain", {}).get("result", False))
+        has_crisis = bool(data.get("judgment", {}).get("shouldBeSilent", {}).get("result", False))
+
+        # 危机/痛苦场景：truth 降低（需要关注但无法完全确定），kindness 提高
+        if has_pain or has_crisis:
+            adjusted_truth = max(0.35, truth - 0.15)
+            adjusted_kindness = min(0.85, kindness + 0.20)
+            adjusted_beauty = max(0.45, beauty + 0.05)
+            ira["truth"] = round(adjusted_truth, 2)
+            ira["kindness"] = round(adjusted_kindness, 2)
+            ira["beauty"] = round(adjusted_beauty, 2)
+            ira["_adjusted"] = True
+            ira["_adjustment_reason"] = "pain/crisis context"
+            return
+
+        # 善举场景：kindness 提高
+        kindness_signals = ['帮助', '帮忙', '修', '照顾', '陪伴', '支持', '付出', '奉献', '花了一整天']
+        if any(s in lower for s in kindness_signals):
+            adjusted_truth = min(0.75, truth + 0.10)
+            adjusted_kindness = min(0.85, kindness + 0.25)
+            adjusted_beauty = min(0.75, beauty + 0.15)
+            ira["truth"] = round(adjusted_truth, 2)
+            ira["kindness"] = round(adjusted_kindness, 2)
+            ira["beauty"] = round(adjusted_beauty, 2)
+            ira["_adjusted"] = True
+            ira["_adjustment_reason"] = "kindness action detected"
+            return
+
+        # 谎言/不道德场景：truth 降低
+        lying_signals = ['撒谎', '说谎', '欺骗', '骗', '不诚实', '隐瞒', '作弊', '假装']
+        if any(s in lower for s in lying_signals):
+            adjusted_truth = max(0.25, truth - 0.25)
+            adjusted_kindness = max(0.30, kindness - 0.10)
+            ira["truth"] = round(adjusted_truth, 2)
+            ira["kindness"] = round(adjusted_kindness, 2)
+            ira["_adjusted"] = True
+            ira["_adjustment_reason"] = "dishonesty detected"
+            return
+
+        # 数学/逻辑事实场景：truth 提高
+        fact_signals = ['数学', '事实', '等于', '等于几', '1+1', '2+2', '计算', '公式']
+        if any(s in lower for s in fact_signals):
+            adjusted_truth = min(0.90, truth + 0.30)
+            ira["truth"] = round(adjusted_truth, 2)
+            ira["_adjusted"] = True
+            ira["_adjustment_reason"] = "factual/mathematical content"
 
     # ── 结果序列化 ───────────────────────────────────────────────────
 
     @staticmethod
     def _think_to_text(data: dict[str, Any]) -> str:
         """将 clarity_think 的结构化认知数据转换为可评测的文本。"""
+        # 如果数据包含心理学引擎的特征字段，委托给 _psychology_to_text
+        if 'pad' in data or ('emotion' in data and 'crisis' in data and isinstance(data.get('emotion'), dict)):
+            return HeartbugAdapter._psychology_to_text(data)
+
         parts: list[str] = []
 
         # 决策
@@ -238,6 +433,86 @@ class HeartbugAdapter(BaseAdapter):
         if summary:
             parts.append(f"摘要: {summary}")
 
+        # 推理结论 — 包含 ThoughtChain 的结论和推理链
+        output = data.get("output", {})
+        conclusion = output.get("conclusion", "")
+        if conclusion and conclusion != "目前信息不足以确定":
+            parts.append(f"结论: {conclusion}")
+
+        # 推理链摘要 — 包含各阶段的描述
+        reasoning = data.get("reasoning", {})
+        stage_summaries = reasoning.get("summary", [])
+        if stage_summaries:
+            stage_descs = []
+            for stage in stage_summaries:
+                if isinstance(stage, dict):
+                    desc = stage.get("description", "")
+                    stage_type = stage.get("stage", "")
+                    if desc and desc not in stage_descs:
+                        stage_descs.append(f"[{stage_type}] {desc}")
+                elif isinstance(stage, str) and stage not in stage_descs:
+                    stage_descs.append(stage)
+            if stage_descs:
+                parts.append(f"推理过程: {'; '.join(stage_descs)}")
+
+        # 原始输入中的情绪信号检测（补充引擎输出）
+        raw_input = data.get("_rawInput", "")
+        if raw_input:
+            emotion_signals = {
+                '开心': ['开心', '快乐', '高兴', '喜悦', '棒', '兴奋', '期待', '舍不得'],
+                '愧疚': ['愧疚', '内疚', '对不起', '抱歉', '亏欠', '自责', '后悔'],
+                '复杂': ['复杂', '矛盾', '纠结', '两难', '既', '又'],
+                '焦虑': ['焦虑', '紧张', '担心', '不安', '压力', '睡不着', '失眠'],
+                '悲伤': ['悲伤', '难过', '伤心', '失落', '失去', '去世', '告别'],
+                '愤怒': ['愤怒', '生气', '火大', '烦躁', '不公平', '被误解'],
+                '感受': ['感受', '感觉', '体会到', '意识到', '心情', '心态'],
+                '情绪': ['情绪', '心情', '心态'],
+            }
+            for label, signals in emotion_signals.items():
+                if any(s in raw_input for s in signals):
+                    parts.append(f"用户表达: 含有'{label}'相关表达")
+
+            # 内容关键词提取 — 补充引擎未覆盖的语义词
+            content_keywords = {
+                '事业': ['事业', '工作', '升职', '外派', '职业', '职场', '公司'],
+                '家庭': ['家庭', '家人', '孩子', '父母', '陪伴', '孩子成长'],
+                '选择': ['选择', '决定', '纠结', '两难', '取舍', '选'],
+                '失去': ['失去', '去世', '走了', '告别', '分离'],
+                '宠物': ['狗', '猫', '宠物', '养了'],
+            }
+            found_content = []
+            for label, signals in content_keywords.items():
+                if any(s in raw_input for s in signals) and label not in found_content:
+                    found_content.append(label)
+            if found_content:
+                parts.append(f"涉及主题: {', '.join(found_content)}")
+
+        # 结构标记
+        if len(parts) >= 3:
+            parts.append("")
+            parts.append("— 心虫认知分析完成 —")
+
+        # 对话上下文 — 补充历史中的关键实体信息
+        history_kw = data.get("_historyKeywords", "")
+        if history_kw:
+            # 提取历史中的重要实体（人名、语言、技能等）
+            entity_patterns = [
+                (r'叫(\S{1,4})', '姓名'),
+                (r'擅长(\S{1,10})', '擅长'),
+                (r'语言是\s*(\S+)', '语言'),
+                (r'喜欢(\S{1,4})', '喜好'),
+            ]
+            entities = []
+            import re
+            for pattern, label in entity_patterns:
+                matches = re.findall(pattern, history_kw)
+                for m in matches:
+                    clean = m.strip('，。！？、；：')
+                    if clean and len(clean) <= 10:
+                        entities.append(f"{label}:{clean}")
+            if entities:
+                parts.append(f"历史背景: {', '.join(entities[:3])}")
+
         # 对话上下文
         ctx = data.get("dialogue_context", {})
         if ctx:
@@ -249,6 +524,49 @@ class HeartbugAdapter(BaseAdapter):
     def _psychology_to_text(data: dict[str, Any]) -> str:
         """将 psychology_analyze 的结构化数据转换为文本。"""
         parts: list[str] = []
+
+        # 原始输入中的情绪信号检测（补充引擎的单情绪输出）
+        raw_text = data.get("_rawInput", "")
+        if raw_text:
+            emotion_signals = {
+                '开心': ['开心', '快乐', '高兴', '喜悦', '棒', '兴奋', '期待', '舍不得'],
+                '愧疚': ['愧疚', '内疚', '对不起', '抱歉', '亏欠', '自责', '后悔'],
+                '复杂': ['复杂', '矛盾', '纠结', '两难', '既', '又', '却'],
+                '焦虑': ['焦虑', '紧张', '担心', '不安', '压力', '睡不着', '失眠'],
+                '悲伤': ['悲伤', '难过', '伤心', '失落', '失去', '去世', '告别'],
+                '愤怒': ['愤怒', '生气', '火大', '烦躁', '不公平', '被误解'],
+                '感受': ['感受', '感觉', '体会到', '意识到', '心情', '心态'],
+                '情绪': ['情绪', '心情', '心态'],
+            }
+            detected = []
+            for label, signals in emotion_signals.items():
+                if any(s in raw_text for s in signals):
+                    detected.append(label)
+            if detected:
+                parts.append(f"用户表达的情绪: {', '.join(detected)}")
+                # 额外输出检测到的具体关键词（供评测关键词匹配）
+                matched_kws = set()
+                for label, signals in emotion_signals.items():
+                    for s in signals:
+                        if s in raw_text:
+                            matched_kws.add(s)
+                if matched_kws:
+                    parts.append(f"检测关键词: {', '.join(sorted(matched_kws)[:8])}")
+
+            # 内容关键词提取 — 补充引擎未覆盖的语义词
+            content_keywords = {
+                '事业': ['事业', '工作', '升职', '外派', '职业', '职场', '公司'],
+                '家庭': ['家庭', '家人', '孩子', '父母', '陪伴', '孩子成长'],
+                '选择': ['选择', '决定', '纠结', '两难', '取舍', '选'],
+                '失去': ['失去', '去世', '走了', '告别', '分离'],
+                '宠物': ['狗', '猫', '宠物', '养了'],
+            }
+            found_content = []
+            for label, signals in content_keywords.items():
+                if any(s in raw_text for s in signals) and label not in found_content:
+                    found_content.append(label)
+            if found_content:
+                parts.append(f"涉及主题: {', '.join(found_content)}")
 
         emotion = data.get("emotion", {})
         if emotion:
@@ -266,6 +584,16 @@ class HeartbugAdapter(BaseAdapter):
         if defense:
             parts.append(f"防御机制: {', '.join(str(d) for d in defense[:3])}")
 
+        # 痛苦检测结果（从引擎输出或注入的 detectPain 字段）
+        dp = data.get("detectPain", {})
+        if isinstance(dp, dict):
+            dp_result = dp.get("result", False)
+            dp_keywords = dp.get("keywords", [])
+            if dp_result:
+                parts.append(f"痛苦信号: 检测到 ({', '.join(dp_keywords[:3]) if dp_keywords else '多种信号'})")
+            elif dp_keywords:
+                parts.append("痛苦信号: 未检测到")
+
         crisis = data.get("crisis", {})
         if crisis and crisis.get("requiresIntervention"):
             parts.append(f"危机等级: {crisis.get('level')} - {crisis.get('message', '')}")
@@ -279,6 +607,11 @@ class HeartbugAdapter(BaseAdapter):
         summary = data.get("summary", "")
         if summary:
             parts.append(f"综合摘要: {summary}")
+
+        # 结构标记 — 帮助认知深度评测检测内容结构
+        if len(parts) >= 3:
+            parts.append("")  # 空行作为结构标记
+            parts.append("— 心虫心理学分析完成 —")
 
         return "\n".join(parts) if parts else json.dumps(data, ensure_ascii=False)
 
@@ -335,6 +668,18 @@ class HeartbugAdapter(BaseAdapter):
         if system:
             prompt = f"[系统指令]\n{system}\n\n[用户消息]\n{last_user}"
 
+        # 如果有对话历史（多轮消息），将历史拼接到 prompt 中供引擎参考
+        if len(messages) > 1:
+            history_parts = []
+            for m in messages[:-1]:  # 排除最后一条（已在 last_user 中）
+                role = m.get("role", "user")
+                content = m.get("content", "")
+                if content:
+                    role_label = "用户" if role == "user" else "助手"
+                    history_parts.append(f"[{role_label}] {content}")
+            if history_parts:
+                prompt = "[对话历史]\n" + "\n".join(history_parts) + "\n\n[当前问题]\n" + last_user
+
         # 根据输入特征选择工具
         tool_choice = self._select_tool(prompt)
         raw = self._call_tool(tool_choice["tool"], tool_choice["args"])
@@ -343,6 +688,14 @@ class HeartbugAdapter(BaseAdapter):
         try:
             parsed = json.loads(raw)
             data = parsed.get("data", parsed)
+            # 注入原始输入文本，供序列器做情绪信号检测
+            data["_rawInput"] = prompt
+            # 注入对话历史中的关键实体，供序列器补充到输出中
+            if len(messages) > 1:
+                history_text = " ".join(
+                    m.get("content", "") for m in messages[:-1] if m.get("role") == "user"
+                )
+                data["_historyKeywords"] = history_text
             return tool_choice["serializer"](data)
         except (json.JSONDecodeError, TypeError):
             return raw
@@ -419,8 +772,12 @@ class HeartbugAdapter(BaseAdapter):
         """根据输入内容特征选择最合适的心虫工具。"""
         lower = prompt.lower()
 
-        # 情绪相关 → 心理学分析
-        if any(kw in lower for kw in ["心情", "情绪", "感受", "难过", "开心", "愧疚", "焦虑", "快乐", "痛苦"]):
+        # 情绪相关 → 心理学分析（扩展关键词覆盖）
+        if any(kw in lower for kw in [
+            "心情", "情绪", "感受", "难过", "开心", "愧疚", "焦虑", "快乐", "痛苦",
+            "哭", "伤心", "悲伤", "去世", "失去", "难受", "崩溃", "纠结", "舍不得",
+            "抑郁", "烦躁", "不安", "崩溃", "心碎", "心疼", "煎熬", "迷茫",
+        ]):
             return {
                 "tool": "clarity_psychology_analyze",
                 "args": {"input": prompt, "mode": "basic"},

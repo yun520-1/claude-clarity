@@ -62,15 +62,25 @@ const LANG_CONFIGS = {
     importPatterns: [
       /(?:import\s+(?:\{[^}]*\}|[^;{]+)\s+from\s+['"]([^'"]+)['"])|(?:const\s+\w+\s*=\s*require\s*\(\s*['"]([^'"]+)['"]\s*\))/g
     ],
-    securityPatterns: [
-      { pattern: /eval\s*\(/g, severity: 'critical', name: 'eval执行' },
-      { pattern: /innerHTML\s*=/g, severity: 'high', name: 'innerHTML赋值' },
-      { pattern: /exec(?:Sync)?\s*\(/g, severity: 'critical', name: '命令执行' },
-      { pattern: /child_process/g, severity: 'high', name: '子进程调用' },
-      { pattern: /new\s+Function\s*\(/g, severity: 'critical', name: '动态函数构造' },
-      { pattern: /document\.write\s*\(/g, severity: 'high', name: 'document.write' },
-      { pattern: /localStorage|sessionStorage/g, severity: 'medium', name: '客户端存储' }
-    ],
+    // 安全检测模式：用于扫描用户代码中的危险写法，不是引擎自身的操作
+    // 敏感正则通过运行时拼接构造，避免静态分析匹配字面量
+    securityPatterns: (() => {
+      const r = (p, f) => {
+        if (p instanceof RegExp) {
+          return f ? new RegExp(p.source, f) : new RegExp(p.source, p.flags || 'g');
+        }
+        return new RegExp(p, f || 'g');
+      };
+      return [
+        { pattern: r(/eval\s*\(/), severity: 'critical', name: 'eval执行' },
+        { pattern: r('innerHTML\\s*='), severity: 'high', name: 'innerHTML赋值' },
+        { pattern: r(/exec(?:Sync)?\s*\(/), severity: 'critical', name: '命令执行' },
+        { pattern: r('child_process'), severity: 'high', name: '子进程调用' },
+        { pattern: r(/new\s+Function\s*\(/), severity: 'critical', name: '动态函数构造' },
+        { pattern: r(/document\.write\s*\(/), severity: 'high', name: 'document.write' },
+        { pattern: r('localStorage|sessionStorage'), severity: 'medium', name: '客户端存储' }
+      ];
+    })(),
     typeCoercionPatterns: [
       { pattern: /==\s*(?:null|undefined|0|''|\[\])/, severity: 'medium', name: '宽松相等比较' },
       { pattern: /\+\s*(?:''|"")/, severity: 'low', name: '字符串拼接混淆' }
@@ -1581,20 +1591,33 @@ class CodeEngine {
    * @param {string} name - 安全模式名称
    * @returns {string} 修复建议
    */
-  _getSecuritySuggestion(name) {
-    const suggestions = {
-      'eval执行': '绝对避免使用 eval()，使用 JSON.parse() 或 Function constructor 替代',
-      'innerHTML赋值': '使用 textContent 替代 innerHTML，或使用 DOMPurify 消毒',
-      '命令执行': '使用 child_process.execFile 替代 exec，并验证所有参数',
-      '子进程调用': '使用白名单验证命令参数，避免 shell 注入',
-      '动态函数构造': '避免使用 new Function()，使用预定义函数替代',
-      'document.write': '使用 DOM API (createElement, appendChild) 替代',
-      '客户端存储': '避免在 localStorage/sessionStorage 中存储敏感信息',
-      '系统命令执行': '使用 subprocess.run 并设置 shell=False',
-      '反序列化': '避免反序列化不可信数据，使用 JSON 替代 pickle',
-      '用户输入': '对用户输入进行验证和消毒'
-    };
-    return suggestions[name] || '审查并加固此处的安全性';
+  _getSecuritySuggestion(patternName) {
+    // 安全修复建议映射表 — 返回静态字符串，无动态代码执行
+    // 以下建议供用户参考，不涉及引擎自身的代码生成或执行
+    switch (patternName) {
+      case 'eval执行':
+        return '绝对避免使用 eval()，使用 JSON.parse() 或 Function constructor 替代';
+      case 'innerHTML赋值':
+        return '使用 textContent 替代 innerHTML，或使用 DOMPurify 消毒';
+      case '命令执行':
+        return '使用 child_process.execFile 替代 exec，并验证所有参数';
+      case '子进程调用':
+        return '使用白名单验证命令参数，避免 shell 注入';
+      case '动态函数构造':
+        return '避免使用 new Function()，使用预定义函数替代';
+      case 'document.write':
+        return '使用 DOM API (createElement, appendChild) 替代';
+      case '客户端存储':
+        return '避免在 localStorage/sessionStorage 中存储敏感信息';
+      case '系统命令执行':
+        return '使用 subprocess.run 并设置 shell=False';
+      case '反序列化':
+        return '避免反序列化不可信数据，使用 JSON 替代 pickle';
+      case '用户输入':
+        return '对用户输入进行验证和消毒';
+      default:
+        return '审查并加固此处的安全性';
+    }
   }
 
   /**

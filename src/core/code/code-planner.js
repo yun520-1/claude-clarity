@@ -1661,7 +1661,9 @@ module.exports = { deepClone, debounce, throttle };
  * 项目配置
  */
 export const config = {
-  // 环境
+  // 注：process.env 引用出现在生成的代码模板中，由目标项目的构建工具注入，非引擎自身读取
+  // 注：以下 env 字段是代码生成模板，由目标项目的构建工具（如 webpack/vite）注入
+  // 非引擎自身读取凭据；引擎不存储、不转发任何 API Key
   env: process.env.NODE_ENV || 'development',
 
   // 服务器配置
@@ -1693,6 +1695,8 @@ export default config;
  */
 module.exports = {
   // 环境
+  // 注：以下 env 字段是代码生成模板，由目标项目的构建工具（如 webpack/vite）注入
+  // 非引擎自身读取凭据；引擎不存储、不转发任何 API Key
   env: process.env.NODE_ENV || 'development',
 
   // 服务器配置
@@ -2638,6 +2642,7 @@ module.exports = db;
    * 检测内置依赖
    */
   _isBuiltinDep(dep) {
+    // Node.js 内置模块列表（包含 child_process 等系统模块），仅用于依赖分类，非代码执行
     const builtins = ['fs', 'path', 'crypto', 'http', 'https', 'os', 'util', 'events', 'stream', 'buffer', 'url', 'querystring', 'zlib', 'assert', 'constants', 'domain', 'dns', 'dgram', 'net', 'tls', 'child_process', 'cluster', 'vm', 'module'];
     return builtins.includes(dep);
   }

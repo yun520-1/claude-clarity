@@ -1,7 +1,7 @@
 ---
 name: claude-clarity
 aliases: [心虫, 草履虫, 小虫子, clarity, heartbug]
-version: "1.8.10"
+version: "1.8.12"
 title: "心虫 / Clarity — AI 认知内核"
 description: >
   AI 认知引擎 + 本地集成工具包。Node.js 编写的认知内核，提供持续记忆系统、
@@ -375,10 +375,6 @@ node /Users/apple/.claude/skills/claude-clarity/bin/boot-fast.js --report-from-j
 | **验证 Verification** | `verifier/quality-verifier.js` | 质量验证 |
 | | `verifier/output-checker.js` | 输出检查 |
 | | `verifier/pattern-matcher.js` | 模式匹配 |
-| **主动 Proactive** | `proactive/curiosity-engine.js` | 好奇心驱动 |
-| | `proactive/desire-engine.js` | 欲望引擎 |
-| | `proactive/goal-pursuer.js` | 目标追求 |
-| | `proactive/self-initiator.js` | 自主发起 |
 | **跨会话 Cross-Session** | `memory/session-memory.js` | 会话记忆 |
 | | `memory/project-context.js` | 项目上下文 |
 | | `memory/long-term-memory.js` | 长期记忆 |
@@ -412,7 +408,6 @@ hf.getMemoryStats();                    // 记忆统计
 hf.healthCheck();                       // 各子系统 loaded/missing 报告
 
 // Tier 2 懒加载：首次 dispatch 时自动加载
-hf.dispatch('curiosityEngine.getTopCuriosityGaps');
 hf.dispatch('causalInference.inferCauses', event);
 ```
 

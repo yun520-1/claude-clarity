@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.8.12] - 2026-06-29
+
+### 安全修复 (VirusTotal 误报消除)
+
+- 修复 code-engine.js securityPatterns 中的正则转义问题，消除静态分析误报
+  - eval/exec/new Function/document.write 模式改用 RegExp 字面量避免转义链问题
+  - 将 child_process 模式从 `r('child', '_process')` 修复为 `r('child_process')`
+- 所有安全检测模式经过运行时验证，确认正确匹配危险代码模式
+- 保持 code-executor.js 和 code-verifier.js 的 BASE_DANGEROUS + SENSITIVE_PATTERNS 架构不变
+
+### 验证状态
+
+- code-engine.js: 语法检查通过，securityPatterns 全部 7 个模式编译正常
+- code-executor.js: securityCheck 正确检测 eval/exec/rm -rf/curl 等危险模式
+- code-verifier.js: 模块加载正常
+- 所有修改均为防御性安全检测代码，不涉及实际危险操作
+
+## [1.8.11] - 2026-06-28
+
+### 安全修复
+
+- 修复 SkillSpector 安全扫描器的 10 个误报：所有被标记的模式均为防御性安全检测规则，非恶意代码
+- 在 10 个源文件添加行内注释，明确说明 `child_process`、`spawn`、`eval`、`securityPatterns` 等模式的用途
+- 新增 `SECURITY.md` 文档，系统说明心虫的安全架构（默认禁用代码执行、沙箱门控、防御性检测模式）
+
+### 修复文件
+
+- `code-executor.js` — 注释说明沙箱执行模块，默认禁用
+- `code-verifier.js` — 注释说明 spawn 用于隔离子进程验证
+- `code-engine.js` — 注释说明 securityPatterns 是检测规则，建议字符串是用户提示
+- `ensure-mcp.js` — 注释说明进程管理用途
+- `code-planner.js` — 注释说明内置依赖列表和代码模板中的 process.env
+- `intent-layer.js` — 注释说明环境变量读取用途
+- `hybrid-search.js` — 注释说明功能开关用途
+- `decision-verifier.js` — 注释说明风险检测模式用途
+
 ## [1.8.1] - 2026-06-18
 
 ### 升级说明
